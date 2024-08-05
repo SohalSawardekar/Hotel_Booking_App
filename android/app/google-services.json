@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "817309418315",
+    "project_id": "hotel-bookings-a4fcb",
+    "storage_bucket": "hotel-bookings-a4fcb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:817309418315:android:71bc41b4dec4b4b18d9ece",
+        "android_client_info": {
+          "package_name": "com.hotel_management.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCe-ddlXBzng4Z9O6gOeCrjMs2Hq_-1VwA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
