@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:hotel_booking/screens/ContactUs.dart';
 import 'package:hotel_booking/screens/home.dart';
 
 void main() {

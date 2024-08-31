@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:hotel_booking/constants/data.dart'; // Importing your constants file
-import 'package:hotel_booking/screens/home.dart';
+import 'package:hotel_booking/constants/data.dart'; 
 import 'package:url_launcher/url_launcher.dart';
 
 class ContactUs extends StatefulWidget {
