@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hotel_booking/screens/ContactUs.dart';
+import 'package:hotel_booking/screens/login.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -26,9 +27,29 @@ class HHomepageState extends State<Homepage> {
         centerTitle: true,
         backgroundColor: Colors.red[200],
       ),
-      body: Container(
-        child: Center(
-          child: ElevatedButton(
+      body: Center(
+          child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          //Login
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const Login()),
+              );
+            },
+
+            child: const Text("Login"), // Button label
+          ),
+
+          const SizedBox(
+            height: 10,
+          ),
+
+          //Contact Us
+          ElevatedButton(
             onPressed: () {
               Navigator.push(
                 context,
@@ -38,8 +59,8 @@ class HHomepageState extends State<Homepage> {
 
             child: const Text("Contact Us"), // Button label
           ),
-        ),
-      ),
+        ],
+      )),
     );
   }
 }

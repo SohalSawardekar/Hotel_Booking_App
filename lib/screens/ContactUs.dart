@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:hotel_booking/constants/data.dart'; 
+import 'package:hotel_booking/constants/data.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ContactUs extends StatefulWidget {
@@ -13,6 +13,8 @@ class ContactUs extends StatefulWidget {
 class _ContactUsState extends State<ContactUs> {
   // TextEditingController to capture the input from the Name TextField
   final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _messageController = TextEditingController();
 
   // Method to launch the dialer
   void _launchDialer(String phoneNumber) async {
@@ -167,7 +169,7 @@ class _ContactUsState extends State<ContactUs> {
                     ),
                     TextField(
                       controller:
-                          _nameController, // This should be a separate controller for email
+                          _emailController, // This should be a separate controller for email
                       decoration: InputDecoration(
                         hintText: 'Enter your Email',
                         hintStyle: GoogleFonts.poppins(),
@@ -203,7 +205,7 @@ class _ContactUsState extends State<ContactUs> {
                     ),
                     TextField(
                       controller:
-                          _nameController, // This should be a separate controller for message
+                          _messageController, // This should be a separate controller for message
                       decoration: InputDecoration(
                         hintText: 'Enter your message',
                         hintStyle: GoogleFonts.poppins(),
