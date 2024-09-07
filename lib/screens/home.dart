@@ -1,66 +1,111 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:hotel_booking/screens/ContactUs.dart';
 import 'package:hotel_booking/screens/login.dart';
+import 'package:hotel_booking/screens/register.dart';
 
-class Homepage extends StatefulWidget {
-  const Homepage({super.key});
-
-  @override
-  State<Homepage> createState() => HHomepageState();
-}
-
-class HHomepageState extends State<Homepage> {
+class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          "Homepage",
-          style: GoogleFonts.poppins(
-            fontWeight: FontWeight.w600,
-            color: Colors.red,
+        automaticallyImplyLeading: false,
+        title: TextField(
+          decoration: InputDecoration(
+            hintText: 'Search',
+            prefixIcon: const Icon(Icons.search),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(20),
+              borderSide: BorderSide.none,
+            ),
+            fillColor: Colors.grey[200],
+            filled: true,
           ),
         ),
-        centerTitle: true,
-        backgroundColor: Colors.red[200],
-      ),
-      body: Center(
-          child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          //Login
-          ElevatedButton(
+        actions: [
+          TextButton(
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const Login()),
+                MaterialPageRoute(builder: (context) => LoginPage()),
               );
             },
-
-            child: const Text("Login"), // Button label
+            child: const Text('Login'),
           ),
-
-          const SizedBox(
-            height: 10,
-          ),
-
-          //Contact Us
-          ElevatedButton(
+          TextButton(
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const ContactUs()),
+                MaterialPageRoute(builder: (context) => const SignUpPage()),
               );
             },
-
-            child: const Text("Contact Us"), // Button label
+            child: const Text('Sign Up'),
           ),
         ],
-      )),
+      ),
+      body: Column(
+        children: [
+          // Header image
+          Container(
+            width: screenSize.width,
+            height: screenSize.height * 0.3,
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('Home.jpg'),
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          const SizedBox(height: 10),
+          // Room booking cards
+          Expanded(
+            child: ListView.builder(
+              itemCount: 4, // For demo purposes
+              itemBuilder: (context, index) {
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    height: screenSize.height * 0.15,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: Row(
+                      children: [
+                        // Placeholder for room image
+                        Container(
+                          width: screenSize.width * 0.3,
+                          height: double.infinity,
+                          color: Colors.grey[400],
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                TextButton(
+                                  onPressed: () {},
+                                  child: const Text('Book'),
+                                  style: TextButton.styleFrom(
+                                    foregroundColor: Colors.black,
+                                    backgroundColor: Colors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
