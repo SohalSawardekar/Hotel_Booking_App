@@ -160,16 +160,50 @@
 //   }
 // }
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatelessWidget {
+  LoginPage({super.key});
+
+  // Controllers to capture user input
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  // Function to handle login
+  Future<void> _login(BuildContext context) async {
+    try {
+      // Attempt to sign in with email and password
+      UserCredential userCredential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(
+              email: _emailController.text.trim(),
+              password: _passwordController.text.trim());
+
+      // If login is successful, navigate to the next screen
+      Navigator.pushReplacementNamed(context, '/home');
+    } on FirebaseAuthException catch (e) {
+      // Handle different error codes and show appropriate messages
+      String message;
+      if (e.code == 'user-not-found') {
+        message = 'No user found for that email.';
+      } else if (e.code == 'wrong-password') {
+        message = 'Wrong password provided.';
+      } else {
+        message = 'An error occurred. Please try again.';
+      }
+      // Show error message in a dialog or a snackbar
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(message)));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    // Get the screen height and width to make the layout responsive
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
+      // Scaffold needs to be returned from the build method
       body: SingleChildScrollView(
         child: Container(
           height: screenHeight,
@@ -189,6 +223,7 @@ class LoginPage extends StatelessWidget {
               SizedBox(height: screenHeight * 0.05),
               // Email Field
               TextField(
+                controller: _emailController,
                 decoration: InputDecoration(
                   labelText: "Email",
                   border: OutlineInputBorder(
@@ -199,6 +234,7 @@ class LoginPage extends StatelessWidget {
               SizedBox(height: screenHeight * 0.02), // Space between fields
               // Password Field
               TextField(
+                controller: _passwordController,
                 obscureText: true,
                 decoration: InputDecoration(
                   labelText: "Password",
@@ -240,7 +276,7 @@ class LoginPage extends StatelessWidget {
                 height: screenHeight * 0.06, // Responsive button height
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, '/home');
+                    _login(context); // Pass the context to the _login function
                   },
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
@@ -255,7 +291,6 @@ class LoginPage extends StatelessWidget {
                 ),
               ),
               SizedBox(height: screenHeight * 0.02),
-              // Or with Google/Microsoft Login
               const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -263,7 +298,6 @@ class LoginPage extends StatelessWidget {
                 ],
               ),
               SizedBox(height: screenHeight * 0.02),
-              // Google and Microsoft buttons
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [

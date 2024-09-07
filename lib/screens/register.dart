@@ -19,9 +19,8 @@ class SignUpPage extends StatelessWidget {
                   color: Colors.green,
                 ),
               ),
-              const Text(
-                'Connect with your friends today!',
-                style: TextStyle(fontSize: 16.0, color: Colors.grey),
+              SizedBox(
+                height: 20.0,
               ),
               const SizedBox(height: 20.0),
               const TextField(

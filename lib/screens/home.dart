@@ -3,6 +3,8 @@ import 'package:hotel_booking/screens/login.dart';
 import 'package:hotel_booking/screens/register.dart';
 
 class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
