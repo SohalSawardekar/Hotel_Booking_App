@@ -1,167 +1,6 @@
-// import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:flutter/material.dart';
-// import 'package:google_fonts/google_fonts.dart';
-
-// class Login extends StatefulWidget {
-//   const Login({super.key});
-
-//   @override
-//   State<Login> createState() => _LoginState();
-// }
-
-// class _LoginState extends State<Login> {
-//   // Controllers to capture user input
-//   final TextEditingController _emailController = TextEditingController();
-//   final TextEditingController _passwordController = TextEditingController();
-
-//   // Function to handle login
-//   Future<void> _login() async {
-//     try {
-//       // Attempt to sign in with email and password
-//       UserCredential userCredential = await FirebaseAuth.instance
-//           .signInWithEmailAndPassword(
-//               email: _emailController.text.trim(),
-//               password: _passwordController.text.trim());
-
-//       // If login is successful, navigate to the next screen
-//       Navigator.pushReplacementNamed(context, '/home');
-//     } on FirebaseAuthException catch (e) {
-//       // Handle different error codes and show appropriate messages
-//       String message;
-//       if (e.code == 'user-not-found') {
-//         message = 'No user found for that email.';
-//       } else if (e.code == 'wrong-password') {
-//         message = 'Wrong password provided.';
-//       } else {
-//         message = 'An error occurred. Please try again.';
-//       }
-//       // Show error message in a dialog or a snackbar
-//       ScaffoldMessenger.of(context)
-//           .showSnackBar(SnackBar(content: Text(message)));
-//     }
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     // Get screen size
-//     final screenHeight = MediaQuery.of(context).size.height;
-//     final screenWidth = MediaQuery.of(context).size.width;
-
-//     return Scaffold(
-//       appBar: AppBar(
-//         backgroundColor: const Color.fromRGBO(255, 103, 103, 0.8),
-//       ),
-//       body: SafeArea(
-//         child: Container(
-//           height: double.infinity,
-//           width: double.infinity,
-//           decoration: const BoxDecoration(
-//             image: DecorationImage(
-//               image: AssetImage("assets/images/pexels-pixabay-206359.jpg"),
-//               fit: BoxFit.cover,
-//             ),
-//           ),
-//           child: Column(
-//             children: [
-//               Container(
-//                 alignment: Alignment.center,
-//                 height: screenHeight * 0.3,
-//                 width: double.infinity,
-//                 decoration: const BoxDecoration(
-//                   color: Color.fromRGBO(255, 103, 103, 0.8),
-//                 ),
-//                 child: Text(
-//                   "Login",
-//                   style: GoogleFonts.poppins(
-//                     fontWeight: FontWeight.w600,
-//                     fontSize: screenHeight * 0.04,
-//                     color: const Color.fromRGBO(255, 255, 255, 1),
-//                   ),
-//                 ),
-//               ),
-//               SizedBox(
-//                 height: screenHeight * 0.02,
-//               ),
-//               Container(
-//                 width: screenWidth * 0.85,
-//                 decoration: BoxDecoration(
-//                     border: Border.all(
-//                         color: const Color.fromRGBO(255, 255, 255, 1)),
-//                     color: const Color.fromRGBO(149, 149, 149, 0.698),
-//                     borderRadius: BorderRadius.circular(10)),
-//                 child: Column(
-//                   children: [
-//                     Padding(
-//                       padding: EdgeInsets.all(screenWidth * 0.05),
-//                       child: TextField(
-//                         controller: _emailController,
-//                         decoration: const InputDecoration(
-//                           filled: true,
-//                           fillColor: Color.fromRGBO(162, 162, 162, 0.694),
-//                           border: OutlineInputBorder(),
-//                           labelStyle: TextStyle(
-//                               fontWeight: FontWeight.w500,
-//                               color: Color.fromRGBO(255, 255, 255, 1)),
-//                           labelText: 'Email',
-//                         ),
-//                       ),
-//                     ),
-//                     Padding(
-//                       padding: EdgeInsets.all(screenWidth * 0.05),
-//                       child: TextField(
-//                         controller: _passwordController,
-//                         obscureText: true,
-//                         decoration: const InputDecoration(
-//                           filled: true,
-//                           fillColor: Color.fromRGBO(162, 162, 162, 0.694),
-//                           border: OutlineInputBorder(),
-//                           labelStyle: TextStyle(
-//                               fontWeight: FontWeight.w500,
-//                               color: Color.fromRGBO(255, 255, 255, 1)),
-//                           labelText: 'Password',
-//                         ),
-//                       ),
-//                     ),
-//                   ],
-//                 ),
-//               ),
-//               SizedBox(
-//                 height: screenHeight * 0.02,
-//               ),
-//               ElevatedButton(
-//                 onPressed: _login, // Call the login function
-//                 style: ElevatedButton.styleFrom(
-//                   padding: EdgeInsets.symmetric(
-//                     vertical: screenHeight * 0.015,
-//                     horizontal: screenWidth * 0.15,
-//                   ),
-//                   backgroundColor: const Color.fromRGBO(255, 255, 255, 0.8),
-//                 ),
-//                 child: Text(
-//                   'Login',
-//                   style: GoogleFonts.poppins(
-//                     fontSize: screenHeight * 0.025,
-//                   ),
-//                 ),
-//               ),
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-
-//   @override
-//   void dispose() {
-//     // Dispose of controllers when the widget is disposed
-//     _emailController.dispose();
-//     _passwordController.dispose();
-//     super.dispose();
-//   }
-// }
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:hotel_booking/reuse_code/loginauth.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
@@ -203,7 +42,7 @@ class LoginPage extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      // Scaffold needs to be returned from the build method
+      appBar: AppBar(),
       body: SingleChildScrollView(
         child: Container(
           height: screenHeight,
@@ -305,8 +144,16 @@ class LoginPage extends StatelessWidget {
                     width: screenWidth * 0.2,
                     height: screenHeight * 0.06,
                     child: ElevatedButton.icon(
-                      onPressed: () {
-                        // Google login logic
+                      onPressed: () async {
+                        User? user = await signInWithGoogle();
+                        if (user != null) {
+                          Navigator.pushReplacementNamed(context, '/home');
+                        } else {
+                          var message = 'An error occurred. Please try again.';
+                          // Show error message in a dialog or a snackbar
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(SnackBar(content: Text(message)));
+                        }
                       },
                       iconAlignment: IconAlignment.end,
                       icon: Image.asset(
@@ -326,8 +173,16 @@ class LoginPage extends StatelessWidget {
                     width: screenWidth * 0.2,
                     height: screenHeight * 0.06,
                     child: ElevatedButton.icon(
-                      onPressed: () {
-                        // Microsoft login logic
+                      onPressed: () async {
+                        User? user = await signInWithApple();
+                        if (user != null) {
+                          Navigator.pushReplacementNamed(context, '/home');
+                        } else {
+                          var message = 'An error occurred. Please try again.';
+                          // Show error message in a dialog or a snackbar
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(SnackBar(content: Text(message)));
+                        }
                       },
                       iconAlignment: IconAlignment.end,
                       icon: Image.asset(
