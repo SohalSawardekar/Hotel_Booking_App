@@ -47,29 +47,31 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyB_O_vcLuiPOh0sYak-YV2Tl0_JkgElZG8',
-    appId: '1:1048032281830:web:4c857301ed55f368786727',
-    messagingSenderId: '1048032281830',
-    projectId: 'hotel-booking-b5197',
-    authDomain: 'hotel-booking-b5197.firebaseapp.com',
-    storageBucket: 'hotel-booking-b5197.appspot.com',
-    measurementId: 'G-X8FHKLELS2',
+    apiKey: 'AIzaSyDnDe8jeOCq5OxsIenEFs-AE0zTEg5bb3A',
+    appId: '1:853373948992:web:95e56f753f7d4a4b3a3ba5',
+    messagingSenderId: '853373948992',
+    projectId: 'hotel-bookings-968d2',
+    authDomain: 'hotel-bookings-968d2.firebaseapp.com',
+    storageBucket: 'hotel-bookings-968d2.appspot.com',
+    measurementId: 'G-9REFL6GCJL',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyC226UJy0fuPiZC10bcPWK8vfyB2pSoccc',
-    appId: '1:1048032281830:android:59bac97936fca8a7786727',
-    messagingSenderId: '1048032281830',
-    projectId: 'hotel-booking-b5197',
-    storageBucket: 'hotel-booking-b5197.appspot.com',
+    apiKey: 'AIzaSyCsajbDfC9uUU4C7eXzQPeHvVjan8M3ADw',
+    appId: '1:853373948992:android:5a4c06b160a0a85a3a3ba5',
+    messagingSenderId: '853373948992',
+    projectId: 'hotel-bookings-968d2',
+    storageBucket: 'hotel-bookings-968d2.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyAZHhBmivYabiaP_-heq3sFosPqDFozxJU',
-    appId: '1:1048032281830:ios:d2135d8b87e8e29a786727',
-    messagingSenderId: '1048032281830',
-    projectId: 'hotel-booking-b5197',
-    storageBucket: 'hotel-booking-b5197.appspot.com',
+    apiKey: 'AIzaSyAonqa0LWqkkbQBOlOIrU_I5IYos0Sf4Ac',
+    appId: '1:853373948992:ios:113b6beb5982a69f3a3ba5',
+    messagingSenderId: '853373948992',
+    projectId: 'hotel-bookings-968d2',
+    storageBucket: 'hotel-bookings-968d2.appspot.com',
+    iosClientId: '853373948992-24t8kis0k539126b4f04if2782u68amr.apps.googleusercontent.com',
     iosBundleId: 'com.example.hotelBooking',
   );
+
 }

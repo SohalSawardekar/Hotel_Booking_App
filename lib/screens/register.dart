@@ -1,134 +1,189 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:hotel_booking/reuse_code/auth_service.dart';
+import 'package:hotel_booking/reuse_code/custom_text_field.dart';
+import 'package:hotel_booking/reuse_code/loginauth.dart';
+import 'package:hotel_booking/reuse_code/social_login_button.dart';
 
-class SignUpPage extends StatelessWidget {
+class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
 
   @override
+  _SignUpPageState createState() => _SignUpPageState();
+}
+
+class _SignUpPageState extends State<SignUpPage> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _phonenoController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmpasswordController =
+      TextEditingController();
+
+  @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       appBar: AppBar(),
       body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text(
-                'Create an account',
-                style: TextStyle(
-                  fontSize: 24.0,
-                  color: Colors.green,
+        padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.08),
+        child: SingleChildScrollView(
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                SizedBox(height: screenHeight * 0.07),
+                Text(
+                  'Create an account',
+                  style: GoogleFonts.poppins(
+                    fontSize: screenHeight * 0.04,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.green,
+                  ),
                 ),
-              ),
-              SizedBox(
-                height: 20.0,
-              ),
-              const SizedBox(height: 20.0),
-              const TextField(
-                decoration: InputDecoration(
+                SizedBox(height: screenHeight * 0.05),
+                CustomTextField(
                   labelText: 'Email Address',
-                  border: OutlineInputBorder(),
+                  controller: _emailController,
+                  hintText: '',
                 ),
-              ),
-              const SizedBox(height: 20.0),
-              const TextField(
-                decoration: InputDecoration(
+                SizedBox(height: screenHeight * 0.02),
+                CustomTextField(
                   labelText: 'Phone Number',
-                  hintText: '+91 Enter your phonenumber',
-                  border: OutlineInputBorder(),
+                  hintText: '+91 Enter your phone number',
+                  controller: _phonenoController,
                 ),
-              ),
-              const SizedBox(height: 20.0),
-              const TextField(
-                obscureText: true,
-                decoration: InputDecoration(
+                SizedBox(height: screenHeight * 0.02),
+                CustomTextField(
                   labelText: 'Password',
+                  isPassword: true,
                   hintText: 'Please Enter Your Password',
-                  border: OutlineInputBorder(),
-                  suffixIcon: Icon(Icons.visibility_off),
+                  controller: _passwordController,
                 ),
-              ),
-              const SizedBox(height: 10.0),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Checkbox(
+                SizedBox(height: screenHeight * 0.02),
+                CustomTextField(
+                  labelText: 'Confirm Password',
+                  isPassword: true,
+                  hintText: 'Confirm Your Password',
+                  controller: _confirmpasswordController,
+                ),
+                SizedBox(height: screenHeight * 0.01),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Checkbox(
                           value: false,
                           onChanged: (value) {
-                            true;
-                          }),
-                      const Text('Remember Me'),
-                    ],
-                  ),
-                  const Text(
-                    'Forgot Password?',
-                    style: TextStyle(
-                      color: Colors.blue,
-                      decoration: TextDecoration.underline,
+                            // Handle checkbox change
+                          },
+                        ),
+                        Text(
+                          'Remember Me',
+                          style: GoogleFonts.poppins(),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20.0),
-              ElevatedButton(
-                onPressed: () {
-                  // Add sign up logic here
-                },
-                child: const Text('Sign Up'),
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 80.0, vertical: 15.0),
-                  backgroundColor: Colors.teal,
+                    TextButton(
+                      onPressed: () {
+                        // Handle forgot password
+                      },
+                      child: Text(
+                        'Forgot Password?',
+                        style: GoogleFonts.poppins(
+                          color: Colors.blue,
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-              const SizedBox(height: 20.0),
-              const Text('Or With'),
-              const SizedBox(height: 20.0),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton.icon(
-                    onPressed: () {},
-                    icon: Image.asset(
-                      'assets/icons/Google__G__logo.png',
-                      height: 20,
-                    ),
-                    iconAlignment: IconAlignment.end,
-                    label: const Text(''),
+                SizedBox(height: screenHeight * 0.02),
+                SizedBox(
+                  width: screenWidth * 0.8,
+                  height: screenHeight * 0.06,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      _signUp();
+                    },
                     style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.black,
-                      backgroundColor: Colors.white,
-                      side: const BorderSide(color: Colors.black),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      backgroundColor: Colors.teal,
+                    ),
+                    child: Text(
+                      'Sign Up',
+                      style: GoogleFonts.poppins(
+                          fontSize: screenHeight * 0.025,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600),
                     ),
                   ),
-                  const SizedBox(width: 10.0),
-                  ElevatedButton.icon(
-                    onPressed: () {},
-                    icon: Image.asset('assets/icons/Apple_logo_black.png',
-                        height: 20),
-                    label: const Text(''),
-                    iconAlignment: IconAlignment.end,
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.black,
-                      backgroundColor: Colors.white,
-                      side: const BorderSide(color: Colors.black),
+                ),
+                SizedBox(height: screenHeight * 0.02),
+                Text(
+                  'Or With',
+                  style: GoogleFonts.poppins(),
+                ),
+                SizedBox(height: screenHeight * 0.02),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SocialLoginButton(
+                      imagePath: 'assets/icons/Google__G__logo.png',
+                      loginMethod: signInWithGoogle,
+                      iconSize: screenHeight * 0.03,
                     ),
+                    SizedBox(width: screenWidth * 0.05),
+                    SocialLoginButton(
+                      imagePath: 'assets/icons/Apple_logo_black.png',
+                      loginMethod: signInWithApple,
+                      iconSize: screenHeight * 0.03,
+                    ),
+                  ],
+                ),
+                SizedBox(height: screenHeight * 0.05),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/login');
+                  },
+                  child: Text(
+                    'Already have an account? Login',
+                    style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
                   ),
-                ],
-              ),
-              const SizedBox(height: 20.0),
-              TextButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/login');
-                },
-                child: const Text('Already have an account? Login'),
-              ),
-            ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
+  }
+
+  Future<void> _signUp() async {
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+    final confirmPassword = _confirmpasswordController.text.trim();
+
+    if (password != confirmPassword) {
+      _showError('Passwords do not match');
+      return;
+    }
+
+    try {
+      await AuthService.registerWithEmailAndPassword(
+          context, email, password); // Ensure the method name matches
+      Navigator.pushReplacementNamed(context, '/login');
+    } catch (e) {
+      _showError('An error occurred. Please try again.');
+    }
+  }
+
+  void _showError(String message) {
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
   }
 }

@@ -1,40 +1,14 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:hotel_booking/reuse_code/auth_service.dart';
+import 'package:hotel_booking/reuse_code/custom_text_field.dart';
 import 'package:hotel_booking/reuse_code/loginauth.dart';
+import 'package:hotel_booking/reuse_code/social_login_button.dart';
+import 'package:hotel_booking/screens/register.dart';
+import 'package:hotel_booking/constants/data.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
-
-  // Controllers to capture user input
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-
-  // Function to handle login
-  Future<void> _login(BuildContext context) async {
-    try {
-      // Attempt to sign in with email and password
-      UserCredential userCredential = await FirebaseAuth.instance
-          .signInWithEmailAndPassword(
-              email: _emailController.text.trim(),
-              password: _passwordController.text.trim());
-
-      // If login is successful, navigate to the next screen
-      Navigator.pushReplacementNamed(context, '/home');
-    } on FirebaseAuthException catch (e) {
-      // Handle different error codes and show appropriate messages
-      String message;
-      if (e.code == 'user-not-found') {
-        message = 'No user found for that email.';
-      } else if (e.code == 'wrong-password') {
-        message = 'Wrong password provided.';
-      } else {
-        message = 'An error occurred. Please try again.';
-      }
-      // Show error message in a dialog or a snackbar
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(message)));
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,160 +20,121 @@ class LoginPage extends StatelessWidget {
       body: SingleChildScrollView(
         child: Container(
           height: screenHeight,
-          padding: EdgeInsets.symmetric(
-              horizontal: screenWidth * 0.08), // Padding based on screen width
+          padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.08),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              SizedBox(height: screenHeight * 0.05), // Top spacing
+              SizedBox(height: screenHeight * 0.07),
               Text(
                 "WELCOME",
-                style: TextStyle(
-                  fontSize: screenHeight * 0.04, // Responsive font size
+                style: GoogleFonts.poppins(
+                  fontSize: screenHeight * 0.04,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: screenHeight * 0.05),
-              // Email Field
-              TextField(
-                controller: _emailController,
-                decoration: InputDecoration(
-                  labelText: "Email",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
+              SizedBox(height: screenHeight * 0.1),
+              CustomTextField(
+                controller: emailController,
+                labelText: "Email",
+                hintText: '',
               ),
-              SizedBox(height: screenHeight * 0.02), // Space between fields
-              // Password Field
-              TextField(
-                controller: _passwordController,
-                obscureText: true,
-                decoration: InputDecoration(
-                  labelText: "Password",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  suffixIcon: const Icon(
-                      Icons.visibility_off), // Password visibility icon
-                ),
+              SizedBox(height: screenHeight * 0.02),
+              CustomTextField(
+                controller: passwordController,
+                labelText: "Password",
+                isPassword: true,
+                hintText: '',
               ),
               SizedBox(height: screenHeight * 0.01),
-              // Forgot Password
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
                   onPressed: () {
-                    // Forgot password logic here
+                    // Forgot password logic
                   },
                   child: const Text("Forgot Password?"),
                 ),
               ),
-              // Remember Me Checkbox
               Row(
-                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Checkbox(
-                    value: true, // Default value, change as needed
-                    onChanged: (newValue) {
-                      // Handle checkbox state change
-                    },
-                  ),
+                  Checkbox(value: true, onChanged: (newValue) {}),
                   const Text("Remember Me"),
                 ],
               ),
               SizedBox(height: screenHeight * 0.02),
-              // Login Button
               SizedBox(
-                width: screenWidth * 0.8, // Responsive button width
-                height: screenHeight * 0.06, // Responsive button height
+                width: screenWidth * 0.8,
+                height: screenHeight * 0.06,
                 child: ElevatedButton(
                   onPressed: () {
-                    _login(context); // Pass the context to the _login function
+                    AuthService.loginWithEmailAndPassword(
+                      context,
+                      emailController.text.trim(),
+                      passwordController.text.trim(),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    backgroundColor: Colors.teal, // Button color
+                    backgroundColor: Colors.teal,
                   ),
                   child: Text(
                     "Login",
-                    style: TextStyle(fontSize: screenHeight * 0.025),
+                    style: GoogleFonts.poppins(
+                        fontSize: screenHeight * 0.025,
+                        color: Color.fromRGBO(255, 255, 255, 1),
+                        fontWeight: FontWeight.w600),
                   ),
                 ),
               ),
               SizedBox(height: screenHeight * 0.02),
               const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text("Or With"),
-                ],
+                children: [Text("Or With")],
               ),
               SizedBox(height: screenHeight * 0.02),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisAlignment:
+                    MainAxisAlignment.center, // Center the buttons
                 children: [
-                  SizedBox(
-                    width: screenWidth * 0.2,
-                    height: screenHeight * 0.06,
-                    child: ElevatedButton.icon(
-                      onPressed: () async {
-                        User? user = await signInWithGoogle();
-                        if (user != null) {
-                          Navigator.pushReplacementNamed(context, '/home');
-                        } else {
-                          var message = 'An error occurred. Please try again.';
-                          // Show error message in a dialog or a snackbar
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(SnackBar(content: Text(message)));
-                        }
-                      },
-                      iconAlignment: IconAlignment.end,
-                      icon: Image.asset(
-                        'assets/icons/Google__G__logo.png', // Add your Google icon here
-                        height: screenHeight * 0.03,
-                      ),
-                      label: const Text(""),
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.black,
-                        backgroundColor: Colors.white,
-                        side: const BorderSide(
-                            color: Colors.grey), // Border for the button
-                      ),
-                    ),
+                  SocialLoginButton(
+                    imagePath: 'assets/icons/Google__G__logo.png',
+                    loginMethod: signInWithGoogle,
+                    iconSize: screenHeight * 0.03,
                   ),
                   SizedBox(
-                    width: screenWidth * 0.2,
-                    height: screenHeight * 0.06,
-                    child: ElevatedButton.icon(
-                      onPressed: () async {
-                        User? user = await signInWithApple();
-                        if (user != null) {
-                          Navigator.pushReplacementNamed(context, '/home');
-                        } else {
-                          var message = 'An error occurred. Please try again.';
-                          // Show error message in a dialog or a snackbar
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(SnackBar(content: Text(message)));
-                        }
-                      },
-                      iconAlignment: IconAlignment.end,
-                      icon: Image.asset(
-                        'assets/icons/Apple_logo_black.png', // Add your Microsoft icon here
-                        height: screenHeight * 0.03,
-                      ),
-                      label: const Text(""),
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.black,
-                        backgroundColor: Colors.white,
-                        side: const BorderSide(color: Colors.grey),
-                      ),
-                    ),
+                      width:
+                          screenWidth * 0.05), // Reduce spacing between buttons
+                  SocialLoginButton(
+                    imagePath: 'assets/icons/Apple_logo_black.png',
+                    loginMethod: signInWithApple,
+                    iconSize: screenHeight * 0.03,
                   ),
                 ],
               ),
-              SizedBox(height: screenHeight * 0.05),
+              SizedBox(height: screenHeight * 0.1),
+              Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Text("Don't have an account?"),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => SignUpPage()),
+                        );
+                      },
+                      child: Text(
+                        "Sign Up",
+                        style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         ),
