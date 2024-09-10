@@ -1,9 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:hotel_booking/reuse_code/auth_service.dart';
-import 'package:hotel_booking/reuse_code/custom_text_field.dart';
-import 'package:hotel_booking/reuse_code/loginauth.dart';
-import 'package:hotel_booking/reuse_code/social_login_button.dart';
+import 'package:hotel_booking/constants/ImportFiles.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});

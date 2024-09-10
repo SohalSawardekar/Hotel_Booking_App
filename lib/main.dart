@@ -1,15 +1,16 @@
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/material.dart';
-import 'package:hotel_booking/screens/home.dart';
-import 'package:hotel_booking/screens/login.dart';
-import 'firebase_options.dart';
+import 'constants/ImportFiles.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => ThemeNotifier(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -17,18 +18,33 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: "Hotel Booking",
-      initialRoute: '/',
-      routes: {
-        '/': (context) => LoginPage(), // Set initial route to LoginPage page
-        '/home': (context) => const HomeScreen(),
-      },
-      onUnknownRoute: (settings) {
-        return MaterialPageRoute(
-            builder: (context) => LoginPage()); // or any other default route
+    return Consumer<ThemeNotifier>(
+      builder: (context, themeNotifier, child) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: "Hotel Booking",
+          theme: ThemeData.light(),
+          darkTheme: ThemeData.dark().copyWith(
+            scaffoldBackgroundColor: Colors.blueGrey[900],
+            textTheme: TextTheme(
+              bodyLarge: TextStyle(color: Colors.orange[200]),
+              bodyMedium: TextStyle(color: Colors.orange[200]),
+            ),
+          ),
+          themeMode: themeNotifier.currentTheme,
+          home: const AuthWrapper(), 
+          routes: {
+            '/home': (context) => const HomeScreen(),
+            '/login': (context) => LoginPage(),
+          },
+          onUnknownRoute: (settings) {
+            return MaterialPageRoute(
+              builder: (context) => LoginPage(),
+            );
+          },
+        );
       },
     );
   }
 }
+

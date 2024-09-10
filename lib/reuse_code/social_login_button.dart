@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'loginauth.dart'; // Import the login methods
+import 'package:hotel_booking/constants/ImportFiles.dart';
 
 class SocialLoginButton extends StatelessWidget {
   final String imagePath;

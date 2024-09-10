@@ -1,7 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:hotel_booking/constants/data.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:hotel_booking/constants/ImportFiles.dart';
 
 class ContactUs extends StatefulWidget {
   const ContactUs({super.key});

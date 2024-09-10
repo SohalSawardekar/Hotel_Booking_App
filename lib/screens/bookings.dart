@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:hotel_booking/screens/payment.dart';
+import 'package:hotel_booking/constants/ImportFiles.dart';
 
 class BookingPage extends StatefulWidget {
   final String roomType;

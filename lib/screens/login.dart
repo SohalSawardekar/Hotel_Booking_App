@@ -1,14 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:hotel_booking/reuse_code/auth_service.dart';
-import 'package:hotel_booking/reuse_code/custom_text_field.dart';
-import 'package:hotel_booking/reuse_code/loginauth.dart';
-import 'package:hotel_booking/reuse_code/social_login_button.dart';
-import 'package:hotel_booking/screens/register.dart';
-import 'package:hotel_booking/constants/data.dart';
+import 'package:hotel_booking/constants/ImportFiles.dart';
 
 class LoginPage extends StatelessWidget {
-  LoginPage({super.key});
+  const LoginPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -16,15 +9,13 @@ class LoginPage extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      appBar: AppBar(),
       body: SingleChildScrollView(
-        child: Container(
-          height: screenHeight,
+        child: Padding(
           padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.08),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              SizedBox(height: screenHeight * 0.07),
+              SizedBox(height: screenHeight * 0.2),
               Text(
                 "WELCOME",
                 style: GoogleFonts.poppins(
@@ -49,8 +40,25 @@ class LoginPage extends StatelessWidget {
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
-                  onPressed: () {
-                    // Forgot password logic
+                  onPressed: () async {
+                    String? email = await showDialog(
+                      context: context,
+                      builder: (context) => ForgotPasswordDialog(),
+                    );
+
+                    if (email != null && email.isNotEmpty) {
+                      try {
+                        await FirebaseAuth.instance
+                            .sendPasswordResetEmail(email: email);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Password reset email sent')),
+                        );
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Error: ${e.toString()}')),
+                        );
+                      }
+                    }
                   },
                   child: const Text("Forgot Password?"),
                 ),
@@ -83,7 +91,7 @@ class LoginPage extends StatelessWidget {
                     "Login",
                     style: GoogleFonts.poppins(
                         fontSize: screenHeight * 0.025,
-                        color: Color.fromRGBO(255, 255, 255, 1),
+                        color: const Color.fromRGBO(255, 255, 255, 1),
                         fontWeight: FontWeight.w600),
                   ),
                 ),
@@ -103,9 +111,7 @@ class LoginPage extends StatelessWidget {
                     loginMethod: signInWithGoogle,
                     iconSize: screenHeight * 0.03,
                   ),
-                  SizedBox(
-                      width:
-                          screenWidth * 0.05), // Reduce spacing between buttons
+                  SizedBox(width: screenWidth * 0.05), // Reduce spacing
                   SocialLoginButton(
                     imagePath: 'assets/icons/Apple_logo_black.png',
                     loginMethod: signInWithApple,
@@ -124,7 +130,7 @@ class LoginPage extends StatelessWidget {
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => SignUpPage()),
+                          MaterialPageRoute(builder: (context) => const SignUpPage()),
                         );
                       },
                       child: Text(
