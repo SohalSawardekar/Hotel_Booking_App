@@ -4,7 +4,9 @@ export 'package:google_fonts/google_fonts.dart';
 export 'package:google_sign_in/google_sign_in.dart';
 export 'package:provider/provider.dart';
 export 'package:firebase_core/firebase_core.dart';
+export 'package:cloud_firestore/cloud_firestore.dart';
 export 'package:url_launcher/url_launcher.dart';
+export 'package:hotel_booking/services/FirestoreService.dart';
 
 export 'package:hotel_booking/services/auth_service.dart';
 export 'package:hotel_booking/services/forgotpass.dart';

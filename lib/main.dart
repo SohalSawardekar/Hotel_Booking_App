@@ -25,21 +25,21 @@ class MyApp extends StatelessWidget {
           title: "Hotel Booking",
           theme: ThemeData.light(),
           darkTheme: ThemeData.dark().copyWith(
-            scaffoldBackgroundColor: Colors.blueGrey[900],
-            textTheme: TextTheme(
-              bodyLarge: TextStyle(color: Colors.orange[200]),
-              bodyMedium: TextStyle(color: Colors.orange[200]),
+            scaffoldBackgroundColor: const Color.fromARGB(255, 19, 25, 28),
+            textTheme: const TextTheme(
+              bodyLarge: TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
+              bodyMedium: TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
             ),
           ),
           themeMode: themeNotifier.currentTheme,
-          home: const AuthWrapper(), 
+          home: const AuthWrapper(),
           routes: {
             '/home': (context) => const HomeScreen(),
-            '/login': (context) => LoginPage(),
+            '/login': (context) => const LoginPage(),
           },
           onUnknownRoute: (settings) {
             return MaterialPageRoute(
-              builder: (context) => LoginPage(),
+              builder: (context) => const LoginPage(),
             );
           },
         );
@@ -47,4 +47,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-

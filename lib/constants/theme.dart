@@ -9,6 +9,6 @@ class ThemeNotifier extends ChangeNotifier {
 
   void toggleTheme() {
     _isDarkMode = !_isDarkMode;
-    notifyListeners(); // Notifies all listeners to rebuild
+    notifyListeners(); 
   }
 }

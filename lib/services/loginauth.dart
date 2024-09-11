@@ -5,6 +5,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
+// Import FirestoreService to handle storing user data
+import 'FirestoreService.dart';
+
 Future<User?> signInWithGoogle() async {
   try {
     // Trigger the Google authentication flow
@@ -28,6 +31,13 @@ Future<User?> signInWithGoogle() async {
     // Sign in with Firebase using the Google credential
     UserCredential userCredential =
         await FirebaseAuth.instance.signInWithCredential(credential);
+    
+    // If sign-in is successful, store the user data in Firestore
+    if (userCredential.user != null) {
+      FirestoreService firestoreService = FirestoreService();
+      await firestoreService.createUserInFirestore();
+    }
+    
     return userCredential.user;
   } catch (e) {
     print('Google sign-in error: $e');
@@ -59,6 +69,13 @@ Future<User?> signInWithApple() async {
     // Sign in the user with Firebase
     final UserCredential userCredential =
         await FirebaseAuth.instance.signInWithCredential(oauthCredential);
+    
+    // If sign-in is successful, store the user data in Firestore
+    if (userCredential.user != null) {
+      FirestoreService firestoreService = FirestoreService();
+      await firestoreService.createUserInFirestore();
+    }
+    
     return userCredential.user;
   } catch (e) {
     print('Apple sign-in error: $e');
