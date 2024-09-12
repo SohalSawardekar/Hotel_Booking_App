@@ -64,34 +64,22 @@ class _SignUpPageState extends State<SignUpPage> {
                   controller: _confirmpasswordController,
                 ),
                 SizedBox(height: screenHeight * 0.01),
-                Row(
+                const Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(
                       children: [
-                        Checkbox(
-                          value: false,
-                          onChanged: (value) {
-                            // Handle checkbox change
-                          },
-                        ),
-                        Text(
-                          'Remember Me',
-                          style: GoogleFonts.poppins(),
-                        ),
+                        // Checkbox(
+                        //   value: false,
+                        //   onChanged: (value) {
+                        //     // Handle checkbox change
+                        //   },
+                        // ),
+                        // Text(
+                        //   'Remember Me',
+                        //   style: GoogleFonts.poppins(),
+                        // ),
                       ],
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        // Handle forgot password
-                      },
-                      child: Text(
-                        'Forgot Password?',
-                        style: GoogleFonts.poppins(
-                          color: Colors.blue,
-                          decoration: TextDecoration.underline,
-                        ),
-                      ),
                     ),
                   ],
                 ),
@@ -100,8 +88,8 @@ class _SignUpPageState extends State<SignUpPage> {
                   width: screenWidth * 0.8,
                   height: screenHeight * 0.06,
                   child: ElevatedButton(
-                    onPressed: () {
-                      _signUp();
+                    onPressed: () async {
+                      await _signUp();
                     },
                     style: ElevatedButton.styleFrom(
                       shape: RoundedRectangleBorder(
@@ -171,7 +159,10 @@ class _SignUpPageState extends State<SignUpPage> {
     try {
       await AuthService.registerWithEmailAndPassword(
           context, email, password); // Ensure the method name matches
-      Navigator.pushReplacementNamed(context, '/login');
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => ProfileInfoPage()),
+      );
     } catch (e) {
       _showError('An error occurred. Please try again.');
     }

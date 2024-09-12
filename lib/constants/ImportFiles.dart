@@ -24,6 +24,7 @@ export 'package:hotel_booking/screens/ContactUs.dart';
 export 'package:hotel_booking/screens/home.dart';
 export 'package:hotel_booking/screens/login.dart';
 export 'package:hotel_booking/screens/payment.dart';
+export 'package:hotel_booking/screens/infoPage.dart';
 
 export 'package:hotel_booking/constants/data.dart';
 export 'package:hotel_booking/constants/theme.dart';

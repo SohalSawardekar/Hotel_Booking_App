@@ -51,7 +51,8 @@ class LoginPage extends StatelessWidget {
                         await FirebaseAuth.instance
                             .sendPasswordResetEmail(email: email);
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Password reset email sent')),
+                          const SnackBar(
+                              content: Text('Password reset email sent')),
                         );
                       } catch (e) {
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -62,12 +63,6 @@ class LoginPage extends StatelessWidget {
                   },
                   child: const Text("Forgot Password?"),
                 ),
-              ),
-              Row(
-                children: [
-                  Checkbox(value: true, onChanged: (newValue) {}),
-                  const Text("Remember Me"),
-                ],
               ),
               SizedBox(height: screenHeight * 0.02),
               SizedBox(
@@ -130,7 +125,8 @@ class LoginPage extends StatelessWidget {
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const SignUpPage()),
+                          MaterialPageRoute(
+                              builder: (context) => const SignUpPage()),
                         );
                       },
                       child: Text(

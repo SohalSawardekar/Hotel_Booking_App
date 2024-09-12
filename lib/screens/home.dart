@@ -19,7 +19,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final pages = [
       const HomeScreen(),
       const ProfilePage(),
-      const BookingPage(roomType: 'null'),
+      const BookingPage(),
       const ContactUs(),
     ];
 

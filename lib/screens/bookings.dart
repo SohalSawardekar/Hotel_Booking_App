@@ -1,8 +1,7 @@
 import 'package:hotel_booking/constants/ImportFiles.dart';
 
 class BookingPage extends StatefulWidget {
-  final String roomType;
-  const BookingPage({super.key, required this.roomType});
+  const BookingPage({super.key});
 
   @override
   _BookingPageState createState() => _BookingPageState();
@@ -11,6 +10,8 @@ class BookingPage extends StatefulWidget {
 class _BookingPageState extends State<BookingPage> {
   DateTime? checkInDate;
   DateTime? checkOutDate;
+  String roomType = 'single';
+  String location = 'goa';
   int adults = 1;
   int children = 0;
   double roomRate = 5000; // Example rate, can be dynamic
@@ -37,7 +38,7 @@ class _BookingPageState extends State<BookingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Booking for ${widget.roomType} Room')),
+      appBar: AppBar(title: const Text('Book Room')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -56,6 +57,58 @@ class _BookingPageState extends State<BookingPage> {
                   ? '${checkOutDate!.toLocal()}'.split(' ')[0]
                   : 'Select a date'),
               onTap: () => _selectDate(false),
+            ),
+            ListTile(
+              title: const Text('Room Type'),
+              trailing: DropdownButton<String>(
+                value: roomType,
+                items: [
+                  'single',
+                  'double',
+                  'deluxe',
+                  'executive',
+                  'suite',
+                  'penthouse',
+                  'villa'
+                ]
+                    .map((type) => DropdownMenuItem<String>(
+                          value: type,
+                          child: Text(
+                              type), // Display the item in lowercase as it is
+                        ))
+                    .toList(),
+                onChanged: (value) {
+                  setState(() {
+                    roomType =
+                        value!; // Ensure the value is properly set in lowercase
+                  });
+                },
+              ),
+            ),
+            ListTile(
+              title: const Text('Location'),
+              trailing: DropdownButton<String>(
+                value: location,
+                items: [
+                  'goa',
+                  'ladakh',
+                  'kerela',
+                  'kashmir',
+                  'jaipur',
+                  'agra',
+                  'manali'
+                ]
+                    .map((type) => DropdownMenuItem<String>(
+                          value: type,
+                          child: Text(type),
+                        ))
+                    .toList(),
+                onChanged: (value) {
+                  setState(() {
+                    location = value!;
+                  });
+                },
+              ),
             ),
             ListTile(
               title: const Text('Adults'),
@@ -99,7 +152,7 @@ class _BookingPageState extends State<BookingPage> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => PaymentPage(
-                        roomType: widget.roomType,
+                        roomType: roomType,
                         checkInDate: checkInDate!,
                         checkOutDate: checkOutDate!,
                         adults: adults,
