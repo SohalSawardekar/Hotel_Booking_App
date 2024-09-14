@@ -1,7 +1,9 @@
 // TODO Implement this library.
 import 'package:flutter/material.dart';
 import 'package:hotel_booking/screens/payment.dart';
-import 'package:intl/intl.dart'; // For formatting dates
+import 'package:intl/intl.dart';
+
+import '../../constants/ImportFiles.dart'; // For formatting dates
 
 class SuiteBookingPage extends StatelessWidget {
   const SuiteBookingPage({super.key});
@@ -178,15 +180,14 @@ class SuiteBookingPage extends StatelessWidget {
                     ),
                   ),
                   onPressed: () {
+                    var roomType = 'suite';
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => PaymentPage(
-                          roomType: 'Suite',
+                        builder: (context) => BookingPage(
                           checkInDate: checkInDate,
                           checkOutDate: checkOutDate,
-                          adults: 1,
-                          children: 0,
+                          roomType: roomType,
                           totalAmount: totalAmount,
                         ),
                       ),

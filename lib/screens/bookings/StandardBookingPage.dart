@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hotel_booking/screens/payment.dart';
-import 'package:intl/intl.dart'; // For formatting dates
+import 'package:intl/intl.dart';
+
+import '../../constants/ImportFiles.dart'; // For formatting dates
 
 class StandardBookingPage extends StatelessWidget {
   const StandardBookingPage({super.key});
@@ -63,32 +65,32 @@ class StandardBookingPage extends StatelessWidget {
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 10),
-              Row(
-                children: const [
+              const Row(
+                children: [
                   Icon(Icons.wifi, color: Colors.teal, size: 24),
                   SizedBox(width: 10),
                   Text('Free WiFi', style: TextStyle(fontSize: 18)),
                 ],
               ),
               const SizedBox(height: 10),
-              Row(
-                children: const [
+              const Row(
+                children: [
                   Icon(Icons.ac_unit, color: Colors.teal, size: 24),
                   SizedBox(width: 10),
                   Text('Air Conditioning', style: TextStyle(fontSize: 18)),
                 ],
               ),
               const SizedBox(height: 10),
-              Row(
-                children: const [
+              const Row(
+                children: [
                   Icon(Icons.room_service, color: Colors.teal, size: 24),
                   SizedBox(width: 10),
                   Text('24/7 Room Service', style: TextStyle(fontSize: 18)),
                 ],
               ),
               const SizedBox(height: 10),
-              Row(
-                children: const [
+              const Row(
+                children: [
                   Icon(Icons.local_cafe, color: Colors.teal, size: 24),
                   SizedBox(width: 10),
                   Text('Complimentary Breakfast',
@@ -171,15 +173,14 @@ class StandardBookingPage extends StatelessWidget {
                     ),
                   ),
                   onPressed: () {
+                    var roomType = 'standard';
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => PaymentPage(
-                          roomType: 'Standard',
+                        builder: (context) => BookingPage(
                           checkInDate: checkInDate,
                           checkOutDate: checkOutDate,
-                          adults: 1,
-                          children: 0,
+                          roomType: roomType,
                           totalAmount: totalAmount,
                         ),
                       ),
