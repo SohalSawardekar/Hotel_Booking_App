@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:hotel_booking/constants/ImportFiles.dart'; // Adjust import path as needed
 
@@ -57,9 +55,10 @@ class _AvailabilityPageState extends State<AvailabilityPage> {
         final availableRoomSnapshot = await FirebaseFirestore.instance
             .collection('available_rooms')
             .where('room_no', isEqualTo: roomNumber)
+            .where('status', isEqualTo: 'yes')
             .get();
 
-        if (availableRoomSnapshot.docs.isNotEmpty) {
+        if (roomQuerySnapshot.docs.isNotEmpty) {
           setState(() {
             _isAvailable = true;
             _availabilityMessage = 'The room is available.';
@@ -81,7 +80,7 @@ class _AvailabilityPageState extends State<AvailabilityPage> {
       setState(() {
         _isAvailable = false;
         _availabilityMessage =
-            'Error checking availability. Please try again later.';
+            'Error checking availability. Please try again later. ${e}';
       });
     } finally {
       setState(() {
