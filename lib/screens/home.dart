@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:hotel_booking/constants/ImportFiles.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -61,16 +60,11 @@ class _HomeScreenState extends State<HomeScreen> {
     return AppBar(
       toolbarHeight: screenSize.height * 0.1,
       automaticallyImplyLeading: false,
-      title: TextField(
-        decoration: InputDecoration(
-          hintText: 'Search Hotels',
-          prefixIcon: const Icon(Icons.search),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(20),
-            borderSide: BorderSide.none,
-          ),
-          fillColor: Colors.grey[200],
-          filled: true,
+      title: Text(
+        "Welcome to Simple Stays",
+        style: GoogleFonts.poppins(
+          fontWeight: FontWeight.w800,
+          fontSize: 20,
         ),
       ),
       actions: [
@@ -127,12 +121,6 @@ class _HomeScreenState extends State<HomeScreen> {
         itemCount: 4,
         itemBuilder: (context, index) {
           final roomTypes = ['Standard', 'Premium', 'Luxury', 'Suite'];
-          final colors = [
-            Colors.blue.shade200,
-            Colors.green.shade200,
-            Colors.red.shade200,
-            Color.fromARGB(255, 243, 203, 29)
-          ];
           final imagePaths = [
             'assets/images/standardroom.jpg',
             'assets/images/Room-Premium-min.jpg',
@@ -184,7 +172,7 @@ class _HomeScreenState extends State<HomeScreen> {
         final roomTypes = ['Standard', 'Premium', 'Luxury', 'Suite', 'Villa'];
         final colors = [
           Colors.orange.shade200,
-          Color.fromARGB(255, 241, 225, 83),
+          const Color.fromARGB(255, 241, 225, 83),
           Colors.cyan.shade300,
           Colors.pink.shade300,
           Colors.purple.shade300
@@ -272,6 +260,7 @@ class RoomCard extends StatelessWidget {
   final VoidCallback onTap;
 
   const RoomCard({
+    super.key,
     required this.width,
     required this.imageHeight,
     required this.roomName,
@@ -311,11 +300,11 @@ class RoomCard extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: TextButton(
               onPressed: onTap,
-              child: const Text('Book Now'),
               style: TextButton.styleFrom(
                 foregroundColor: const Color.fromARGB(255, 0, 130, 125),
                 backgroundColor: Colors.white,
               ),
+              child: const Text('Book Now'),
             ),
           ),
         ],
@@ -332,6 +321,7 @@ class RoomListItem extends StatelessWidget {
   final VoidCallback onTap;
 
   const RoomListItem({
+    super.key,
     required this.width,
     required this.height,
     required this.roomName,
@@ -371,11 +361,11 @@ class RoomListItem extends StatelessWidget {
                   const SizedBox(height: 8),
                   TextButton(
                     onPressed: onTap,
-                    child: const Text('Book'),
                     style: TextButton.styleFrom(
                       foregroundColor: const Color.fromARGB(255, 0, 130, 125),
                       backgroundColor: Colors.white,
                     ),
+                    child: const Text('Book'),
                   ),
                 ],
               ),

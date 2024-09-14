@@ -1,13 +1,10 @@
 import 'package:hotel_booking/constants/ImportFiles.dart';
 
-
 class AuthService {
   // Method for logging in with email and password
   static Future<void> loginWithEmailAndPassword(
       BuildContext context, String email, String password) async {
     try {
-      UserCredential userCredential = await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: email, password: password);
       Navigator.pushReplacementNamed(context, '/home');
     } on FirebaseAuthException catch (e) {
       String message;
@@ -30,8 +27,6 @@ class AuthService {
   static Future<void> registerWithEmailAndPassword(
       BuildContext context, String email, String password) async {
     try {
-      UserCredential userCredential = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(email: email, password: password);
 
       // After successful registration, create user document in Firestore
       FirestoreService firestoreService = FirestoreService();

@@ -10,11 +10,11 @@ class BookingPage extends StatefulWidget {
 class _BookingPageState extends State<BookingPage> {
   DateTime? checkInDate;
   DateTime? checkOutDate;
-  String roomType = 'single';
+  String roomType = 'standard';
   String location = 'goa';
   int adults = 1;
   int children = 0;
-  double roomRate = 5000; 
+  double roomRate = 5000;
 
   void _selectDate(bool isCheckIn) async {
     DateTime initialDate = DateTime.now();
@@ -63,13 +63,11 @@ class _BookingPageState extends State<BookingPage> {
               trailing: DropdownButton<String>(
                 value: roomType,
                 items: [
-                  'single',
-                  'double',
-                  'deluxe',
-                  'executive',
+                  'standard',
+                  'premium',
+                  'luxury',
                   'suite',
-                  'penthouse',
-                  'villa'
+                  'villa',
                 ]
                     .map((type) => DropdownMenuItem<String>(
                           value: type,
@@ -151,18 +149,24 @@ class _BookingPageState extends State<BookingPage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => PaymentPage(
-                        roomType: roomType,
-                        checkInDate: checkInDate!,
-                        checkOutDate: checkOutDate!,
-                        adults: adults,
-                        children: children,
-                        totalAmount: roomRate,
-                      ),
+                      builder: (context) {
+                        switch (roomType) {
+                          case 'Standard':
+                            return const StandardBookingPage();
+                          case 'Premium':
+                            return const PremiumBookingPage();
+                          case 'Luxury':
+                            return const LuxuryBookingPage();
+                          case 'Suite':
+                            return const SuiteBookingPage();
+                          default:
+                            return const StandardBookingPage();
+                        }
+                      },
                     ),
                   );
                 },
-                child: const Text('Proceed to Payment'),
+                child: const Text('Book'),
               ),
             ),
           ],
