@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hotel_booking/screens/home.dart';
-import 'package:hotel_booking/screens/login.dart';
+import 'package:hotel_booking/screens/authentication/login.dart';
 
 // Wrapper to check the authentication status
 class AuthWrapper extends StatelessWidget {

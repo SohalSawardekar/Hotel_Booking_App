@@ -9,7 +9,7 @@ class CustomTextField extends StatelessWidget {
     super.key,
     required this.controller,
     required this.labelText,
-    this.isPassword = false, required String hintText,
+    this.isPassword = false, required String hintText, required String? Function(dynamic value) validator,
   });
 
   @override

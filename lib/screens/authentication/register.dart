@@ -41,27 +41,27 @@ class _SignUpPageState extends State<SignUpPage> {
                 CustomTextField(
                   labelText: 'Email Address',
                   controller: _emailController,
-                  hintText: '',
+                  hintText: '', validator: (value) {  },
                 ),
                 SizedBox(height: screenHeight * 0.02),
                 CustomTextField(
                   labelText: 'Phone Number',
                   hintText: '+91 Enter your phone number',
-                  controller: _phonenoController,
+                  controller: _phonenoController, validator: (value) {  },
                 ),
                 SizedBox(height: screenHeight * 0.02),
                 CustomTextField(
                   labelText: 'Password',
                   isPassword: true,
                   hintText: 'Please Enter Your Password',
-                  controller: _passwordController,
+                  controller: _passwordController, validator: (value) {  },
                 ),
                 SizedBox(height: screenHeight * 0.02),
                 CustomTextField(
                   labelText: 'Confirm Password',
                   isPassword: true,
                   hintText: 'Confirm Your Password',
-                  controller: _confirmpasswordController,
+                  controller: _confirmpasswordController, validator: (value) {  },
                 ),
                 SizedBox(height: screenHeight * 0.01),
                 const Row(

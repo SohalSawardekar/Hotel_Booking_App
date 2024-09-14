@@ -1,1 +1,36 @@
-{"flutter":{"platforms":{"android":{"default":{"projectId":"hotel-bookings-968d2","appId":"1:853373948992:android:5a4c06b160a0a85a3a3ba5","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"hotel-bookings-968d2","configurations":{"android":"1:853373948992:android:5a4c06b160a0a85a3a3ba5","ios":"1:853373948992:ios:113b6beb5982a69f3a3ba5","web":"1:853373948992:web:95e56f753f7d4a4b3a3ba5"}}}}}}
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "hotel-bookings-968d2",
+          "appId": "1:853373948992:android:5a4c06b160a0a85a3a3ba5",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "hotel-bookings-968d2",
+          "configurations": {
+            "android": "1:853373948992:android:5a4c06b160a0a85a3a3ba5",
+            "ios": "1:853373948992:ios:113b6beb5982a69f3a3ba5",
+            "web": "1:853373948992:web:95e56f753f7d4a4b3a3ba5"
+          }
+        }
+      }
+    }
+  },
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ]
+    }
+  ]
+}

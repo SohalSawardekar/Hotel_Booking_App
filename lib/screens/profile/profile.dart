@@ -1,4 +1,3 @@
-
 import 'package:hotel_booking/constants/ImportFiles.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -12,11 +11,13 @@ class _ProfilePageState extends State<ProfilePage> {
   String userName = "";
   String userEmail = "";
   String userPhone = "";
+
   List<Map<String, String>> bookingHistory = [];
 
   bool isLoading = true;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  User? currentUser;
 
   @override
   void initState() {
@@ -26,10 +27,10 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future<void> fetchUserData() async {
     try {
+      currentUser = _auth.currentUser;
       // Get the current user UID
-      User? currentUser = _auth.currentUser;
       if (currentUser != null) {
-        String uid = currentUser.uid;
+        String uid = currentUser!.uid;
 
         // Fetch user details from Firestore
         DocumentSnapshot userDoc =
@@ -42,7 +43,7 @@ class _ProfilePageState extends State<ProfilePage> {
           setState(() {
             userName = userData['name'] ?? 'No Name';
             userEmail = userData['email'] ?? 'No Email';
-            userPhone = userData['phone'] ?? 'No Phone';
+            userPhone = userData['mobileNo'] ?? 'No Phone';
             bookingHistory = List<Map<String, String>>.from(
                 userData['bookings'].map((booking) => {
                       "hotel": booking['hotel'],
@@ -102,10 +103,17 @@ class _ProfilePageState extends State<ProfilePage> {
                     padding: const EdgeInsets.all(16.0),
                     child: Row(
                       children: [
-                        const CircleAvatar(
+                        CircleAvatar(
                           radius: 40,
-                          backgroundImage: AssetImage(
-                              'assets/images/profile_avatar.png'), // Add your avatar image
+                          backgroundImage: NetworkImage(
+                            currentUser?.photoURL ?? 'assets/icons/images.jpeg',
+                          ),
+                          backgroundColor: Colors.transparent,
+                          onBackgroundImageError: (error, stackTrace) {
+                            setState(() {
+                              // Handle image loading error
+                            });
+                          },
                         ),
                         const SizedBox(width: 16),
                         Column(
@@ -211,6 +219,14 @@ class _ProfilePageState extends State<ProfilePage> {
                       // Notification settings logic
                     },
                   ),
+                  TextButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/profileEdit');
+                      },
+                      child: Text(
+                        "Edit profile",
+                        style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+                      )),
                   const Divider(),
                   // Logout Button
                   Center(

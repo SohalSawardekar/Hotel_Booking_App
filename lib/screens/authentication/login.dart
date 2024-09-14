@@ -28,6 +28,7 @@ class LoginPage extends StatelessWidget {
                 controller: emailController,
                 labelText: "Email",
                 hintText: '',
+                validator: (value) {},
               ),
               SizedBox(height: screenHeight * 0.02),
               CustomTextField(
@@ -35,6 +36,7 @@ class LoginPage extends StatelessWidget {
                 labelText: "Password",
                 isPassword: true,
                 hintText: '',
+                validator: (value) {},
               ),
               SizedBox(height: screenHeight * 0.01),
               Align(

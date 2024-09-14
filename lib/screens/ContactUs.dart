@@ -1,4 +1,5 @@
 import 'package:hotel_booking/constants/ImportFiles.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ContactUs extends StatefulWidget {
   const ContactUs({super.key});
@@ -8,7 +9,6 @@ class ContactUs extends StatefulWidget {
 }
 
 class _ContactUsState extends State<ContactUs> {
-  // TextEditingController to capture the input from the Name TextField
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _messageController = TextEditingController();
@@ -46,6 +46,8 @@ class _ContactUsState extends State<ContactUs> {
 
   @override
   Widget build(BuildContext context) {
+    final bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -61,7 +63,7 @@ class _ContactUsState extends State<ContactUs> {
                     BackButton(
                       style: ButtonStyle(
                         backgroundColor: WidgetStateProperty.all<Color>(
-                            const Color.fromARGB(255, 228, 228, 228)),
+                            isDarkMode ? Colors.grey[800]! : Colors.grey[200]!),
                         padding: WidgetStateProperty.all<EdgeInsets>(
                             const EdgeInsets.all(2)),
                       ),
@@ -71,28 +73,30 @@ class _ContactUsState extends State<ContactUs> {
                     ),
                     const Spacer(flex: 15),
                     InkWell(
-                      onTap: () => _launchEmail(
-                          emailAddress), // Launch email client on tap
-                      child: Image.asset(
-                        "assets/icons/icons8-email-50.png",
-                        height: 20,
-                        width: 20,
+                      onTap: () => _launchEmail(emailAddress),
+                      child: Icon(
+                        Icons.email,
+                        size: 20,
+                        color: isDarkMode ? Colors.white : Colors.black,
                       ),
                     ),
                     const Spacer(flex: 40),
                     InkWell(
-                      onTap: () => _launchDialer(
-                          telephoneNumber), // Launch dialer on tap
+                      onTap: () => _launchDialer(telephoneNumber),
                       child: Row(
                         children: [
-                          Image.asset(
-                            "assets/icons/icons8-phone-50.png",
-                            height: 20,
-                            width: 20,
+                          Icon(
+                            Icons.phone,
+                            size: 20,
+                            color: isDarkMode ? Colors.white : Colors.black,
                           ),
-                          const SizedBox(
-                              width: 8), // Space between icon and text
-                          Text(telephoneNumber),
+                          const SizedBox(width: 8),
+                          Text(
+                            telephoneNumber,
+                            style: TextStyle(
+                              color: isDarkMode ? Colors.white : Colors.black,
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -115,6 +119,7 @@ class _ContactUsState extends State<ContactUs> {
                       style: GoogleFonts.poppins(
                         fontSize: 32,
                         fontWeight: FontWeight.w700,
+                        color: isDarkMode ? Colors.white : Colors.black,
                       ),
                     ),
 
@@ -126,6 +131,7 @@ class _ContactUsState extends State<ContactUs> {
                         style: GoogleFonts.poppins(
                           fontSize: 20,
                           fontWeight: FontWeight.w700,
+                          color: isDarkMode ? Colors.white : Colors.black,
                         ),
                       ),
                     ),
@@ -133,23 +139,26 @@ class _ContactUsState extends State<ContactUs> {
                       controller: _nameController,
                       decoration: InputDecoration(
                         hintText: 'Enter your name',
-                        hintStyle: GoogleFonts.poppins(),
+                        hintStyle: GoogleFonts.poppins(
+                          color: isDarkMode ? Colors.grey : Colors.grey[600],
+                        ),
                         border: InputBorder.none,
-                        enabledBorder: const UnderlineInputBorder(
+                        enabledBorder: UnderlineInputBorder(
                           borderSide: BorderSide(
-                            color: Colors.black, // Border color
-                            width: 1.5, // Border width
+                            color: isDarkMode ? Colors.white : Colors.black,
+                            width: 1.5,
                           ),
                         ),
                         focusedBorder: const UnderlineInputBorder(
                           borderSide: BorderSide(
-                            color: Colors.blue, // Border color when focused
-                            width: 2.0, // Border width when focused
+                            color: Colors.blue,
+                            width: 2.0,
                           ),
                         ),
                       ),
                       style: GoogleFonts.poppins(
                         fontSize: 16,
+                        color: isDarkMode ? Colors.white : Colors.black,
                       ),
                     ),
 
@@ -161,31 +170,34 @@ class _ContactUsState extends State<ContactUs> {
                         style: GoogleFonts.poppins(
                           fontSize: 20,
                           fontWeight: FontWeight.w700,
+                          color: isDarkMode ? Colors.white : Colors.black,
                         ),
                       ),
                     ),
                     TextField(
-                      controller:
-                          _emailController, // This should be a separate controller for email
+                      controller: _emailController,
                       decoration: InputDecoration(
                         hintText: 'Enter your Email',
-                        hintStyle: GoogleFonts.poppins(),
+                        hintStyle: GoogleFonts.poppins(
+                          color: isDarkMode ? Colors.grey : Colors.grey[600],
+                        ),
                         border: InputBorder.none,
-                        enabledBorder: const UnderlineInputBorder(
+                        enabledBorder: UnderlineInputBorder(
                           borderSide: BorderSide(
-                            color: Colors.black, // Border color
-                            width: 1.5, // Border width
+                            color: isDarkMode ? Colors.white : Colors.black,
+                            width: 1.5,
                           ),
                         ),
                         focusedBorder: const UnderlineInputBorder(
                           borderSide: BorderSide(
-                            color: Colors.blue, // Border color when focused
-                            width: 2.0, // Border width when focused
+                            color: Colors.blue,
+                            width: 2.0,
                           ),
                         ),
                       ),
                       style: GoogleFonts.poppins(
                         fontSize: 16,
+                        color: isDarkMode ? Colors.white : Colors.black,
                       ),
                     ),
 
@@ -197,31 +209,34 @@ class _ContactUsState extends State<ContactUs> {
                         style: GoogleFonts.poppins(
                           fontSize: 20,
                           fontWeight: FontWeight.w700,
+                          color: isDarkMode ? Colors.white : Colors.black,
                         ),
                       ),
                     ),
                     TextField(
-                      controller:
-                          _messageController, // This should be a separate controller for message
+                      controller: _messageController,
                       decoration: InputDecoration(
                         hintText: 'Enter your message',
-                        hintStyle: GoogleFonts.poppins(),
+                        hintStyle: GoogleFonts.poppins(
+                          color: isDarkMode ? Colors.grey : Colors.grey[600],
+                        ),
                         border: InputBorder.none,
-                        enabledBorder: const UnderlineInputBorder(
+                        enabledBorder: UnderlineInputBorder(
                           borderSide: BorderSide(
-                            color: Colors.black, // Border color
-                            width: 1.5, // Border width
+                            color: isDarkMode ? Colors.white : Colors.black,
+                            width: 1.5,
                           ),
                         ),
                         focusedBorder: const UnderlineInputBorder(
                           borderSide: BorderSide(
-                            color: Colors.blue, // Border color when focused
-                            width: 2.0, // Border width when focused
+                            color: Colors.blue,
+                            width: 2.0,
                           ),
                         ),
                       ),
                       style: GoogleFonts.poppins(
                         fontSize: 16,
+                        color: isDarkMode ? Colors.white : Colors.black,
                       ),
                     ),
 
@@ -232,24 +247,21 @@ class _ContactUsState extends State<ContactUs> {
                         child: ElevatedButton(
                           style: ButtonStyle(
                             backgroundColor: WidgetStateProperty.all<Color>(
-                                const Color.fromRGBO(
-                                    43, 43, 43, 1)), // Background color
+                                const Color.fromRGBO(43, 43, 43, 1)),
                             padding: WidgetStateProperty.all<EdgeInsets>(
                                 const EdgeInsets.symmetric(
-                                    vertical: 15.0,
-                                    horizontal: 50.0)), // Padding
+                                    vertical: 15.0, horizontal: 50.0)),
                             textStyle: WidgetStateProperty.all<TextStyle>(
-                              GoogleFonts.poppins(
-                                  fontWeight: FontWeight.bold), // Text style
+                              GoogleFonts.poppins(fontWeight: FontWeight.bold),
                             ),
                           ),
-                          onPressed: () {
-                            // Define the action for the button press here
+                          onPressed: () async {
+                            // Handle submit button press
                           },
                           child: Text("Send",
                               style: GoogleFonts.poppins(
                                   color: Colors.white,
-                                  fontWeight: FontWeight.w400)), // Button text
+                                  fontWeight: FontWeight.w400)),
                         ),
                       ),
                     )
@@ -267,6 +279,8 @@ class _ContactUsState extends State<ContactUs> {
   void dispose() {
     // Dispose the controller when the widget is disposed to free up resources
     _nameController.dispose();
+    _emailController.dispose();
+    _messageController.dispose();
     super.dispose();
   }
 }

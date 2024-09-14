@@ -17,14 +17,22 @@ export 'package:hotel_booking/services/authcheck.dart';
 export 'package:hotel_booking/reuse_code/custom_text_field.dart';
 export 'package:hotel_booking/reuse_code/social_login_button.dart';
 
-export 'package:hotel_booking/screens/register.dart';
-export 'package:hotel_booking/screens/bookings.dart';
-export 'package:hotel_booking/screens/profile.dart';
+export 'package:hotel_booking/screens/authentication/register.dart';
+export 'package:hotel_booking/screens/bookings/bookings.dart';
+export 'package:hotel_booking/screens/profile/profile.dart';
 export 'package:hotel_booking/screens/ContactUs.dart';
 export 'package:hotel_booking/screens/home.dart';
-export 'package:hotel_booking/screens/login.dart';
+export 'package:hotel_booking/screens/authentication/login.dart';
 export 'package:hotel_booking/screens/payment.dart';
-export 'package:hotel_booking/screens/infoPage.dart';
+export 'package:hotel_booking/screens/profile/infoPage.dart';
+export 'package:hotel_booking/screens/bookings/LuxuryBookingPage.dart';
+export 'package:hotel_booking/screens/bookings/PremiumBookingPage.dart';
+export 'package:hotel_booking/screens/bookings/StandardBookingPage.dart';
+export 'package:hotel_booking/screens/bookings/SuiteBookingPage.dart';
+export 'package:hotel_booking/screens/rooms/LuxuryRoomGalleryPage.dart';
+export 'package:hotel_booking/screens/rooms/PremiumRoomGalleryPage.dart';
+export 'package:hotel_booking/screens/rooms/StandardRoomGalleryPage.dart';
+export 'package:hotel_booking/screens/rooms/SuiteRoomGalleryPage.dart';
 
 export 'package:hotel_booking/constants/data.dart';
 export 'package:hotel_booking/constants/theme.dart';

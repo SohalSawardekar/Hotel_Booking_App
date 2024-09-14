@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:hotel_booking/constants/ImportFiles.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -30,9 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   @override
-  Widget build(
-    BuildContext context,
-  ) {
+  Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
     final double horizontalPadding = screenSize.width * 0.04;
 
@@ -58,7 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  AppBar buildAppBar(BuildContext context, screenSize) {
+  AppBar buildAppBar(BuildContext context, Size screenSize) {
     return AppBar(
       toolbarHeight: screenSize.height * 0.1,
       automaticallyImplyLeading: false,
@@ -78,7 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
         TextButton(
           onPressed: () {
             logout(context);
-          }, // Call the logout function
+          },
           child: const Text('Logout'),
         ),
       ],
@@ -122,24 +121,55 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget buildHorizontalList(Size screenSize) {
     return SizedBox(
-      height: screenSize.height * 0.23,
+      height: screenSize.height * 0.25,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: 4,
-        itemBuilder: (context, index) => buildRoomCard(screenSize, index),
-      ),
-    );
-  }
+        itemBuilder: (context, index) {
+          final roomTypes = ['Standard', 'Premium', 'Luxury', 'Suite'];
+          final colors = [
+            Colors.blue.shade200,
+            Colors.green.shade200,
+            Colors.red.shade200,
+            Color.fromARGB(255, 243, 203, 29)
+          ];
+          final imagePaths = [
+            'assets/images/standardroom.jpg',
+            'assets/images/Room-Premium-min.jpg',
+            'assets/images/luxuryRoom.jpeg',
+            'assets/images/suiteroom.jpg'
+          ];
 
-  Padding buildRoomCard(Size screenSize, int index) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 16.0),
-      child: RoomCard(
-        width: screenSize.width * 0.4,
-        imageHeight: screenSize.height * 0.12,
-        roomName: 'Room ${index + 1}',
-        onTap: () {
-          // Add booking functionality
+          return Padding(
+            padding: EdgeInsets.only(left: screenSize.width * 0.04),
+            child: RoomCard(
+              width: screenSize.width * 0.5,
+              imageHeight: screenSize.height * 0.12,
+              roomName: '${roomTypes[index]} Room',
+              imagePath: imagePaths[index],
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      switch (roomTypes[index]) {
+                        case 'Standard':
+                          return const StandardBookingPage();
+                        case 'Premium':
+                          return const PremiumBookingPage();
+                        case 'Luxury':
+                          return const LuxuryBookingPage();
+                        case 'Suite':
+                          return const SuiteBookingPage();
+                        default:
+                          return const StandardBookingPage();
+                      }
+                    },
+                  ),
+                );
+              },
+            ),
+          );
         },
       ),
     );
@@ -149,18 +179,70 @@ class _HomeScreenState extends State<HomeScreen> {
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      itemCount: 4,
-      itemBuilder: (context, index) => Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: RoomListItem(
-          width: screenSize.width * 0.3,
-          height: screenSize.height * 0.15,
-          roomName: 'Room ${index + 1}',
+      itemCount: 5,
+      itemBuilder: (context, index) {
+        final roomTypes = ['Standard', 'Premium', 'Luxury', 'Suite', 'Villa'];
+        final colors = [
+          Colors.orange.shade200,
+          Color.fromARGB(255, 241, 225, 83),
+          Colors.cyan.shade300,
+          Colors.pink.shade300,
+          Colors.purple.shade300
+        ];
+
+        return GestureDetector(
           onTap: () {
-            // Add booking functionality
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) {
+                  switch (roomTypes[index]) {
+                    case 'Standard':
+                      return const StandardRoomGalleryPage();
+                    case 'Premium':
+                      return const PremiumRoomGalleryPage();
+                    case 'Luxury':
+                      return const LuxuryRoomGalleryPage();
+                    case 'Suite':
+                      return const SuiteRoomGalleryPage();
+                    // case 'Villa':
+                    //   return const VillaRoomGalleryPage(); // Add this page in your routing
+                    default:
+                      return const StandardRoomGalleryPage();
+                  }
+                },
+              ),
+            );
           },
-        ),
-      ),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              height: screenSize.height * 0.15,
+              decoration: BoxDecoration(
+                color: colors[index].withOpacity(0.9),
+                borderRadius: BorderRadius.circular(15),
+                boxShadow: [
+                  BoxShadow(
+                    color: colors[index].withOpacity(0.6),
+                    blurRadius: 5,
+                    spreadRadius: 1,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
+              ),
+              child: Center(
+                child: Text(
+                  '${roomTypes[index]} Room',
+                  style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -186,12 +268,14 @@ class RoomCard extends StatelessWidget {
   final double width;
   final double imageHeight;
   final String roomName;
+  final String imagePath; // New parameter for the image path
   final VoidCallback onTap;
 
   const RoomCard({
     required this.width,
     required this.imageHeight,
     required this.roomName,
+    required this.imagePath, // Initialize the image path
     required this.onTap,
   });
 
@@ -210,7 +294,10 @@ class RoomCard extends StatelessWidget {
             height: imageHeight,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
-              color: Colors.grey[400], // Placeholder for room image
+              image: DecorationImage(
+                image: AssetImage(imagePath), // Use the image path
+                fit: BoxFit.cover,
+              ),
             ),
           ),
           Padding(

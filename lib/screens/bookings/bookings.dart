@@ -14,7 +14,7 @@ class _BookingPageState extends State<BookingPage> {
   String location = 'goa';
   int adults = 1;
   int children = 0;
-  double roomRate = 5000; // Example rate, can be dynamic
+  double roomRate = 5000; 
 
   void _selectDate(bool isCheckIn) async {
     DateTime initialDate = DateTime.now();

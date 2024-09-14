@@ -1,4 +1,8 @@
 import 'package:hotel_booking/constants/ImportFiles.dart';
+import 'package:intl/intl.dart';
+import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ProfileInfoPage extends StatefulWidget {
   @override
@@ -11,39 +15,77 @@ class _ProfileInfoPageState extends State<ProfileInfoPage> {
 
   final _formKey = GlobalKey<FormState>();
 
-  // Controllers for form fields
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _ageController = TextEditingController();
   final TextEditingController _birthdateController = TextEditingController();
 
-  String _selectedGender = 'Male'; // Default value for gender dropdown
-  DateTime _selectedDate = DateTime.now(); // Default value for birthdate
+  String _selectedGender = 'Male';
+  DateTime _selectedDate = DateTime.now();
 
-  // Function to update Firestore
+  @override
+  void initState() {
+    super.initState();
+    _fetchProfile();
+  }
+
+  Future<void> _fetchProfile() async {
+    User? user = _auth.currentUser;
+    if (user != null) {
+      try {
+        DocumentSnapshot userDoc =
+            await _firestore.collection('users').doc(user.uid).get();
+
+        if (userDoc.exists) {
+          final data = userDoc.data() as Map<String, dynamic>;
+          setState(() {
+            _nameController.text = data['name'] ?? '';
+            _phoneController.text = data['mobileNo'] ?? '';
+            _addressController.text = data['address'] ?? '';
+            _ageController.text = data['age'] ?? '';
+            _selectedGender = data['gender'] ?? 'Male';
+            _birthdateController.text = data['birthdate'] ?? '';
+            _selectedDate =
+                DateFormat('yyyy-MM-dd').parse(_birthdateController.text);
+          });
+        }
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error fetching profile data: $e')),
+        );
+      }
+    }
+  }
+
   Future<void> _updateProfile() async {
     if (_formKey.currentState!.validate()) {
       User? user = _auth.currentUser;
       if (user != null) {
-        await _firestore.collection('users').doc(user.uid).set({
-          'name': _nameController.text,
-          'phoneNo': _phoneController.text,
-          'address': _addressController.text,
-          'age': _ageController.text,
-          'gender': _selectedGender,
-          'birthdate': _birthdateController.text,
-          'updatedAt': FieldValue.serverTimestamp(),
-        }, SetOptions(merge: true));
+        try {
+          await _firestore.collection('users').doc(user.uid).set({
+            'name': _nameController.text,
+            'mobileNo': _phoneController.text,
+            'address': _addressController.text,
+            'age': _ageController.text,
+            'gender': _selectedGender,
+            'birthdate': _birthdateController.text,
+            'updatedAt': FieldValue.serverTimestamp(),
+          }, SetOptions(merge: true));
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Profile updated successfully!')),
-        );
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Profile updated successfully!')),
+          );
 
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const HomeScreen()),
-        );
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const HomeScreen()),
+          );
+        } catch (e) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error updating profile: $e')),
+          );
+        }
       }
     }
   }
@@ -58,28 +100,27 @@ class _ProfileInfoPageState extends State<ProfileInfoPage> {
     if (picked != null && picked != _selectedDate) {
       setState(() {
         _selectedDate = picked;
-        _birthdateController.text =
-            "${picked.toLocal()}".split(' ')[0]; // Format date to YYYY-MM-DD
+        _birthdateController.text = DateFormat('yyyy-MM-dd').format(picked);
       });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    // MediaQuery to get screen size for responsiveness
     var screenWidth = MediaQuery.of(context).size.width;
     var screenHeight = MediaQuery.of(context).size.height;
-    var padding = screenWidth * 0.05; // 5% of screen width as padding
-    var textFieldFontSize =
-        screenWidth * 0.045; // Adjusting font size based on width
+    var padding = screenWidth * 0.05;
+    var textFieldFontSize = screenWidth * 0.045;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Profile Info',
-            style: TextStyle(fontSize: screenWidth * 0.06)),
+        title: Text(
+          'Profile Info',
+          style: TextStyle(fontSize: screenWidth * 0.06),
+        ),
       ),
       body: Padding(
-        padding: EdgeInsets.all(padding), // Apply dynamic padding
+        padding: EdgeInsets.all(padding),
         child: Form(
           key: _formKey,
           child: ListView(
@@ -91,8 +132,7 @@ class _ProfileInfoPageState extends State<ProfileInfoPage> {
               _buildTextField('Age', _ageController, textFieldFontSize),
               _buildGenderDropdown(textFieldFontSize),
               _buildDateField(textFieldFontSize),
-              SizedBox(
-                  height: screenHeight * 0.05), // Adjust spacing dynamically
+              SizedBox(height: screenHeight * 0.05),
               ElevatedButton(
                 onPressed: _updateProfile,
                 style: ElevatedButton.styleFrom(
@@ -101,8 +141,10 @@ class _ProfileInfoPageState extends State<ProfileInfoPage> {
                     horizontal: screenWidth * 0.1,
                   ),
                 ),
-                child: Text('Update Profile',
-                    style: TextStyle(fontSize: screenWidth * 0.05)),
+                child: Text(
+                  'Update Profile',
+                  style: TextStyle(fontSize: screenWidth * 0.05),
+                ),
               ),
             ],
           ),
@@ -117,7 +159,12 @@ class _ProfileInfoPageState extends State<ProfileInfoPage> {
       padding: const EdgeInsets.only(bottom: 20.0),
       child: TextFormField(
         controller: controller,
-        decoration: InputDecoration(labelText: label),
+        decoration: InputDecoration(
+          labelText: label,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
         style: TextStyle(fontSize: fontSize),
         validator: (value) {
           if (value!.isEmpty) {
@@ -134,7 +181,12 @@ class _ProfileInfoPageState extends State<ProfileInfoPage> {
       padding: const EdgeInsets.only(bottom: 20.0),
       child: DropdownButtonFormField<String>(
         value: _selectedGender,
-        decoration: InputDecoration(labelText: 'Gender'),
+        decoration: InputDecoration(
+          labelText: 'Gender',
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
         onChanged: (String? newValue) {
           setState(() {
             _selectedGender = newValue!;
@@ -162,6 +214,9 @@ class _ProfileInfoPageState extends State<ProfileInfoPage> {
             icon: Icon(Icons.calendar_today),
             onPressed: () => _selectDate(context),
           ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
         ),
         style: TextStyle(fontSize: fontSize),
         validator: (value) {
@@ -170,7 +225,7 @@ class _ProfileInfoPageState extends State<ProfileInfoPage> {
           }
           return null;
         },
-        readOnly: true, // Prevent manual input
+        readOnly: true,
       ),
     );
   }
