@@ -105,13 +105,15 @@ class _ProfilePageState extends State<ProfilePage> {
                       children: [
                         CircleAvatar(
                           radius: 40,
-                          backgroundImage: NetworkImage(
-                            currentUser?.photoURL ?? 'assets/icons/images.jpeg',
-                          ),
+                          backgroundImage: currentUser?.photoURL != null
+                              ? NetworkImage(currentUser!.photoURL!)
+                              : const AssetImage('assets/icons/images.jpeg')
+                                  as ImageProvider,
                           backgroundColor: Colors.transparent,
                           onBackgroundImageError: (error, stackTrace) {
                             setState(() {
-                              // Handle image loading error
+                              // Provide a fallback image on error
+                              // In this case, fallback is handled by using AssetImage initially
                             });
                           },
                         ),

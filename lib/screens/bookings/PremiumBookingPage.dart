@@ -1,16 +1,15 @@
-// TODO Implement this library.
 import 'package:flutter/material.dart';
 import 'package:hotel_booking/screens/payment.dart';
-import 'package:intl/intl.dart'; // For formatting dates
+import 'package:intl/intl.dart';
 
 class PremiumBookingPage extends StatelessWidget {
   const PremiumBookingPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final double pricePerNight = 5000.0; // Example price
-    final double gst = 0.18; // GST rate
-    final double totalAmount = pricePerNight * (1 + gst);
+    const double pricePerNight = 5000.0; // Example price
+    const double gst = 0.18; // GST rate
+    const double totalAmount = pricePerNight * (1 + gst);
 
     final checkInDate = DateTime.now();
     final checkOutDate = DateTime.now().add(const Duration(days: 1));
@@ -63,34 +62,34 @@ class PremiumBookingPage extends StatelessWidget {
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 10),
-              Column(
+              const Column(
                 children: [
                   Row(
-                    children: const [
+                    children: [
                       Icon(Icons.wifi, color: Colors.deepPurple, size: 24),
                       SizedBox(width: 10),
                       Text('Free WiFi', style: TextStyle(fontSize: 18)),
                     ],
                   ),
-                  const SizedBox(height: 10),
+                  SizedBox(height: 10),
                   Row(
-                    children: const [
+                    children: [
                       Icon(Icons.ac_unit, color: Colors.deepPurple, size: 24),
                       SizedBox(width: 10),
                       Text('Air Conditioning', style: TextStyle(fontSize: 18)),
                     ],
                   ),
-                  const SizedBox(height: 10),
+                  SizedBox(height: 10),
                   Row(
-                    children: const [
+                    children: [
                       Icon(Icons.local_bar, color: Colors.deepPurple, size: 24),
                       SizedBox(width: 10),
                       Text('Mini Bar', style: TextStyle(fontSize: 18)),
                     ],
                   ),
-                  const SizedBox(height: 10),
+                  SizedBox(height: 10),
                   Row(
-                    children: const [
+                    children: [
                       Icon(Icons.lock, color: Colors.deepPurple, size: 24),
                       SizedBox(width: 10),
                       Text('In-Room Safe', style: TextStyle(fontSize: 18)),

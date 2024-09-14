@@ -1,18 +1,17 @@
-import 'package:flutter/material.dart';
-import 'package:hotel_booking/screens/payment.dart';
-import 'package:intl/intl.dart'; 
+import 'package:intl/intl.dart';
+import '../../constants/ImportFiles.dart'; // Adjust import path as needed
 
 class LuxuryBookingPage extends StatelessWidget {
-  const LuxuryBookingPage({super.key});
-
   @override
   Widget build(BuildContext context) {
-    final double pricePerNight = 7000.0; // Example price
-    final double gst = 0.18; // GST rate
-    final double totalAmount = pricePerNight * (1 + gst);
+    // Example hardcoded values for demonstration
+    final DateTime checkInDate = DateTime.now();
+    final DateTime checkOutDate = DateTime.now().add(const Duration(days: 1));
+    const String roomType = 'Luxury'; // Example room type
+    const double pricePerNight = 7000.0;
+    const double gst = 0.18;
+    const double totalAmount = pricePerNight * (1 + gst);
 
-    final checkInDate = DateTime.now();
-    final checkOutDate = DateTime.now().add(const Duration(days: 1));
     final String formattedCheckIn =
         DateFormat('dd MMM yyyy').format(checkInDate);
     final String formattedCheckOut =
@@ -21,7 +20,7 @@ class LuxuryBookingPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Luxury Room Booking'),
-        backgroundColor: Colors.black87,
+        backgroundColor: const Color.fromARGB(221, 112, 112, 112),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -36,8 +35,7 @@ class LuxuryBookingPage extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15),
                   image: const DecorationImage(
-                    image: AssetImage(
-                        'assets/images/luxury_room.jpg'), // Add your luxury room image here
+                    image: AssetImage('assets/images/luxuryRoom.jpeg'),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -50,9 +48,9 @@ class LuxuryBookingPage extends StatelessWidget {
                 style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 10),
-              Text(
-                'Price per Night: ₹${pricePerNight.toStringAsFixed(2)}',
-                style: const TextStyle(fontSize: 18, color: Colors.grey),
+              const Text(
+                'Price per Night: ₹7000.00',
+                style: TextStyle(fontSize: 18, color: Colors.grey),
               ),
               const SizedBox(height: 20),
 
@@ -176,12 +174,10 @@ class LuxuryBookingPage extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => PaymentPage(
-                          roomType: 'Luxury',
+                        builder: (context) => BookingPage(
                           checkInDate: checkInDate,
                           checkOutDate: checkOutDate,
-                          adults: 1,
-                          children: 0,
+                          roomType: roomType,
                           totalAmount: totalAmount,
                         ),
                       ),

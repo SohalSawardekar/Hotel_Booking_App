@@ -33,6 +33,7 @@ export 'package:hotel_booking/screens/rooms/LuxuryRoomGalleryPage.dart';
 export 'package:hotel_booking/screens/rooms/PremiumRoomGalleryPage.dart';
 export 'package:hotel_booking/screens/rooms/StandardRoomGalleryPage.dart';
 export 'package:hotel_booking/screens/rooms/SuiteRoomGalleryPage.dart';
+export 'package:hotel_booking/screens/bookings/AvailabilityPage.dart';
 
 export 'package:hotel_booking/constants/data.dart';
 export 'package:hotel_booking/constants/theme.dart';

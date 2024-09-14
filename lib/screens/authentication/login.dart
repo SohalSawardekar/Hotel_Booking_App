@@ -101,7 +101,7 @@ class LoginPage extends StatelessWidget {
               SizedBox(height: screenHeight * 0.02),
               Row(
                 mainAxisAlignment:
-                    MainAxisAlignment.center, // Center the buttons
+                    MainAxisAlignment.center, 
                 children: [
                   SocialLoginButton(
                     imagePath: 'assets/icons/Google__G__logo.png',

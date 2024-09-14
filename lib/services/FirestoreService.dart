@@ -5,7 +5,7 @@ class FirestoreService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   // Function to check if a user exists and create a new user if not
-  Future<void> createUserInFirestore() async {
+  Future<void> createUserInFirestore([User? user]) async {
     // Get the currently authenticated user
     User? user = FirebaseAuth.instance.currentUser;
 

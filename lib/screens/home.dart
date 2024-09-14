@@ -19,7 +19,12 @@ class _HomeScreenState extends State<HomeScreen> {
     final pages = [
       const HomeScreen(),
       const ProfilePage(),
-      const BookingPage(),
+      const BookingPage(
+        checkInDate: null,
+        checkOutDate: null,
+        roomType: '',
+        totalAmount: 0,
+      ),
       const ContactUs(),
     ];
 
@@ -146,7 +151,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         case 'Premium':
                           return const PremiumBookingPage();
                         case 'Luxury':
-                          return const LuxuryBookingPage();
+                          return LuxuryBookingPage();
                         case 'Suite':
                           return const SuiteBookingPage();
                         default:

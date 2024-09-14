@@ -50,10 +50,12 @@ class MyApp extends StatelessWidget {
             inputDecorationTheme: InputDecorationTheme(
               filled: true,
               fillColor: const Color.fromARGB(255, 30, 35, 38),
-              hintStyle: const TextStyle(color: Color.fromARGB(255, 150, 150, 150)),
+              hintStyle:
+                  const TextStyle(color: Color.fromARGB(255, 150, 150, 150)),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(20),
-                borderSide: const BorderSide(color: Color.fromARGB(255, 50, 55, 60)),
+                borderSide:
+                    const BorderSide(color: Color.fromARGB(255, 50, 55, 60)),
               ),
               focusedBorder: const OutlineInputBorder(
                 borderSide:
@@ -66,7 +68,6 @@ class MyApp extends StatelessWidget {
           routes: {
             '/home': (context) => const HomeScreen(),
             '/login': (context) => const LoginPage(),
-            '/booking': (context) => const BookingPage(),
             '/contactUs': (context) => const ContactUs(),
             '/profileEdit': (context) => ProfileInfoPage(),
           },

@@ -1,7 +1,19 @@
-import 'package:hotel_booking/constants/ImportFiles.dart';
+import 'package:intl/intl.dart';
+import '../../constants/ImportFiles.dart';
 
 class BookingPage extends StatefulWidget {
-  const BookingPage({super.key});
+  final DateTime? checkInDate;
+  final DateTime? checkOutDate;
+  final String roomType;
+  final double totalAmount;
+
+  const BookingPage({
+    super.key,
+    required this.checkInDate,
+    required this.checkOutDate,
+    required this.roomType,
+    required this.totalAmount,
+  });
 
   @override
   _BookingPageState createState() => _BookingPageState();
@@ -16,12 +28,42 @@ class _BookingPageState extends State<BookingPage> {
   int children = 0;
   double roomRate = 5000;
 
+  final List<String> roomTypes = [
+    'standard',
+    'premium',
+    'luxury',
+    'suite',
+    'villa',
+  ];
+
+  final List<String> locations = [
+    'goa',
+    'ladakh',
+    'kerela',
+    'kashmir',
+    'jaipur',
+    'agra',
+    'manali',
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize with values passed from LuxuryBookingPage or use default dates
+    checkInDate = widget.checkInDate ?? DateTime.now();
+    checkOutDate =
+        widget.checkOutDate ?? DateTime.now().add(const Duration(days: 1));
+    roomType = widget.roomType;
+    // Set roomRate based on roomType if needed
+    // Example: roomRate = getRoomRate(roomType);
+  }
+
   void _selectDate(bool isCheckIn) async {
     DateTime initialDate = DateTime.now();
     DateTime? picked = await showDatePicker(
       context: context,
       initialDate: initialDate,
-      firstDate: DateTime.now(),
+      firstDate: initialDate,
       lastDate: DateTime.now().add(const Duration(days: 365)),
     );
     if (picked != null) {
@@ -35,6 +77,23 @@ class _BookingPageState extends State<BookingPage> {
     }
   }
 
+  String formatDate(DateTime? date) {
+    if (date == null) {
+      return 'Select a date';
+    }
+    return DateFormat('dd MMM yyyy').format(date);
+  }
+
+  bool _validateInputs() {
+    if (checkInDate == null || checkOutDate == null) {
+      return false;
+    }
+    if (checkInDate!.isAfter(checkOutDate!)) {
+      return false;
+    }
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,39 +105,30 @@ class _BookingPageState extends State<BookingPage> {
           children: [
             ListTile(
               title: const Text('Check-in Date'),
-              subtitle: Text(checkInDate != null
-                  ? '${checkInDate!.toLocal()}'.split(' ')[0]
-                  : 'Select a date'),
+              subtitle: Text(formatDate(checkInDate)),
               onTap: () => _selectDate(true),
             ),
             ListTile(
               title: const Text('Check-out Date'),
-              subtitle: Text(checkOutDate != null
-                  ? '${checkOutDate!.toLocal()}'.split(' ')[0]
-                  : 'Select a date'),
+              subtitle: Text(formatDate(checkOutDate)),
               onTap: () => _selectDate(false),
             ),
             ListTile(
               title: const Text('Room Type'),
               trailing: DropdownButton<String>(
-                value: roomType,
-                items: [
-                  'standard',
-                  'premium',
-                  'luxury',
-                  'suite',
-                  'villa',
-                ]
+                value:
+                    roomTypes.contains(roomType) ? roomType : roomTypes.first,
+                items: roomTypes
                     .map((type) => DropdownMenuItem<String>(
                           value: type,
-                          child: Text(
-                              type), // Display the item in lowercase as it is
+                          child: Text(type),
                         ))
                     .toList(),
                 onChanged: (value) {
                   setState(() {
-                    roomType =
-                        value!; // Ensure the value is properly set in lowercase
+                    roomType = value!;
+                    // Optional: Update roomRate based on selected roomType
+                    // Example: roomRate = getRoomRate(value);
                   });
                 },
               ),
@@ -86,19 +136,12 @@ class _BookingPageState extends State<BookingPage> {
             ListTile(
               title: const Text('Location'),
               trailing: DropdownButton<String>(
-                value: location,
-                items: [
-                  'goa',
-                  'ladakh',
-                  'kerela',
-                  'kashmir',
-                  'jaipur',
-                  'agra',
-                  'manali'
-                ]
-                    .map((type) => DropdownMenuItem<String>(
-                          value: type,
-                          child: Text(type),
+                value:
+                    locations.contains(location) ? location : locations.first,
+                items: locations
+                    .map((loc) => DropdownMenuItem<String>(
+                          value: loc,
+                          child: Text(loc),
                         ))
                     .toList(),
                 onChanged: (value) {
@@ -146,27 +189,31 @@ class _BookingPageState extends State<BookingPage> {
             Center(
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        switch (roomType) {
-                          case 'Standard':
-                            return const StandardBookingPage();
-                          case 'Premium':
-                            return const PremiumBookingPage();
-                          case 'Luxury':
-                            return const LuxuryBookingPage();
-                          case 'Suite':
-                            return const SuiteBookingPage();
-                          default:
-                            return const StandardBookingPage();
-                        }
-                      },
-                    ),
-                  );
+                  if (_validateInputs()) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AvailabilityPage(
+                          roomType: roomType,
+                          checkInDate: checkInDate!,
+                          checkOutDate: checkOutDate!,
+                          adults: adults,
+                          children: children,
+                          totalAmount: roomRate,
+                        ),
+                      ),
+                    );
+                  } else {
+                    // Show error message
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                            'Please ensure all fields are filled and dates are valid.'),
+                      ),
+                    );
+                  }
                 },
-                child: const Text('Book'),
+                child: const Text('Check Availability'),
               ),
             ),
           ],
