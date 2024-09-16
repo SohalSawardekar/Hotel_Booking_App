@@ -106,7 +106,7 @@ class _AvailabilityPageState extends State<AvailabilityPage> {
             Text(
                 'Check-out: ${DateFormat('yyyy-MM-dd').format(widget.checkOutDate)}'),
             Text('Adults: ${widget.adults}, Children: ${widget.children}'),
-            Text('Total Amount: ₹${widget.totalAmount.toStringAsFixed(2)}'),
+            Text('Total Amount: ₹${widget.totalAmount}'),
             const SizedBox(height: 20),
             if (_isCheckingAvailability) ...[
               const Text('Checking availability...'),

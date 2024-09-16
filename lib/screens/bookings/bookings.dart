@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import '../../constants/ImportFiles.dart';
 
@@ -22,11 +23,11 @@ class BookingPage extends StatefulWidget {
 class _BookingPageState extends State<BookingPage> {
   DateTime? checkInDate;
   DateTime? checkOutDate;
-  String roomType = 'standard';
-  String location = 'goa';
+  String roomType = '';
+  String location = '';
   int adults = 1;
   int children = 0;
-  double roomRate = 5000;
+  double roomRate = 0.0;
 
   final List<String> roomTypes = [
     'standard',
@@ -49,13 +50,40 @@ class _BookingPageState extends State<BookingPage> {
   @override
   void initState() {
     super.initState();
-    // Initialize with values passed from LuxuryBookingPage or use default dates
     checkInDate = widget.checkInDate ?? DateTime.now();
     checkOutDate =
         widget.checkOutDate ?? DateTime.now().add(const Duration(days: 1));
     roomType = widget.roomType;
-    // Set roomRate based on roomType if needed
-    // Example: roomRate = getRoomRate(roomType);
+
+    _fetchRoomRate(roomType);
+  }
+
+  void _fetchRoomRate(String roomType) async {
+    try {
+      // Fetch room rate from Firestore
+      final roomSnapshot = await FirebaseFirestore.instance
+          .collection('Rooms')
+          .where('room_type', isEqualTo: roomType)
+          .get();
+
+      if (roomSnapshot.docs.isNotEmpty) {
+        // Access the first document from the query snapshot
+        final roomData = roomSnapshot.docs.first
+            .data(); // Get the data from the first document
+        setState(() {
+          roomRate = roomData['price']?.toDouble() ??
+              0.0; // Default value if price is missing
+        });
+      } else {
+        // Handle case where roomType is not found
+        setState(() {
+          roomRate = 0.0; // Default value when room is not found
+        });
+      }
+    } catch (e) {
+      // Handle any errors
+      print('Error fetching room rate: $e');
+    }
   }
 
   void _selectDate(bool isCheckIn) async {
@@ -116,8 +144,7 @@ class _BookingPageState extends State<BookingPage> {
             ListTile(
               title: const Text('Room Type'),
               trailing: DropdownButton<String>(
-                value:
-                    roomTypes.contains(roomType) ? roomType : roomTypes.first,
+                value: roomTypes.contains(roomType) ? roomType : 'standard',
                 items: roomTypes
                     .map((type) => DropdownMenuItem<String>(
                           value: type,
@@ -127,8 +154,7 @@ class _BookingPageState extends State<BookingPage> {
                 onChanged: (value) {
                   setState(() {
                     roomType = value!;
-                    // Optional: Update roomRate based on selected roomType
-                    // Example: roomRate = getRoomRate(value);
+                    _fetchRoomRate(roomType);
                   });
                 },
               ),
@@ -185,6 +211,14 @@ class _BookingPageState extends State<BookingPage> {
                 },
               ),
             ),
+            ListTile(
+              title: const Text('Price'),
+              trailing: Text(
+                '${roomRate}',
+                style: GoogleFonts.poppins(
+                    fontSize: 15, fontWeight: FontWeight.w700),
+              ),
+            ),
             const SizedBox(height: 20),
             Center(
               child: ElevatedButton(
@@ -204,7 +238,6 @@ class _BookingPageState extends State<BookingPage> {
                       ),
                     );
                   } else {
-                    // Show error message
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Text(
