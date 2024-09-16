@@ -1,5 +1,5 @@
 import 'package:intl/intl.dart';
-import 'package:hotel_booking/constants/ImportFiles.dart'; // Adjust import path as needed
+import 'package:hotel_booking/constants/ImportFiles.dart';
 
 class AvailabilityPage extends StatefulWidget {
   final String roomType;
@@ -42,7 +42,7 @@ class _AvailabilityPageState extends State<AvailabilityPage> {
     try {
       // Fetch room number from 'rooms' collection
       final roomQuerySnapshot = await FirebaseFirestore.instance
-          .collection('rooms')
+          .collection('Rooms')
           .where('room_type', isEqualTo: widget.roomType)
           .get();
 
@@ -53,12 +53,12 @@ class _AvailabilityPageState extends State<AvailabilityPage> {
 
         // Check availability from 'available_rooms' collection
         final availableRoomSnapshot = await FirebaseFirestore.instance
-            .collection('available_rooms')
+            .collection('AvailableRooms')
             .where('room_no', isEqualTo: roomNumber)
             .where('status', isEqualTo: 'yes')
             .get();
 
-        if (roomQuerySnapshot.docs.isNotEmpty) {
+        if (availableRoomSnapshot.docs.isNotEmpty) {
           setState(() {
             _isAvailable = true;
             _availabilityMessage = 'The room is available.';

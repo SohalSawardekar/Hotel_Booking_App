@@ -47,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             buildHeaderImage(screenSize),
             const SizedBox(height: 20),
-            sectionTitle('Recommended for You', horizontalPadding),
+            sectionTitle('Book a Room', horizontalPadding),
             const SizedBox(height: 20),
             buildHorizontalList(screenSize),
             const SizedBox(height: 20),
@@ -250,7 +250,7 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: Icon(Icons.contact_page), label: 'Contact'),
       ],
       currentIndex: _selectedIndex,
-      selectedItemColor: const Color.fromARGB(255, 0, 130, 125),
+      selectedItemColor: const Color.fromARGB(255, 99, 99, 99),
       onTap: _onItemTapped,
     );
   }

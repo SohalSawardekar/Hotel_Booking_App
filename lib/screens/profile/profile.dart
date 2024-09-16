@@ -149,12 +149,21 @@ class _ProfilePageState extends State<ProfilePage> {
                   const Divider(),
                   // Booking History Section
                   Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Text(
-                      'Booking History',
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                  ),
+                      padding: const EdgeInsets.all(16.0),
+                      child: TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const Bookinghistory(),
+                              ));
+                        },
+                        child: Text(
+                          'Booking History',
+                          style:
+                              GoogleFonts.poppins(fontWeight: FontWeight.w600),
+                        ),
+                      )),
                   ListView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
