@@ -1,5 +1,5 @@
 import 'package:intl/intl.dart';
-import 'package:hotel_booking/constants/ImportFiles.dart';
+import 'package:hotel_booking/constants/ImportFiles.dart'; // Adjust import path as needed
 
 class AvailabilityPage extends StatefulWidget {
   final String roomType;
@@ -35,110 +35,180 @@ class _AvailabilityPageState extends State<AvailabilityPage> {
   }
 
   Future<void> _checkRoomAvailability() async {
+    // Mocking availability check for design purposes
     setState(() {
       _isCheckingAvailability = true;
     });
-
-    try {
-      // Fetch room number from 'rooms' collection
-      final roomQuerySnapshot = await FirebaseFirestore.instance
-          .collection('Rooms')
-          .where('room_type', isEqualTo: widget.roomType)
-          .get();
-
-      if (roomQuerySnapshot.docs.isNotEmpty) {
-        final roomDoc = roomQuerySnapshot.docs.first;
-        final roomNumber =
-            roomDoc['room_no']; // Fetch the room number from the document
-
-        // Check availability from 'available_rooms' collection
-        final availableRoomSnapshot = await FirebaseFirestore.instance
-            .collection('AvailableRooms')
-            .where('room_no', isEqualTo: roomNumber)
-            .where('status', isEqualTo: 'yes')
-            .get();
-
-        if (availableRoomSnapshot.docs.isNotEmpty) {
-          setState(() {
-            _isAvailable = true;
-            _availabilityMessage = 'The room is available.';
-          });
-        } else {
-          setState(() {
-            _isAvailable = false;
-            _availabilityMessage = 'The room is not available.';
-          });
-        }
-      } else {
-        setState(() {
-          _isAvailable = false;
-          _availabilityMessage =
-              'No information available for the selected room type.';
-        });
-      }
-    } catch (e) {
-      setState(() {
-        _isAvailable = false;
-        _availabilityMessage =
-            'Error checking availability. Please try again later. ${e}';
-      });
-    } finally {
-      setState(() {
-        _isCheckingAvailability = false;
-      });
-    }
+    await Future.delayed(const Duration(seconds: 2));
+    setState(() {
+      _isCheckingAvailability = false;
+      _isAvailable = true;
+      _availabilityMessage = 'The room is available.';
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Check Availability'),
+        backgroundColor: Colors.indigoAccent,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Room Type: ${widget.roomType}'),
-            Text(
-                'Check-in: ${DateFormat('yyyy-MM-dd').format(widget.checkInDate)}'),
-            Text(
-                'Check-out: ${DateFormat('yyyy-MM-dd').format(widget.checkOutDate)}'),
-            Text('Adults: ${widget.adults}, Children: ${widget.children}'),
-            Text('Total Amount: ₹${widget.totalAmount}'),
-            const SizedBox(height: 20),
-            if (_isCheckingAvailability) ...[
-              const Text('Checking availability...'),
-            ] else ...[
-              Text(_availabilityMessage),
-              if (_isAvailable) ...[
-                const SizedBox(height: 20),
-                Center(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => PaymentPage(
-                            roomType: widget.roomType,
-                            checkInDate: widget.checkInDate,
-                            checkOutDate: widget.checkOutDate,
-                            adults: widget.adults,
-                            children: widget.children,
-                            totalAmount: widget.totalAmount,
-                          ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Room details card with modern design
+              Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                elevation: 10,
+                shadowColor: Colors.grey.withOpacity(0.4),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20.0,
+                    vertical: 25.0,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.roomType,
+                        style: const TextStyle(
+                          fontSize: 26,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.indigo,
                         ),
-                      );
-                    },
-                    child: const Text('Confirm Availability and Proceed'),
+                      ),
+                      const SizedBox(height: 20),
+                      _buildDetailRow(
+                        'Check-in',
+                        DateFormat('MMM dd, yyyy').format(widget.checkInDate),
+                        Icons.date_range,
+                      ),
+                      const SizedBox(height: 10),
+                      _buildDetailRow(
+                        'Check-out',
+                        DateFormat('MMM dd, yyyy').format(widget.checkOutDate),
+                        Icons.date_range,
+                      ),
+                      const SizedBox(height: 10),
+                      _buildDetailRow(
+                        'Adults',
+                        widget.adults.toString(),
+                        Icons.person_outline,
+                      ),
+                      const SizedBox(height: 10),
+                      _buildDetailRow(
+                        'Children',
+                        widget.children.toString(),
+                        Icons.child_care,
+                      ),
+                      const SizedBox(height: 20),
+                      Text(
+                        'Total Amount: ₹${widget.totalAmount.toStringAsFixed(2)}',
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black87,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ],
+              ),
+              const SizedBox(height: 30),
+
+              // Availability check section
+              Center(
+                child: _isCheckingAvailability
+                    ? const Column(
+                        children: [
+                          CircularProgressIndicator(),
+                          SizedBox(height: 20),
+                          Text(
+                            'Checking availability...',
+                            style:
+                                TextStyle(fontSize: 18, color: Colors.black54),
+                          ),
+                        ],
+                      )
+                    : _buildAvailabilityMessage(),
+              ),
             ],
-          ],
+          ),
         ),
       ),
+    );
+  }
+
+  Widget _buildDetailRow(String title, String value, IconData icon) {
+    return Row(
+      children: [
+        Icon(icon, color: Colors.indigo, size: 20),
+        const SizedBox(width: 8),
+        Text(
+          '$title: $value',
+          style: const TextStyle(
+            fontSize: 16,
+            color: Colors.black87,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildAvailabilityMessage() {
+    return Column(
+      children: [
+        Text(
+          _availabilityMessage,
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: _isAvailable ? Colors.green : Colors.red,
+          ),
+        ),
+        const SizedBox(height: 30),
+        if (_isAvailable)
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => PaymentPage(
+                    roomType: widget.roomType,
+                    checkInDate: widget.checkInDate,
+                    checkOutDate: widget.checkOutDate,
+                    adults: widget.adults,
+                    children: widget.children,
+                    totalAmount: widget.totalAmount,
+                  ),
+                ),
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.indigoAccent,
+              padding: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.width * 0.25,
+                vertical: 15,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30),
+              ),
+            ),
+            child: const Text(
+              'Confirm Availability and Proceed',
+              style: TextStyle(fontSize: 16),
+            ),
+          ),
+      ],
     );
   }
 }

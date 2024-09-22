@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:video_player/video_player.dart';
 
 class StandardRoomGalleryPage extends StatefulWidget {
   const StandardRoomGalleryPage({super.key});
@@ -10,44 +9,14 @@ class StandardRoomGalleryPage extends StatefulWidget {
 }
 
 class _StandardRoomGalleryPageState extends State<StandardRoomGalleryPage> {
-  late VideoPlayerController _videoController;
-
-  @override
-  void initState() {
-    super.initState();
-    // Initialize the video controller
-    _videoController = VideoPlayerController.asset(
-        'assets/videos/standard_room.mp4') // Replace with actual video path
-      ..initialize().then((_) {
-        setState(() {}); // Ensure the first frame is shown after initialization
-      })
-      ..setLooping(true) // Loop the video for continuous play
-      ..setVolume(0.5); // Set default volume
-  }
-
-  @override
-  void dispose() {
-    _videoController.dispose();
-    super.dispose();
-  }
-
-  Widget buildVideoPlayer() {
-    return _videoController.value.isInitialized
-        ? ClipRRect(
-            borderRadius: BorderRadius.circular(15),
-            child: AspectRatio(
-              aspectRatio: _videoController.value.aspectRatio,
-              child: VideoPlayer(_videoController),
-            ),
-          )
-        : const Center(
-            child: CircularProgressIndicator()); // Center the loading indicator
-  }
-
   @override
   Widget build(BuildContext context) {
-    final List<List<String>> imageGroups = [
-      ['assets/images/standardroom.jpg']
+    // Multiple images for the standard room
+    final List<String> imageList = [
+      'assets/images/ST1.png',
+      'assets/images/ST2.png',
+      'assets/images/ST3.png',
+      'assets/images/ST4.png',
     ];
 
     const String description =
@@ -67,37 +36,25 @@ class _StandardRoomGalleryPageState extends State<StandardRoomGalleryPage> {
           children: [
             // Room Image Carousel with Multiple Images
             SizedBox(
-              height: 250, // Adjusted to make room for multiple images
+              height: 250, // Adjust the height as needed
               child: PageView.builder(
-                itemCount: imageGroups.length,
+                itemCount: imageList.length,
                 itemBuilder: (context, index) {
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: imageGroups[index].map((imageUrl) {
-                      return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: ClipRRect(
-                          borderRadius:
-                              BorderRadius.circular(15), // Rounded corners
-                          child: Image.asset(
-                            imageUrl,
-                            fit: BoxFit.cover,
-                            width: MediaQuery.of(context).size.width *
-                                0.45, // Adjust width
-                          ),
-                        ),
-                      );
-                    }).toList(),
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ClipRRect(
+                      borderRadius:
+                          BorderRadius.circular(15), // Rounded corners
+                      child: Image.asset(
+                        imageList[index],
+                        fit: BoxFit.cover,
+                        width: MediaQuery.of(context).size.width *
+                            0.9, // Adjust width
+                      ),
+                    ),
                   );
                 },
               ),
-            ),
-            const SizedBox(height: 20),
-
-            // Video Player Section
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: buildVideoPlayer(),
             ),
             const SizedBox(height: 20),
 

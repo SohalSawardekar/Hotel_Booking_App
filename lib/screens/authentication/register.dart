@@ -1,4 +1,6 @@
 import 'package:hotel_booking/constants/ImportFiles.dart';
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -13,6 +15,9 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmpasswordController =
       TextEditingController();
+
+  bool _isPasswordVisible = false; // For password field
+  bool _isConfirmPasswordVisible = false; // For confirm password field
 
   @override
   Widget build(BuildContext context) {
@@ -38,51 +43,83 @@ class _SignUpPageState extends State<SignUpPage> {
                   ),
                 ),
                 SizedBox(height: screenHeight * 0.05),
-                CustomTextField(
-                  labelText: 'Email Address',
+                TextFormField(
                   controller: _emailController,
-                  hintText: '', validator: (value) {  },
+                  decoration: const InputDecoration(
+                    labelText: "Email",
+                    hintText: '',
+                  ),
+                  validator: (value) {
+                    return null;
+                  },
                 ),
                 SizedBox(height: screenHeight * 0.02),
-                CustomTextField(
-                  labelText: 'Phone Number',
-                  hintText: '+91 Enter your phone number',
-                  controller: _phonenoController, validator: (value) {  },
+                TextFormField(
+                  controller: _phonenoController,
+                  decoration: const InputDecoration(
+                    labelText: "Phone Number",
+                    hintText: '',
+                  ),
+                  validator: (value) {
+                    return null;
+                  },
                 ),
                 SizedBox(height: screenHeight * 0.02),
-                CustomTextField(
-                  labelText: 'Password',
-                  isPassword: true,
-                  hintText: 'Please Enter Your Password',
-                  controller: _passwordController, validator: (value) {  },
+                TextFormField(
+                  controller: _passwordController,
+                  obscureText: !_isPasswordVisible,
+                  decoration: InputDecoration(
+                    labelText: "Enter Password",
+                    hintText: '',
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _isPasswordVisible
+                            ? Icons.visibility
+                            : Icons.visibility_off,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _isPasswordVisible = !_isPasswordVisible;
+                        });
+                      },
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your password';
+                    }
+                    return null;
+                  },
                 ),
                 SizedBox(height: screenHeight * 0.02),
-                CustomTextField(
-                  labelText: 'Confirm Password',
-                  isPassword: true,
-                  hintText: 'Confirm Your Password',
-                  controller: _confirmpasswordController, validator: (value) {  },
+                TextFormField(
+                  controller: _confirmpasswordController,
+                  obscureText: !_isConfirmPasswordVisible,
+                  decoration: InputDecoration(
+                    labelText: "Confirm Password",
+                    hintText: '',
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _isConfirmPasswordVisible
+                            ? Icons.visibility
+                            : Icons.visibility_off,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _isConfirmPasswordVisible =
+                              !_isConfirmPasswordVisible;
+                        });
+                      },
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your password';
+                    }
+                    return null;
+                  },
                 ),
                 SizedBox(height: screenHeight * 0.01),
-                const Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        // Checkbox(
-                        //   value: false,
-                        //   onChanged: (value) {
-                        //     // Handle checkbox change
-                        //   },
-                        // ),
-                        // Text(
-                        //   'Remember Me',
-                        //   style: GoogleFonts.poppins(),
-                        // ),
-                      ],
-                    ),
-                  ],
-                ),
                 SizedBox(height: screenHeight * 0.02),
                 SizedBox(
                   width: screenWidth * 0.8,
@@ -157,8 +194,7 @@ class _SignUpPageState extends State<SignUpPage> {
     }
 
     try {
-      await AuthService.registerWithEmailAndPassword(
-          context, email, password); // Ensure the method name matches
+      await AuthService.registerWithEmailAndPassword(context, email, password);
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => ProfileInfoPage()),

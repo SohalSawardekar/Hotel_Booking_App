@@ -1,7 +1,16 @@
 import 'package:hotel_booking/constants/ImportFiles.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
+
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  bool _isVisible = false; // Start with password hidden
 
   @override
   Widget build(BuildContext context) {
@@ -24,19 +33,40 @@ class LoginPage extends StatelessWidget {
                 ),
               ),
               SizedBox(height: screenHeight * 0.1),
-              CustomTextField(
+              TextFormField(
                 controller: emailController,
-                labelText: "Email",
-                hintText: '',
-                validator: (value) {},
+                decoration: const InputDecoration(
+                  labelText: "Email",
+                  hintText: '',
+                ),
+                validator: (value) {
+                  return null;
+                },
               ),
               SizedBox(height: screenHeight * 0.02),
-              CustomTextField(
+              TextFormField(
                 controller: passwordController,
-                labelText: "Password",
-                isPassword: true,
-                hintText: '',
-                validator: (value) {},
+                obscureText: !_isVisible,
+                decoration: InputDecoration(
+                  labelText: "Password",
+                  hintText: '',
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _isVisible ? Icons.visibility : Icons.visibility_off,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _isVisible = !_isVisible;
+                      });
+                    },
+                  ),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your password';
+                  }
+                  return null;
+                },
               ),
               SizedBox(height: screenHeight * 0.01),
               Align(
@@ -100,15 +130,14 @@ class LoginPage extends StatelessWidget {
               ),
               SizedBox(height: screenHeight * 0.02),
               Row(
-                mainAxisAlignment:
-                    MainAxisAlignment.center, 
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SocialLoginButton(
                     imagePath: 'assets/icons/Google__G__logo.png',
                     loginMethod: signInWithGoogle,
                     iconSize: screenHeight * 0.03,
                   ),
-                  SizedBox(width: screenWidth * 0.05), // Reduce spacing
+                  SizedBox(width: screenWidth * 0.05),
                   SocialLoginButton(
                     imagePath: 'assets/icons/Apple_logo_black.png',
                     loginMethod: signInWithApple,

@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-import 'package:hotel_booking/screens/payment.dart';
 import 'package:intl/intl.dart';
 
 import '../../constants/ImportFiles.dart';
@@ -39,7 +37,7 @@ class PremiumBookingPage extends StatelessWidget {
                   borderRadius: BorderRadius.circular(15),
                   image: const DecorationImage(
                     image: AssetImage(
-                        'assets/images/premium_room.jpg'), // Add your premium room image here
+                        'assets/images/Room-Premium-min.jpg'), // Add your premium room image here
                     fit: BoxFit.cover,
                   ),
                 ),

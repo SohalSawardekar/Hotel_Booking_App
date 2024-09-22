@@ -35,6 +35,8 @@ export 'package:hotel_booking/screens/rooms/StandardRoomGalleryPage.dart';
 export 'package:hotel_booking/screens/rooms/SuiteRoomGalleryPage.dart';
 export 'package:hotel_booking/screens/bookings/AvailabilityPage.dart';
 export 'package:hotel_booking/screens/bookings/bookingHistory.dart';
+export 'package:hotel_booking/screens/bookings/VillaBookingPage.dart';
+export 'package:hotel_booking/screens/rooms/VillaGalleryPage.dart';
 
 export 'package:hotel_booking/constants/data.dart';
 export 'package:hotel_booking/constants/theme.dart';

@@ -1,4 +1,7 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:hotel_booking/constants/ImportFiles.dart';
+import 'package:hotel_booking/screens/bookings/VillaBookingPage.dart';
+import 'package:hotel_booking/screens/rooms/VillaGalleryPage.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -9,13 +12,38 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
+  int _currentIndex = 0;
+
+  final List<String> headerImages = [
+    'assets/images/Homepage.jpg',
+    'assets/images/HOME1.jpg',
+    'assets/images/HOME2.jpg',
+    'assets/images/HOME3.jpg',
+    'assets/images/HOME4.jpg',
+    'assets/images/HOME5.jpg',
+  ];
+
+  final List<String> roomTypes = [
+    'Standard',
+    'Premium',
+    'Luxury',
+    'Suite',
+    'Villa'
+  ];
+
+  final List<String> imagePaths = [
+    'assets/images/standardroom.jpg',
+    'assets/images/Room-Premium-min.jpg',
+    'assets/images/luxuryRoom.jpeg',
+    'assets/images/suiteroom.jpg',
+    'assets/images/villa.jpg',
+  ];
 
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
 
-    // Handle navigation based on the tapped index
     final pages = [
       const HomeScreen(),
       const ProfilePage(),
@@ -34,6 +62,50 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  void navigateToBookingPage(String roomType) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) {
+        switch (roomType) {
+          case 'Standard':
+            return const StandardBookingPage();
+          case 'Premium':
+            return const PremiumBookingPage();
+          case 'Luxury':
+            return const LuxuryBookingPage();
+          case 'Suite':
+            return const SuiteBookingPage();
+          case 'Villa':
+            return const VillaBookingPage();
+          default:
+            return const StandardBookingPage();
+        }
+      }),
+    );
+  }
+
+  void navigateToGalleryPage(String roomType) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) {
+        switch (roomType) {
+          case 'Standard':
+            return const StandardRoomGalleryPage();
+          case 'Premium':
+            return const PremiumRoomGalleryPage();
+          case 'Luxury':
+            return const LuxuryRoomGalleryPage();
+          case 'Suite':
+            return const SuiteBookingPage();
+          case 'Villa':
+            return const VillaRoomGalleryPage();
+          default:
+            return const StandardRoomGalleryPage();
+        }
+      }),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
@@ -47,9 +119,9 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             buildHeaderImage(screenSize),
             const SizedBox(height: 20),
-            sectionTitle('Book a Room', horizontalPadding),
+            sectionTitle('Recommended for You', horizontalPadding),
             const SizedBox(height: 20),
-            buildHorizontalList(screenSize),
+            buildRecommendedForYou(screenSize),
             const SizedBox(height: 20),
             sectionTitle('Explore Our Rooms', horizontalPadding),
             const SizedBox(height: 10),
@@ -57,54 +129,107 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: buildBottomNavigationBar(),
+      bottomNavigationBar: buildBottomNavigationBar(context),
     );
   }
 
   AppBar buildAppBar(BuildContext context, Size screenSize) {
     return AppBar(
       toolbarHeight: screenSize.height * 0.1,
+      backgroundColor: const Color(0xFF00695C),
       automaticallyImplyLeading: false,
-      title: Text(
-        "Welcome to Simple Stays",
-        style: GoogleFonts.poppins(
-          fontWeight: FontWeight.w800,
-          fontSize: 20,
-        ),
+      title: Row(
+        children: [
+          Icon(Icons.hotel,
+              color: Colors.white, size: screenSize.height * 0.04),
+          const SizedBox(width: 10),
+          Text(
+            "Simple Stays",
+            style: GoogleFonts.poppins(
+              fontWeight: FontWeight.w800,
+              fontSize: 24,
+              color: Colors.white,
+            ),
+          ),
+        ],
       ),
       actions: [
-        TextButton(
-          onPressed: () {
-            logout(context);
-          },
-          child: const Text('Logout'),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: ElevatedButton(
+            onPressed: () {
+              logout(context);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFFFF6F00),
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 24),
+              shape: const StadiumBorder(),
+            ),
+            child: Text(
+              'Logout',
+              style: GoogleFonts.poppins(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+          ),
         ),
       ],
     );
   }
 
-  TextButton buildActionButton(String label, Widget targetPage) {
-    return TextButton(
-      onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => targetPage),
-        );
-      },
-      child: Text(label),
-    );
-  }
-
   Widget buildHeaderImage(Size screenSize) {
-    return Container(
-      width: screenSize.width,
-      height: screenSize.height * 0.3,
-      decoration: const BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage('assets/images/Homepage.jpg'),
-          fit: BoxFit.cover,
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        CarouselSlider(
+          items: headerImages
+              .map((imagePath) => Container(
+                    width: screenSize.width,
+                    height: screenSize.height * 0.3,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage(imagePath),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ))
+              .toList(),
+          options: CarouselOptions(
+            height: screenSize.height * 0.3,
+            autoPlay: true,
+            viewportFraction: 1.0,
+            onPageChanged: (index, reason) {
+              setState(() {
+                _currentIndex = index;
+              });
+            },
+          ),
         ),
-      ),
+        Positioned(
+          bottom: 10,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: headerImages.asMap().entries.map((entry) {
+              return GestureDetector(
+                onTap: () => setState(() => _currentIndex = entry.key),
+                child: Container(
+                  width: 12.0,
+                  height: 12.0,
+                  margin: const EdgeInsets.symmetric(
+                      vertical: 8.0, horizontal: 4.0),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color:
+                        _currentIndex == entry.key ? Colors.white : Colors.grey,
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
+        ),
+      ],
     );
   }
 
@@ -113,54 +238,74 @@ class _HomeScreenState extends State<HomeScreen> {
       padding: EdgeInsets.symmetric(horizontal: padding),
       child: Text(
         title,
-        style: Theme.of(context).textTheme.titleLarge,
+        style: GoogleFonts.poppins(
+          fontWeight: FontWeight.w600,
+          fontSize: 22,
+        ),
       ),
     );
   }
 
-  Widget buildHorizontalList(Size screenSize) {
+  Widget buildRecommendedForYou(Size screenSize) {
     return SizedBox(
-      height: screenSize.height * 0.25,
+      height: screenSize.height * 0.26, // Reduced height
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: 4,
+        itemCount: roomTypes.length,
         itemBuilder: (context, index) {
-          final roomTypes = ['Standard', 'Premium', 'Luxury', 'Suite'];
-          final imagePaths = [
-            'assets/images/standardroom.jpg',
-            'assets/images/Room-Premium-min.jpg',
-            'assets/images/luxuryRoom.jpeg',
-            'assets/images/suiteroom.jpg'
-          ];
-
           return Padding(
-            padding: EdgeInsets.only(left: screenSize.width * 0.04),
-            child: RoomCard(
-              width: screenSize.width * 0.5,
-              imageHeight: screenSize.height * 0.12,
-              roomName: '${roomTypes[index]} Room',
-              imagePath: imagePaths[index],
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      switch (roomTypes[index]) {
-                        case 'Standard':
-                          return const StandardBookingPage();
-                        case 'Premium':
-                          return const PremiumBookingPage();
-                        case 'Luxury':
-                          return LuxuryBookingPage();
-                        case 'Suite':
-                          return const SuiteBookingPage();
-                        default:
-                          return const StandardBookingPage();
-                      }
-                    },
+            padding: EdgeInsets.only(
+                left: screenSize.width * 0.02), // Reduced left padding
+            child: Container(
+              width: screenSize.width * 0.4, // Reduced width
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                color: Colors.grey.shade200,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    blurRadius: 10,
+                    spreadRadius: 3,
+                  )
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Container(
+                    height: screenSize.height * 0.15, // Reduced height
+                    decoration: BoxDecoration(
+                      borderRadius:
+                          const BorderRadius.vertical(top: Radius.circular(12)),
+                      image: DecorationImage(
+                        image: AssetImage(imagePaths[index]),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                   ),
-                );
-              },
+                  Padding(
+                    padding: const EdgeInsets.all(6.0),
+                    child: Column(
+                      children: [
+                        Text(
+                          '${roomTypes[index]} Room',
+                          style: GoogleFonts.poppins(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 14,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        ElevatedButton(
+                          onPressed: () {
+                            navigateToBookingPage(roomTypes[index]);
+                          },
+                          child: (Text('Book Now')),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           );
         },
@@ -172,66 +317,74 @@ class _HomeScreenState extends State<HomeScreen> {
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      itemCount: 5,
+      itemCount: roomTypes.length,
       itemBuilder: (context, index) {
-        final roomTypes = ['Standard', 'Premium', 'Luxury', 'Suite', 'Villa'];
         final colors = [
-          Colors.orange.shade200,
-          const Color.fromARGB(255, 241, 225, 83),
-          Colors.cyan.shade300,
-          Colors.pink.shade300,
-          Colors.purple.shade300
+          Colors.orange.shade100,
+          Colors.blue.shade100,
+          Colors.green.shade100,
+          Colors.purple.shade100,
+          Colors.red.shade100,
         ];
 
         return GestureDetector(
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) {
-                  switch (roomTypes[index]) {
-                    case 'Standard':
-                      return const StandardRoomGalleryPage();
-                    case 'Premium':
-                      return const PremiumRoomGalleryPage();
-                    case 'Luxury':
-                      return const LuxuryRoomGalleryPage();
-                    case 'Suite':
-                      return const SuiteRoomGalleryPage();
-                    // case 'Villa':
-                    //   return const VillaRoomGalleryPage(); // Add this page in your routing
-                    default:
-                      return const StandardRoomGalleryPage();
-                  }
-                },
-              ),
-            );
+            navigateToGalleryPage(roomTypes[index]);
           },
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Container(
-              height: screenSize.height * 0.15,
-              decoration: BoxDecoration(
-                color: colors[index].withOpacity(0.9),
-                borderRadius: BorderRadius.circular(15),
-                boxShadow: [
-                  BoxShadow(
-                    color: colors[index].withOpacity(0.6),
-                    blurRadius: 5,
-                    spreadRadius: 1,
-                    offset: const Offset(0, 3),
-                  ),
-                ],
-              ),
-              child: Center(
-                child: Text(
-                  '${roomTypes[index]} Room',
-                  style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white),
+          child: Container(
+            margin: EdgeInsets.symmetric(vertical: screenSize.height * 0.01),
+            padding: EdgeInsets.all(screenSize.width * 0.02),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              color: colors[index % colors.length],
+              boxShadow: [
+                BoxShadow(
+                  color:
+                      const Color.fromARGB(201, 255, 252, 252).withOpacity(0.1),
+                  blurRadius: 8,
+                  spreadRadius: 2,
                 ),
-              ),
+              ],
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: screenSize.width * 0.3,
+                  height: screenSize.height * 0.15,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    image: DecorationImage(
+                      image: AssetImage(imagePaths[index]),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+                SizedBox(width: screenSize.width * 0.02),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        roomTypes[index],
+                        style: GoogleFonts.poppins(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 18,
+                        ),
+                      ),
+                      SizedBox(height: 5),
+                      Text(
+                        'View Gallery',
+                        style: GoogleFonts.poppins(
+                          fontWeight: FontWeight.w400,
+                          fontSize: 16,
+                          color: Colors.blue,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
         );
@@ -239,145 +392,47 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  BottomNavigationBar buildBottomNavigationBar() {
+  BottomNavigationBar buildBottomNavigationBar(BuildContext context) {
+    final bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     return BottomNavigationBar(
-      type: BottomNavigationBarType.fixed,
-      items: const <BottomNavigationBarItem>[
-        BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-        BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
-        BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), label: 'Book'),
-        BottomNavigationBarItem(
-            icon: Icon(Icons.contact_page), label: 'Contact'),
-      ],
       currentIndex: _selectedIndex,
-      selectedItemColor: const Color.fromARGB(255, 99, 99, 99),
       onTap: _onItemTapped,
-    );
-  }
-}
-
-// Separate reusable RoomCard widget
-class RoomCard extends StatelessWidget {
-  final double width;
-  final double imageHeight;
-  final String roomName;
-  final String imagePath; // New parameter for the image path
-  final VoidCallback onTap;
-
-  const RoomCard({
-    super.key,
-    required this.width,
-    required this.imageHeight,
-    required this.roomName,
-    required this.imagePath, // Initialize the image path
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: width,
-      decoration: BoxDecoration(
-        color: Colors.grey[300],
-        borderRadius: BorderRadius.circular(15),
+      backgroundColor: isDarkMode
+          ? Colors.black
+          : Colors.white, // Background color changes based on mode
+      selectedItemColor:
+          isDarkMode ? Colors.white : Colors.black, // Selected item color
+      unselectedItemColor:
+          isDarkMode ? Colors.white54 : Colors.black54, // Unselected item color
+      selectedLabelStyle: GoogleFonts.poppins(
+        fontWeight: FontWeight.w600,
+        fontSize: 14, // Set font size for selected labels
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            height: imageHeight,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
-              image: DecorationImage(
-                image: AssetImage(imagePath), // Use the image path
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              roomName,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: TextButton(
-              onPressed: onTap,
-              style: TextButton.styleFrom(
-                foregroundColor: const Color.fromARGB(255, 0, 130, 125),
-                backgroundColor: Colors.white,
-              ),
-              child: const Text('Book Now'),
-            ),
-          ),
-        ],
+      unselectedLabelStyle: GoogleFonts.poppins(
+        fontWeight: FontWeight.w600,
+        fontSize: 14, // Set font size for unselected labels
       ),
-    );
-  }
-}
-
-// Separate reusable RoomListItem widget
-class RoomListItem extends StatelessWidget {
-  final double width;
-  final double height;
-  final String roomName;
-  final VoidCallback onTap;
-
-  const RoomListItem({
-    super.key,
-    required this.width,
-    required this.height,
-    required this.roomName,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: height,
-      decoration: BoxDecoration(
-        color: Colors.grey[300],
-        borderRadius: BorderRadius.circular(15),
-      ),
-      child: Row(
-        children: [
-          // Placeholder for room image
-          Container(
-            width: width,
-            height: double.infinity,
-            decoration: BoxDecoration(
-              color: Colors.grey[400], // Replace with actual room image
-              borderRadius: BorderRadius.circular(15),
-            ),
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    roomName,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 8),
-                  TextButton(
-                    onPressed: onTap,
-                    style: TextButton.styleFrom(
-                      foregroundColor: const Color.fromARGB(255, 0, 130, 125),
-                      backgroundColor: Colors.white,
-                    ),
-                    child: const Text('Book'),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
+      showSelectedLabels: true, // Ensure selected labels are always shown
+      showUnselectedLabels: true, // Ensure unselected labels are always shown
+      items: const <BottomNavigationBarItem>[
+        BottomNavigationBarItem(
+          icon: Icon(Icons.home, size: 28), // Increase icon size
+          label: 'Home',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.person, size: 28), // Increase icon size
+          label: 'Profile',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.book, size: 28), // Increase icon size
+          label: 'Bookings',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.contact_mail, size: 28), // Increase icon size
+          label: 'Contact',
+        ),
+      ],
     );
   }
 }

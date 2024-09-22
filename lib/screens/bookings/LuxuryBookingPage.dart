@@ -2,6 +2,8 @@ import 'package:intl/intl.dart';
 import '../../constants/ImportFiles.dart'; // Adjust import path as needed
 
 class LuxuryBookingPage extends StatelessWidget {
+  const LuxuryBookingPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     // Example hardcoded values for demonstration

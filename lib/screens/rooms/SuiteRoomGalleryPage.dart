@@ -1,76 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:video_player/video_player.dart';
 
 class SuiteRoomGalleryPage extends StatefulWidget {
   const SuiteRoomGalleryPage({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _SuiteRoomGalleryPageState createState() => _SuiteRoomGalleryPageState();
 }
 
 class _SuiteRoomGalleryPageState extends State<SuiteRoomGalleryPage> {
-  late VideoPlayerController _videoController;
-
-  @override
-  void initState() {
-    super.initState();
-    // Initialize the video controller
-    _videoController = VideoPlayerController.asset(
-        'assets/videos/luxury_hotel.mp4')
-      ..initialize().then((_) {
-        setState(() {}); // Ensure the first frame is shown after initialization
-      })
-      ..setLooping(true) // Loop the video for continuous play
-      ..setVolume(0.5); // Set default volume
-  }
-
-  @override
-  void dispose() {
-    _videoController.dispose();
-    super.dispose();
-  }
-
-  Widget buildVideoPlayer() {
-    return _videoController.value.isInitialized
-        ? ClipRRect(
-            borderRadius: BorderRadius.circular(15),
-            child: AspectRatio(
-              aspectRatio: _videoController.value.aspectRatio,
-              child: VideoPlayer(_videoController),
-            ),
-          )
-        : Center(
-            child:
-                const CircularProgressIndicator()); // Center the loading indicator
-  }
-
   @override
   Widget build(BuildContext context) {
-    // Group of image assets and one video item at the end
-    final List<Widget> galleryItems = [
-      'assets/images/suiteroom.jpg',
-    ].map((imageUrl) {
-      return Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(15),
-          child: Image.asset(
-            imageUrl,
-            fit: BoxFit.cover,
-            width: MediaQuery.of(context).size.width * 0.9,
-          ),
-        ),
-      );
-    }).toList();
-
-    // Adding video as the last item in the gallery
-    galleryItems.add(
-      Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: buildVideoPlayer(),
-      ),
-    );
+    // List of images for the Suite Room gallery
+    final List<String> imageList = [
+      'assets/images/STUD1.png',
+      'assets/images/STUD2.png',
+      'assets/images/STUD2.png',
+      'assets/images/STUD4.png',
+      'assets/images/STUD5.png',
+      'assets/images/STUD6.png', // Add more images as needed
+    ];
 
     const String description =
         'Suite offering separate living and sleeping areas with top-tier amenities.';
@@ -87,16 +35,31 @@ class _SuiteRoomGalleryPageState extends State<SuiteRoomGalleryPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Gallery with images first and video last
+            // Image Carousel with Multiple Images
             SizedBox(
-              height: 250, // Adjusted height for images and video
-              child: PageView(
-                children: galleryItems,
+              height: 250, // Adjust the height as needed
+              child: PageView.builder(
+                itemCount: imageList.length,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ClipRRect(
+                      borderRadius:
+                          BorderRadius.circular(15), // Rounded corners
+                      child: Image.asset(
+                        imageList[index],
+                        fit: BoxFit.cover,
+                        width: MediaQuery.of(context).size.width *
+                            0.9, // Adjust width
+                      ),
+                    ),
+                  );
+                },
               ),
             ),
             const SizedBox(height: 20),
 
-            // Room Details Section using a Card for a clean design
+            // Room Details Section with Card Layout
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Card(

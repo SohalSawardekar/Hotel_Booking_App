@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:video_player/video_player.dart';
 
 class LuxuryRoomGalleryPage extends StatefulWidget {
   const LuxuryRoomGalleryPage({super.key});
@@ -9,45 +8,15 @@ class LuxuryRoomGalleryPage extends StatefulWidget {
 }
 
 class _LuxuryRoomGalleryPageState extends State<LuxuryRoomGalleryPage> {
-  late VideoPlayerController _videoController;
-
-  @override
-  void initState() {
-    super.initState();
-    // Initialize the video controller
-    _videoController = VideoPlayerController.asset(
-        'assets/videos/luxury_hotel.mp4')
-      ..initialize().then((_) {
-        setState(() {}); // Ensure the first frame is shown after initialization
-      })
-      ..setLooping(true) // Loop the video for continuous play
-      ..setVolume(0.5); // Set default volume
-  }
-
-  @override
-  void dispose() {
-    _videoController.dispose();
-    super.dispose();
-  }
-
-  Widget buildVideoPlayer() {
-    return _videoController.value.isInitialized
-        ? ClipRRect(
-            borderRadius: BorderRadius.circular(15),
-            child: AspectRatio(
-              aspectRatio: _videoController.value.aspectRatio,
-              child: VideoPlayer(_videoController),
-            ),
-          )
-        : Center(
-            child: CircularProgressIndicator()); // Center the loading indicator
-  }
-
   @override
   Widget build(BuildContext context) {
-    // Groups of multiple images to be shown per slide
-    final List<List<String>> imageGroups = [
-      ['assets/images/luxuryRoom.jpeg']
+    // Multiple images to be shown in the gallery
+    final List<String> imageList = [
+      'assets/images/LX1.png',
+      'assets/images/LX2.png',
+      'assets/images/LX3.png',
+      'assets/images/LX4.png',
+      'assets/images/LX5.png', // Add more images as needed
     ];
 
     const String description =
@@ -65,39 +34,26 @@ class _LuxuryRoomGalleryPageState extends State<LuxuryRoomGalleryPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Room Image Carousel
+            // Image Carousel with multiple images
             SizedBox(
               height: 250, // Adjusted height for larger image display
               child: PageView.builder(
-                itemCount: imageGroups.length,
+                itemCount: imageList.length,
                 itemBuilder: (context, index) {
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: imageGroups[index].map((imageUrl) {
-                      return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(
-                              15), // Rounded corners for images
-                          child: Image.asset(
-                            imageUrl,
-                            fit: BoxFit.cover,
-                            width: MediaQuery.of(context).size.width *
-                                0.45, // Adjusted width
-                          ),
-                        ),
-                      );
-                    }).toList(),
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(
+                          15), // Rounded corners for images
+                      child: Image.asset(
+                        imageList[index],
+                        fit: BoxFit.cover,
+                        width: MediaQuery.of(context).size.width * 0.9,
+                      ),
+                    ),
                   );
                 },
               ),
-            ),
-            const SizedBox(height: 20),
-
-            // Video Player Section with Padding
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: buildVideoPlayer(),
             ),
             const SizedBox(height: 20),
 

@@ -9,8 +9,8 @@ class StandardBookingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double pricePerNight = 3000.0; // Example price
-    final double gst = 0.18; // Example GST rate
+    const double pricePerNight = 3000.0; // Example price
+    const double gst = 0.18; // Example GST rate
     final double totalAmount = pricePerNight * (1 + gst);
 
     // Formatting the check-in and check-out dates for better display
@@ -40,7 +40,7 @@ class StandardBookingPage extends StatelessWidget {
                   borderRadius: BorderRadius.circular(15),
                   image: const DecorationImage(
                     image: AssetImage(
-                        'assets/images/standard_room.jpg'), // Replace with your image
+                        'assets/images/standardroom.jpg'), // Replace with your image
                     fit: BoxFit.cover,
                   ),
                 ),

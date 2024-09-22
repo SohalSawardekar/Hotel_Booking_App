@@ -1,12 +1,15 @@
+import 'package:flutter/material.dart';
+import 'package:hotel_booking/screens/bookings/bookings.dart';
 import 'package:intl/intl.dart';
-import '../../constants/ImportFiles.dart';
 
-class SuiteBookingPage extends StatelessWidget {
-  const SuiteBookingPage({super.key});
+// For formatting dates
+
+class VillaBookingPage extends StatelessWidget {
+  const VillaBookingPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    const double pricePerNight = 10000.0; // Example price
+    const double pricePerNight = 15000.0; // Example price for villa
     const double gst = 0.18; // GST rate
     final double totalAmount = pricePerNight * (1 + gst);
 
@@ -19,8 +22,8 @@ class SuiteBookingPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Suite Room Booking'),
-        backgroundColor: Colors.deepPurpleAccent,
+        title: const Text('Villa Booking'),
+        backgroundColor: Colors.teal, // Color for a more premium villa look
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -28,7 +31,7 @@ class SuiteBookingPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Suite Room Image Section
+              // Villa Image Section
               Container(
                 width: double.infinity,
                 height: 220,
@@ -36,7 +39,7 @@ class SuiteBookingPage extends StatelessWidget {
                   borderRadius: BorderRadius.circular(15),
                   image: const DecorationImage(
                     image: AssetImage(
-                        'assets/images/suiteroom.jpg'),
+                        'assets/images/villa.jpg'), // Replace with villa image
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -45,7 +48,7 @@ class SuiteBookingPage extends StatelessWidget {
 
               // Room Title and Price
               const Text(
-                'Suite Room',
+                'Villa',
                 style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 10),
@@ -65,8 +68,7 @@ class SuiteBookingPage extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      Icon(Icons.wifi,
-                          color: Colors.deepPurpleAccent, size: 28),
+                      Icon(Icons.wifi, color: Colors.teal, size: 28),
                       SizedBox(width: 10),
                       Text('Free WiFi', style: TextStyle(fontSize: 18)),
                     ],
@@ -74,8 +76,7 @@ class SuiteBookingPage extends StatelessWidget {
                   SizedBox(height: 10),
                   Row(
                     children: [
-                      Icon(Icons.ac_unit,
-                          color: Colors.deepPurpleAccent, size: 28),
+                      Icon(Icons.ac_unit, color: Colors.teal, size: 28),
                       SizedBox(width: 10),
                       Text('Air Conditioning', style: TextStyle(fontSize: 18)),
                     ],
@@ -83,8 +84,7 @@ class SuiteBookingPage extends StatelessWidget {
                   SizedBox(height: 10),
                   Row(
                     children: [
-                      Icon(Icons.pool,
-                          color: Colors.deepPurpleAccent, size: 28),
+                      Icon(Icons.pool, color: Colors.teal, size: 28),
                       SizedBox(width: 10),
                       Text('Private Pool', style: TextStyle(fontSize: 18)),
                     ],
@@ -92,10 +92,17 @@ class SuiteBookingPage extends StatelessWidget {
                   SizedBox(height: 10),
                   Row(
                     children: [
-                      Icon(Icons.restaurant,
-                          color: Colors.deepPurpleAccent, size: 28),
+                      Icon(Icons.spa, color: Colors.teal, size: 28),
                       SizedBox(width: 10),
-                      Text('Personal Chef', style: TextStyle(fontSize: 18)),
+                      Text('Private Spa', style: TextStyle(fontSize: 18)),
+                    ],
+                  ),
+                  SizedBox(height: 10),
+                  Row(
+                    children: [
+                      Icon(Icons.restaurant, color: Colors.teal, size: 28),
+                      SizedBox(width: 10),
+                      Text('In-Villa Dining', style: TextStyle(fontSize: 18)),
                     ],
                   ),
                 ],
@@ -106,7 +113,7 @@ class SuiteBookingPage extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(15),
                 decoration: BoxDecoration(
-                  color: Colors.deepPurpleAccent.withOpacity(0.1),
+                  color: Colors.teal.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Row(
@@ -122,7 +129,7 @@ class SuiteBookingPage extends StatelessWidget {
                       style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
-                          color: Colors.deepPurpleAccent),
+                          color: Colors.teal),
                     ),
                   ],
                 ),
@@ -134,7 +141,7 @@ class SuiteBookingPage extends StatelessWidget {
                 padding: const EdgeInsets.all(15),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: Colors.deepPurpleAccent, width: 1),
+                  border: Border.all(color: Colors.teal, width: 1),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -156,7 +163,7 @@ class SuiteBookingPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 10),
                     const Text(
-                      'Guests: 1 Adult, 0 Children',
+                      'Guests: 2 Adults, 1 Child',
                       style: TextStyle(fontSize: 18, color: Colors.grey),
                     ),
                   ],
@@ -170,13 +177,13 @@ class SuiteBookingPage extends StatelessWidget {
                 height: 50,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.deepPurpleAccent,
+                    backgroundColor: Colors.teal,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
                   onPressed: () {
-                    var roomType = 'suite';
+                    var roomType = 'villa';
                     Navigator.push(
                       context,
                       MaterialPageRoute(

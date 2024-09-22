@@ -17,7 +17,7 @@ class AuthWrapper extends StatelessWidget {
           User? user = snapshot.data;
           if (user == null) {
             // User is not logged in, go to login page
-            return LoginPage();
+            return const LoginPage();
           } else {
             // User is logged in, go to home page
             return const HomeScreen();

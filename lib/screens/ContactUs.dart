@@ -54,7 +54,7 @@ class _ContactUsState extends State<ContactUs> {
           child: Column(
             children: [
               // Top bar
-              Container(
+              SizedBox(
                 height: 100,
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,

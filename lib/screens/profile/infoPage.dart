@@ -5,6 +5,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ProfileInfoPage extends StatefulWidget {
+  const ProfileInfoPage({super.key});
+
   @override
   _ProfileInfoPageState createState() => _ProfileInfoPageState();
 }
@@ -211,7 +213,7 @@ class _ProfileInfoPageState extends State<ProfileInfoPage> {
         decoration: InputDecoration(
           labelText: 'Birthdate',
           suffixIcon: IconButton(
-            icon: Icon(Icons.calendar_today),
+            icon: const Icon(Icons.calendar_today),
             onPressed: () => _selectDate(context),
           ),
           border: OutlineInputBorder(

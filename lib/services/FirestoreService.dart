@@ -20,8 +20,8 @@ class FirestoreService {
         // If the user does not exist, create a new document with user info
         await userRef.set({
           'email': user.email,
-          'name': user.displayName ?? null, // Handle if displayName is null
-          'mobileNo': user.phoneNumber ?? null, // Handle if displayName is null
+          'name': user.displayName, // Handle if displayName is null
+          'mobileNo': user.phoneNumber, // Handle if displayName is null
           'createdAt': FieldValue.serverTimestamp(),
           'lastLogin': FieldValue.serverTimestamp(),
           'bookings': [], // Initialize an empty list for bookings

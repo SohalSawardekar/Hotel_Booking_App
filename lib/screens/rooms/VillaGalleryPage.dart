@@ -1,43 +1,43 @@
 import 'package:flutter/material.dart';
 
-class PremiumRoomGalleryPage extends StatefulWidget {
-  const PremiumRoomGalleryPage({super.key});
+class VillaRoomGalleryPage extends StatefulWidget {
+  const VillaRoomGalleryPage({super.key});
 
   @override
-  _PremiumRoomGalleryPageState createState() => _PremiumRoomGalleryPageState();
+  _VillaRoomGalleryPageState createState() => _VillaRoomGalleryPageState();
 }
 
-class _PremiumRoomGalleryPageState extends State<PremiumRoomGalleryPage> {
+class _VillaRoomGalleryPageState extends State<VillaRoomGalleryPage> {
   @override
   Widget build(BuildContext context) {
-    // Multiple image groups for the Premium Room gallery
+    // Multiple images for the villa room
     final List<String> imageList = [
-      'assets/images/PR1.png',
-      'assets/images/PR2.png',
-      'assets/images/PR3.png',
-      'assets/images/PR4.png',
-      'assets/images/PR5.png', // Add more images as needed
+      'assets/images/Villa1.jpeg',
+      'assets/images/Villa2.jpeg',
+      'assets/images/Villa3.jpeg',
+      'assets/images/Villa4.jpeg',
+      'assets/images/Villa5.jpeg',
     ];
 
     const String description =
-        'Premium room offering more space and luxurious decor.';
-    const String bedDetails = '1 Queen Size Bed + 1 Single Bed';
-    const String amenities = 'Free Wi-Fi, TV, Mini-Bar, Bathtub';
-    const String extraBedCharges = '₹800 per night';
+        'Luxurious villa with spacious rooms, private pool, and a serene atmosphere.';
+    const String bedDetails = '2 King Size Beds';
+    const String amenities =
+        'Private Pool, Free Wi-Fi, TV, Mini-Bar, Bathtub, Personal Butler';
+    const String extraBedCharges = '₹1,000 per night';
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Premium Room Gallery'),
-        backgroundColor:
-            Colors.deepPurpleAccent, // Aesthetic touch for the app bar
+        title: const Text('Villa Room Gallery'),
+        backgroundColor: Colors.teal,
       ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Image Carousel with multiple images
+            // Room Image Carousel with Multiple Images
             SizedBox(
-              height: 250, // Adjusted to accommodate multiple images
+              height: 250, // Adjust the height as needed
               child: PageView.builder(
                 itemCount: imageList.length,
                 itemBuilder: (context, index) {
@@ -49,7 +49,8 @@ class _PremiumRoomGalleryPageState extends State<PremiumRoomGalleryPage> {
                       child: Image.asset(
                         imageList[index],
                         fit: BoxFit.cover,
-                        width: MediaQuery.of(context).size.width * 0.9,
+                        width: MediaQuery.of(context).size.width *
+                            0.9, // Adjust width
                       ),
                     ),
                   );
@@ -72,7 +73,7 @@ class _PremiumRoomGalleryPageState extends State<PremiumRoomGalleryPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Premium Room',
+                        'Villa Room',
                         style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
