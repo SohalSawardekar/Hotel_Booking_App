@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:intl/intl.dart';
 import 'package:hotel_booking/constants/ImportFiles.dart'; // Adjust import path as needed
 
@@ -27,6 +28,7 @@ class _AvailabilityPageState extends State<AvailabilityPage> {
   bool _isCheckingAvailability = false;
   bool _isAvailable = false;
   String _availabilityMessage = '';
+  String _roomID = '';
 
   @override
   void initState() {
@@ -35,16 +37,44 @@ class _AvailabilityPageState extends State<AvailabilityPage> {
   }
 
   Future<void> _checkRoomAvailability() async {
-    // Mocking availability check for design purposes
     setState(() {
       _isCheckingAvailability = true;
     });
-    await Future.delayed(const Duration(seconds: 2));
-    setState(() {
-      _isCheckingAvailability = false;
-      _isAvailable = true;
-      _availabilityMessage = 'The room is available.';
-    });
+
+    try {
+      // Firestore query to fetch rooms that match the roomType and have status 'yes'
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('Rooms')
+          .where('roomType', isEqualTo: widget.roomType)
+          .where('status', isEqualTo: 'yes')
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        // Select a random room from the available ones
+        var randomRoom =
+            querySnapshot.docs[Random().nextInt(querySnapshot.docs.length)];
+
+        setState(() {
+          _isCheckingAvailability = false;
+          _isAvailable = true;
+          _availabilityMessage =
+              'Room is available: ${randomRoom['roomName']}'; // Update with room name or other details
+          _roomID = randomRoom.id; // Store the room ID for future use
+        });
+      } else {
+        setState(() {
+          _isCheckingAvailability = false;
+          _isAvailable = false;
+          _availabilityMessage = 'No rooms available for the selected type.';
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _isCheckingAvailability = false;
+        _isAvailable = false;
+        _availabilityMessage = 'Error checking availability: ${e.toString()}';
+      });
+    }
   }
 
   @override
@@ -189,6 +219,7 @@ class _AvailabilityPageState extends State<AvailabilityPage> {
                     adults: widget.adults,
                     children: widget.children,
                     totalAmount: widget.totalAmount,
+                    roomID: _roomID,
                   ),
                 ),
               );

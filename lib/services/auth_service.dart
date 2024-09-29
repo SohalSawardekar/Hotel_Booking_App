@@ -61,6 +61,7 @@ class AuthService {
       switch (e.code) {
         case 'email-already-in-use':
           message = 'The account already exists for that email.';
+          Navigator.pushReplacementNamed(context, '/login');
           break;
         case 'weak-password':
           message = 'The password provided is too weak.';

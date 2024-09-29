@@ -9,6 +9,7 @@ class PaymentPage extends StatefulWidget {
   final int adults;
   final int children;
   final double totalAmount;
+  final String roomID;
 
   const PaymentPage({
     super.key,
@@ -18,6 +19,7 @@ class PaymentPage extends StatefulWidget {
     required this.adults,
     required this.children,
     required this.totalAmount,
+    required this.roomID,
   });
 
   @override
@@ -45,7 +47,8 @@ class _PaymentPageState extends State<PaymentPage> {
 
   @override
   Widget build(BuildContext context) {
-    final currencyFormatter = NumberFormat.simpleCurrency();
+    final currencyFormatter =
+        NumberFormat.currency(locale: 'en_IN', symbol: '₹');
 
     return Scaffold(
       appBar: AppBar(
