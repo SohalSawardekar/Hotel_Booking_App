@@ -3,7 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class FeedbackPage extends StatefulWidget {
-  const FeedbackPage({super.key});
+  const FeedbackPage(
+      {super.key,
+      required String paymentMethod,
+      required String roomType,
+      required double totalAmount});
 
   @override
   _FeedbackPageState createState() => _FeedbackPageState();
@@ -92,7 +96,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                     allowHalfRating: true,
                     itemCount: 5,
                     itemSize: 40,
-                    itemBuilder: (context, index) => const Icon(
+                    itemBuilder: (context, index) => Icon(
                       Icons.star,
                       color: Colors.deepPurple,
                     ),
@@ -194,7 +198,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
     return TextFormField(
       decoration: InputDecoration(
         labelText: label,
-        border: const OutlineInputBorder(),
+        border: OutlineInputBorder(),
       ),
       validator: validator,
     );

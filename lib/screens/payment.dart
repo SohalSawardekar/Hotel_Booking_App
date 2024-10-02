@@ -9,7 +9,6 @@ class PaymentPage extends StatefulWidget {
   final int adults;
   final int children;
   final double totalAmount;
-  final String roomID;
 
   const PaymentPage({
     super.key,
@@ -19,7 +18,6 @@ class PaymentPage extends StatefulWidget {
     required this.adults,
     required this.children,
     required this.totalAmount,
-    required this.roomID,
   });
 
   @override
@@ -47,108 +45,170 @@ class _PaymentPageState extends State<PaymentPage> {
 
   @override
   Widget build(BuildContext context) {
-    final currencyFormatter =
-        NumberFormat.currency(locale: 'en_IN', symbol: '₹');
+    final currencyFormatter = NumberFormat.simpleCurrency();
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Payment'),
-        backgroundColor: Colors.deepPurple,
+        backgroundColor: isDarkMode ? Colors.black : Colors.deepPurple,
       ),
       body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Payment Summary
+              _buildPaymentSummary(isDarkMode, currencyFormatter),
+              const SizedBox(height: 30),
+
+              // Choose Payment Method
+              Text(
+                'Choose Payment Method:',
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: isDarkMode ? Colors.yellow : Colors.deepPurple,
+                    ),
+              ),
+              const SizedBox(height: 10),
+              _buildPaymentMethodOption(
+                  'Internet Banking', Icons.web, 1, isDarkMode),
+              _buildPaymentMethodOption(
+                  'Google Pay', Icons.payments, 2, isDarkMode),
+              _buildPaymentMethodOption(
+                  'Debit/Credit Card', Icons.credit_card, 3, isDarkMode),
+              _buildPaymentMethodOption(
+                  'UPI', Icons.account_balance, 4, isDarkMode),
+              const SizedBox(height: 20),
+
+              // Proceed to Pay Button
+              Center(
+                child: ElevatedButton(
+                  onPressed: _handlePayment,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: Colors.deepPurple,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 40, vertical: 15),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    elevation: 8,
+                  ),
+                  child: const Text(
+                    'Proceed to Pay',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPaymentSummary(bool isDarkMode, NumberFormat currencyFormatter) {
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
+      elevation: 8,
+      shadowColor: Colors.grey.withOpacity(0.2),
+      color: isDarkMode ? Colors.grey[850] : Colors.white,
+      child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Payment Summary
-            Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15),
-              ),
-              elevation: 8,
-              shadowColor: Colors.grey.withOpacity(0.2),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Payment Summary',
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.deepPurple,
-                          ),
-                    ),
-                    const SizedBox(height: 10),
-                    _buildSummaryRow('Room Type', widget.roomType),
-                    _buildSummaryRow('Check-in',
-                        DateFormat('MMM dd, yyyy').format(widget.checkInDate)),
-                    _buildSummaryRow('Check-out',
-                        DateFormat('MMM dd, yyyy').format(widget.checkOutDate)),
-                    _buildSummaryRow('Adults', widget.adults.toString()),
-                    _buildSummaryRow('Children', widget.children.toString()),
-                    _buildSummaryRow('Total Amount',
-                        currencyFormatter.format(widget.totalAmount)),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 30),
-
-            // Choose Payment Method
             Text(
-              'Choose Payment Method:',
+              'Payment Summary',
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: Colors.deepPurple,
+                    color: isDarkMode ? Colors.yellow : Colors.deepPurple,
                   ),
             ),
             const SizedBox(height: 10),
-            _buildPaymentMethodOption('Internet Banking', Icons.web, 1),
-            _buildPaymentMethodOption('Google Pay', Icons.payments, 2),
-            _buildPaymentMethodOption(
-                'Debit/Credit Card', Icons.credit_card, 3),
-            _buildPaymentMethodOption('UPI', Icons.account_balance, 4),
-            const SizedBox(height: 20),
-
-            // Proceed to Pay Button
-            Center(
-              child: ElevatedButton(
-                onPressed: _handlePayment,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  foregroundColor: Colors.deepPurple,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                ),
-                child: const Text(
-                  'Proceed to Pay',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-              ),
-            ),
+            _buildSummaryRow('Room Type', widget.roomType, isDarkMode),
+            _buildSummaryRow(
+                'Check-in',
+                DateFormat('MMM dd, yyyy').format(widget.checkInDate),
+                isDarkMode),
+            _buildSummaryRow(
+                'Check-out',
+                DateFormat('MMM dd, yyyy').format(widget.checkOutDate),
+                isDarkMode),
+            _buildSummaryRow('Adults', widget.adults.toString(), isDarkMode),
+            _buildSummaryRow(
+                'Children', widget.children.toString(), isDarkMode),
+            _buildSummaryRow('Total Amount',
+                currencyFormatter.format(widget.totalAmount), isDarkMode),
           ],
         ),
       ),
     );
   }
 
+  Widget _buildSummaryRow(String title, String value, bool isDarkMode) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 5),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: isDarkMode ? Colors.white70 : Colors.black87,
+            ),
+          ),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 16,
+              color: isDarkMode ? Colors.yellow[200] : Colors.black54,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPaymentMethodOption(
+      String methodName, IconData icon, int value, bool isDarkMode) {
+    return ListTile(
+      leading: Icon(
+        icon,
+        size: 40,
+        color: isDarkMode ? Colors.yellow : Colors.deepPurple,
+      ),
+      title: Text(
+        methodName,
+        style: const TextStyle(fontSize: 16),
+      ),
+      contentPadding: EdgeInsets.zero,
+      tileColor: isDarkMode ? Colors.grey[800] : Colors.grey.withOpacity(0.1),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      onTap: () {
+        setState(() {
+          _selectedPaymentMethod = value;
+        });
+      },
+    );
+  }
+
   void _handlePayment() {
-    // Implement payment handling based on selected payment method
     if (_selectedPaymentMethod == 1) {
-      // Handle Internet Banking
       _showBankSelectionDialog();
     } else if (_selectedPaymentMethod == 2) {
-      // Handle Google Pay
       _proceedToNextPage('Google Pay');
     } else if (_selectedPaymentMethod == 3) {
-      // Handle Debit/Credit Card
       _showCardNumberInputDialog();
     } else if (_selectedPaymentMethod == 4) {
-      // Handle UPI
       _showUpiSelectionDialog();
     } else {
       _showPaymentCompletedDialog();
@@ -228,7 +288,11 @@ class _PaymentPageState extends State<PaymentPage> {
   void _proceedToNextPage(String method) {
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
-        builder: (context) => PaymentCompletedPage(method: method),
+        builder: (context) => FeedbackPage(
+          paymentMethod: method,
+          roomType: widget.roomType,
+          totalAmount: widget.totalAmount,
+        ),
       ),
     );
   }
@@ -238,95 +302,16 @@ class _PaymentPageState extends State<PaymentPage> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Payment Completed'),
-        content: const Text('Your payment has been successfully processed.'),
+        content: const Text('Your payment was successful.'),
         actions: [
           TextButton(
             onPressed: () {
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute(
-                  builder: (context) => FeedbackPage(),
-                ),
-              );
+              Navigator.of(context).pop();
+              _proceedToNextPage('Completed');
             },
             child: const Text('OK'),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildSummaryRow(String title, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            title,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: Colors.black87,
-            ),
-          ),
-          Text(
-            value,
-            style: const TextStyle(
-              fontSize: 16,
-              color: Colors.black54,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPaymentMethodOption(
-      String methodName, IconData icon, int value) {
-    return ListTile(
-      leading: Icon(
-        icon,
-        size: 40,
-        color: Colors.deepPurple,
-      ),
-      title: Text(
-        methodName,
-        style: const TextStyle(fontSize: 16),
-      ),
-      contentPadding: EdgeInsets.zero,
-      tileColor: Colors.grey.withOpacity(0.1),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      onTap: () {
-        setState(() {
-          _selectedPaymentMethod = value;
-        });
-      },
-    );
-  }
-}
-
-class PaymentCompletedPage extends StatelessWidget {
-  final String method;
-
-  const PaymentCompletedPage({super.key, required this.method});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Payment Completed'),
-        backgroundColor: Colors.deepPurple,
-      ),
-      body: Center(
-        child: Text(
-          'Payment Completed using $method',
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: Colors.deepPurple,
-              ),
-        ),
       ),
     );
   }

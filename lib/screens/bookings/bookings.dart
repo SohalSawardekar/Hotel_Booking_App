@@ -1,6 +1,11 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hotel_booking/screens/bookings/AvailabilityPage.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:hotel_booking/constants/theme.dart';
 
 class BookingPage extends StatefulWidget {
   final DateTime? checkInDate;
@@ -17,7 +22,6 @@ class BookingPage extends StatefulWidget {
   });
 
   @override
-  // ignore: library_private_types_in_public_api
   _BookingPageState createState() => _BookingPageState();
 }
 
@@ -81,18 +85,27 @@ class _BookingPageState extends State<BookingPage> {
 
   @override
   Widget build(BuildContext context) {
+    bool isDarkMode = Provider.of<ThemeNotifier>(context).isDarkMode;
+    Color textColor = isDarkMode ? Colors.white : Colors.black;
+    Color backgroundColor = isDarkMode ? Colors.grey[900]! : Colors.white;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Book Your Stay'),
+        title: Text(
+          'Book Your Stay',
+          style: GoogleFonts.poppins(
+              color: const Color.fromRGBO(255, 255, 255, 1),
+              fontWeight: FontWeight.w600),
+        ),
         backgroundColor: Colors.deepPurple,
+        elevation: 4,
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(20.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Title
               const Text(
                 'Plan Your Perfect Stay',
                 style: TextStyle(
@@ -101,201 +114,39 @@ class _BookingPageState extends State<BookingPage> {
                   color: Colors.deepPurple,
                 ),
               ),
-              const SizedBox(height: 20),
-
-              // Check-in Date
-              GestureDetector(
-                onTap: () => _selectDate(true),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 12.0, horizontal: 16.0),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border.all(color: Colors.grey.shade300),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        'Check-in Date',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      Text(
-                        formatDate(checkInDate),
-                        style: const TextStyle(
-                          fontSize: 18,
-                          color: Colors.grey,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+              const SizedBox(height: 30),
+              _buildDateSelector(
+                context,
+                'Check-in Date',
+                formatDate(checkInDate),
+                () => _selectDate(true),
+                isDarkMode,
               ),
               const SizedBox(height: 20),
-
-              // Check-out Date
-              GestureDetector(
-                onTap: () => _selectDate(false),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 12.0, horizontal: 16.0),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border.all(color: Colors.grey.shade300),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        'Check-out Date',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      Text(
-                        formatDate(checkOutDate),
-                        style: const TextStyle(
-                          fontSize: 18,
-                          color: Colors.grey,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+              _buildDateSelector(
+                context,
+                'Check-out Date',
+                formatDate(checkOutDate),
+                () => _selectDate(false),
+                isDarkMode,
               ),
               const SizedBox(height: 20),
-
-              // Room Type Selection
-              Container(
-                padding: const EdgeInsets.symmetric(
-                    vertical: 12.0, horizontal: 16.0),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(color: Colors.grey.shade300),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'Select Room Type',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    DropdownButton<String>(
-                      value: selectedRoomType,
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          selectedRoomType = newValue!;
-                        });
-                      },
-                      items: roomTypes
-                          .map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                    ),
-                  ],
-                ),
-              ),
+              _buildRoomTypeDropdown(textColor, backgroundColor),
               const SizedBox(height: 20),
-
-              // Guests Information
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  // Adults
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Adults',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      Row(
-                        children: [
-                          IconButton(
-                            onPressed: () {
-                              setState(() {
-                                if (adults > 1) adults--;
-                              });
-                            },
-                            icon: const Icon(Icons.remove_circle_outline),
-                          ),
-                          Text(
-                            adults.toString(),
-                            style: const TextStyle(fontSize: 18),
-                          ),
-                          IconButton(
-                            onPressed: () {
-                              setState(() {
-                                adults++;
-                              });
-                            },
-                            icon: const Icon(Icons.add_circle_outline),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-
-                  // Children
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Children',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      Row(
-                        children: [
-                          IconButton(
-                            onPressed: () {
-                              setState(() {
-                                if (children > 0) children--;
-                              });
-                            },
-                            icon: const Icon(Icons.remove_circle_outline),
-                          ),
-                          Text(
-                            children.toString(),
-                            style: const TextStyle(fontSize: 18),
-                          ),
-                          IconButton(
-                            onPressed: () {
-                              setState(() {
-                                children++;
-                              });
-                            },
-                            icon: const Icon(Icons.add_circle_outline),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+              _buildAdultChildrenSelector(
+                  textColor,
+                  'Adults',
+                  adults,
+                  () => setState(() => adults++),
+                  () => setState(() => adults > 1 ? adults-- : null)),
+              const SizedBox(height: 20),
+              _buildAdultChildrenSelector(
+                  textColor,
+                  'Children',
+                  children,
+                  () => setState(() => children++),
+                  () => setState(() => children > 0 ? children-- : null)),
               const SizedBox(height: 40),
-
-              // Check Availability Button
               Center(
                 child: ElevatedButton(
                   onPressed: () {
@@ -314,7 +165,6 @@ class _BookingPageState extends State<BookingPage> {
                         ),
                       );
                     } else {
-                      // Show error message
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text(
@@ -328,7 +178,7 @@ class _BookingPageState extends State<BookingPage> {
                         vertical: 16.0, horizontal: 40.0),
                     backgroundColor: Colors.deepPurple,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                   ),
                   child: const Text(
@@ -346,42 +196,119 @@ class _BookingPageState extends State<BookingPage> {
       ),
     );
   }
-}
 
-@override
-Widget build(
-    BuildContext context,
-    DateTime checkInDate,
-    dynamic roomType,
-    DateTime checkOutDate,
-    dynamic adults,
-    dynamic children,
-    dynamic totalAmount) {
-  return Scaffold(
-    appBar: AppBar(title: const Text('Availability')),
-    body: Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('Room Type: $roomType'),
-          const SizedBox(height: 10),
-          Text(
-              'Check-in Date: ${DateFormat('dd MMM yyyy').format(checkInDate)}'),
-          const SizedBox(height: 10),
-          Text(
-              'Check-out Date: ${DateFormat('dd MMM yyyy').format(checkOutDate)}'),
-          const SizedBox(height: 10),
-          Text('Adults: $adults'),
-          const SizedBox(height: 10),
-          Text('Children: $children'),
-          const SizedBox(height: 20),
-          Text(
-            'Total Amount: ₹${totalAmount.toStringAsFixed(2)}',
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+  Widget _buildDateSelector(BuildContext context, String label, String dateText,
+      VoidCallback onTap, bool isDarkMode) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+        decoration: BoxDecoration(
+          color: isDarkMode ? Colors.grey[800] : Colors.white,
+          border: Border.all(color: Colors.grey.shade300),
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 6,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              label,
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            Text(
+              dateText,
+              style: const TextStyle(fontSize: 18),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRoomTypeDropdown(Color textColor, Color backgroundColor) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        border: Border.all(color: Colors.grey.shade300),
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
           ),
         ],
       ),
-    ),
-  );
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Text(
+            'Select Room Type',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          DropdownButton<String>(
+            value: selectedRoomType,
+            dropdownColor: backgroundColor,
+            onChanged: (String? newValue) {
+              setState(() {
+                selectedRoomType = newValue!;
+              });
+            },
+            items: roomTypes.map<DropdownMenuItem<String>>((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value, style: TextStyle(color: textColor)),
+              );
+            }).toList(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAdultChildrenSelector(Color textColor, String label, int value,
+      VoidCallback onAdd, VoidCallback onRemove) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        Row(
+          children: [
+            IconButton(
+              onPressed: onRemove,
+              icon: const Icon(Icons.remove_circle_outline),
+            ),
+            Text(
+              value.toString(),
+              style: TextStyle(fontSize: 18, color: textColor),
+            ),
+            IconButton(
+              onPressed: onAdd,
+              icon: const Icon(Icons.add_circle_outline),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
 }
