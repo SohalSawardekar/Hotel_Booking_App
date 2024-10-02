@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
 import 'package:hotel_booking/constants/ImportFiles.dart';
-import 'package:hotel_booking/screens/payment.dart';
 import 'package:intl/intl.dart';
 
 class AvailabilityPage extends StatefulWidget {

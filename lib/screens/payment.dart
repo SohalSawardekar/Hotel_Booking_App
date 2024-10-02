@@ -1,316 +1,207 @@
 import 'package:flutter/material.dart';
-import 'package:hotel_booking/screens/feedback.dart';
-import 'package:intl/intl.dart'; // For currency formatting
+import 'package:upi_india/upi_india.dart';
 
 class PaymentPage extends StatefulWidget {
-  final String roomType;
-  final DateTime checkInDate;
-  final DateTime checkOutDate;
-  final int adults;
-  final int children;
-  final double totalAmount;
-
-  const PaymentPage({
-    super.key,
-    required this.roomType,
-    required this.checkInDate,
-    required this.checkOutDate,
-    required this.adults,
-    required this.children,
-    required this.totalAmount,
-  });
+  const PaymentPage(
+      {super.key,
+      required String roomType,
+      required DateTime checkInDate,
+      required DateTime checkOutDate,
+      required int adults,
+      required int children,
+      required double totalAmount});
 
   @override
   _PaymentPageState createState() => _PaymentPageState();
 }
 
 class _PaymentPageState extends State<PaymentPage> {
-  int? _selectedPaymentMethod;
-  String? _selectedBank;
-  String? _cardNumber;
-  final List<String> _internetBankingOptions = [
-    'HDFC Bank',
-    'SBI',
-    'ICICI Bank',
-    'Axis Bank',
-    'Kotak Mahindra Bank'
-  ];
-  final List<String> _upiOptions = [
-    'PhonePe',
-    'Google Pay',
-    'Paytm',
-    'Amazon Pay',
-    'BharatPe'
-  ];
+  Future<UpiResponse>? _transaction;
+  UpiIndia _upiIndia = UpiIndia();
+  List<UpiApp>? apps;
+
+  TextStyle header = const TextStyle(
+    fontSize: 18,
+    fontWeight: FontWeight.bold,
+  );
+
+  TextStyle value = const TextStyle(
+    fontWeight: FontWeight.w400,
+    fontSize: 14,
+  );
 
   @override
-  Widget build(BuildContext context) {
-    final currencyFormatter = NumberFormat.simpleCurrency();
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+  void initState() {
+    _upiIndia.getAllUpiApps(mandatoryTransactionId: false).then((value) {
+      setState(() {
+        apps = value;
+      });
+    }).catchError((e) {
+      apps = [];
+    });
+    super.initState();
+  }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Payment'),
-        backgroundColor: isDarkMode ? Colors.black : Colors.deepPurple,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+  Future<UpiResponse> initiateTransaction(UpiApp app) async {
+    return _upiIndia.startTransaction(
+      app: app,
+      receiverUpiId: "sohalsawardekar11@okicici",
+      receiverName: 'Sohal Sawardekar',
+      transactionRefId: 'TestTransaction',
+      transactionNote: 'Example UPI Payment',
+      amount: 1.00,
+    );
+  }
+
+  Widget displayUpiApps() {
+    if (apps == null) {
+      return const Center(child: CircularProgressIndicator());
+    } else if (apps!.isEmpty) {
+      return Center(
+        child: Text(
+          "No apps found to handle transaction.",
+          style: header,
+        ),
+      );
+    } else {
+      return Align(
+        alignment: Alignment.topCenter,
         child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Payment Summary
-              _buildPaymentSummary(isDarkMode, currencyFormatter),
-              const SizedBox(height: 30),
-
-              // Choose Payment Method
-              Text(
-                'Choose Payment Method:',
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: isDarkMode ? Colors.yellow : Colors.deepPurple,
-                    ),
-              ),
-              const SizedBox(height: 10),
-              _buildPaymentMethodOption(
-                  'Internet Banking', Icons.web, 1, isDarkMode),
-              _buildPaymentMethodOption(
-                  'Google Pay', Icons.payments, 2, isDarkMode),
-              _buildPaymentMethodOption(
-                  'Debit/Credit Card', Icons.credit_card, 3, isDarkMode),
-              _buildPaymentMethodOption(
-                  'UPI', Icons.account_balance, 4, isDarkMode),
-              const SizedBox(height: 20),
-
-              // Proceed to Pay Button
-              Center(
-                child: ElevatedButton(
-                  onPressed: _handlePayment,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: Colors.deepPurple,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 40, vertical: 15),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    elevation: 8,
-                  ),
-                  child: const Text(
-                    'Proceed to Pay',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          physics: const BouncingScrollPhysics(),
+          child: Wrap(
+            children: apps!.map<Widget>((UpiApp app) {
+              return GestureDetector(
+                onTap: () {
+                  _transaction = initiateTransaction(app);
+                  setState(() {});
+                },
+                child: Container(
+                  height: 100,
+                  width: 100,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Image.memory(
+                        app.icon,
+                        height: 60,
+                        width: 60,
+                      ),
+                      Text(app.name),
+                    ],
                   ),
                 ),
-              ),
-            ],
+              );
+            }).toList(),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildPaymentSummary(bool isDarkMode, NumberFormat currencyFormatter) {
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15),
-      ),
-      elevation: 8,
-      shadowColor: Colors.grey.withOpacity(0.2),
-      color: isDarkMode ? Colors.grey[850] : Colors.white,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Payment Summary',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: isDarkMode ? Colors.yellow : Colors.deepPurple,
-                  ),
-            ),
-            const SizedBox(height: 10),
-            _buildSummaryRow('Room Type', widget.roomType, isDarkMode),
-            _buildSummaryRow(
-                'Check-in',
-                DateFormat('MMM dd, yyyy').format(widget.checkInDate),
-                isDarkMode),
-            _buildSummaryRow(
-                'Check-out',
-                DateFormat('MMM dd, yyyy').format(widget.checkOutDate),
-                isDarkMode),
-            _buildSummaryRow('Adults', widget.adults.toString(), isDarkMode),
-            _buildSummaryRow(
-                'Children', widget.children.toString(), isDarkMode),
-            _buildSummaryRow('Total Amount',
-                currencyFormatter.format(widget.totalAmount), isDarkMode),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSummaryRow(String title, String value, bool isDarkMode) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: isDarkMode ? Colors.white70 : Colors.black87,
-            ),
-          ),
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: 16,
-              color: isDarkMode ? Colors.yellow[200] : Colors.black54,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPaymentMethodOption(
-      String methodName, IconData icon, int value, bool isDarkMode) {
-    return ListTile(
-      leading: Icon(
-        icon,
-        size: 40,
-        color: isDarkMode ? Colors.yellow : Colors.deepPurple,
-      ),
-      title: Text(
-        methodName,
-        style: const TextStyle(fontSize: 16),
-      ),
-      contentPadding: EdgeInsets.zero,
-      tileColor: isDarkMode ? Colors.grey[800] : Colors.grey.withOpacity(0.1),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      onTap: () {
-        setState(() {
-          _selectedPaymentMethod = value;
-        });
-      },
-    );
-  }
-
-  void _handlePayment() {
-    if (_selectedPaymentMethod == 1) {
-      _showBankSelectionDialog();
-    } else if (_selectedPaymentMethod == 2) {
-      _proceedToNextPage('Google Pay');
-    } else if (_selectedPaymentMethod == 3) {
-      _showCardNumberInputDialog();
-    } else if (_selectedPaymentMethod == 4) {
-      _showUpiSelectionDialog();
-    } else {
-      _showPaymentCompletedDialog();
+      );
     }
   }
 
-  void _showBankSelectionDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Select Bank for Internet Banking'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: _internetBankingOptions.map((bank) {
-            return ListTile(
-              title: Text(bank),
-              onTap: () {
-                Navigator.of(context).pop();
-                _proceedToNextPage('Internet Banking with $bank');
-              },
-            );
-          }).toList(),
-        ),
-      ),
-    );
+  String _upiErrorHandler(error) {
+    switch (error) {
+      case UpiIndiaAppNotInstalledException _:
+        return 'Requested app not installed on device';
+      case UpiIndiaUserCancelledException _:
+        return 'You cancelled the transaction';
+      case UpiIndiaNullResponseException _:
+        return 'Requested app didn\'t return any response';
+      case const (UpiIndiaInvalidParametersException):
+        return 'Requested app cannot handle the transaction';
+      default:
+        return 'An Unknown error has occurred';
+    }
   }
 
-  void _showUpiSelectionDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Select UPI App'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: _upiOptions.map((upi) {
-            return ListTile(
-              title: Text(upi),
-              onTap: () {
-                Navigator.of(context).pop();
-                _proceedToNextPage('UPI with $upi');
-              },
-            );
-          }).toList(),
-        ),
-      ),
-    );
+  void _checkTxnStatus(String status) {
+    switch (status) {
+      case UpiPaymentStatus.SUCCESS:
+        print('Transaction Successful');
+        break;
+      case UpiPaymentStatus.SUBMITTED:
+        print('Transaction Submitted');
+        break;
+      case UpiPaymentStatus.FAILURE:
+        print('Transaction Failed');
+        break;
+      default:
+        print('Received an Unknown transaction status');
+    }
   }
 
-  void _showCardNumberInputDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Enter Card Number'),
-        content: TextField(
-          keyboardType: TextInputType.number,
-          decoration: const InputDecoration(
-            hintText: 'Enter 12 or 16-digit card number',
-          ),
-          onChanged: (value) {
-            _cardNumber = value;
-          },
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              _proceedToNextPage(
-                  'Debit/Credit Card ending with ${_cardNumber?.substring(_cardNumber!.length - 4)}');
-            },
-            child: const Text('Proceed'),
-          ),
+  Widget displayTransactionData(String title, String body) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text("$title: ", style: header),
+          Flexible(
+              child: Text(
+            body,
+            style: value,
+          )),
         ],
       ),
     );
   }
 
-  void _proceedToNextPage(String method) {
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        builder: (context) => FeedbackPage(
-          paymentMethod: method,
-          roomType: widget.roomType,
-          totalAmount: widget.totalAmount,
-        ),
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('UPI Payment'),
       ),
-    );
-  }
-
-  void _showPaymentCompletedDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Payment Completed'),
-        content: const Text('Your payment was successful.'),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              _proceedToNextPage('Completed');
-            },
-            child: const Text('OK'),
+      body: Column(
+        children: <Widget>[
+          Expanded(
+            child: displayUpiApps(),
           ),
+          Expanded(
+            child: FutureBuilder(
+              future: _transaction,
+              builder:
+                  (BuildContext context, AsyncSnapshot<UpiResponse> snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  if (snapshot.hasError) {
+                    return Center(
+                      child: Text(
+                        _upiErrorHandler(snapshot.error.runtimeType),
+                        style: header,
+                      ),
+                    );
+                  }
+
+                  UpiResponse upiResponse = snapshot.data!;
+                  String txnId = upiResponse.transactionId ?? 'N/A';
+                  String resCode = upiResponse.responseCode ?? 'N/A';
+                  String txnRef = upiResponse.transactionRefId ?? 'N/A';
+                  String status = upiResponse.status ?? 'N/A';
+                  String approvalRef = upiResponse.approvalRefNo ?? 'N/A';
+                  _checkTxnStatus(status);
+
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        displayTransactionData('Transaction Id', txnId),
+                        displayTransactionData('Response Code', resCode),
+                        displayTransactionData('Reference Id', txnRef),
+                        displayTransactionData('Status', status.toUpperCase()),
+                        displayTransactionData('Approval No', approvalRef),
+                      ],
+                    ),
+                  );
+                } else {
+                  return const Center(
+                    child: Text(''),
+                  );
+                }
+              },
+            ),
+          )
         ],
       ),
     );

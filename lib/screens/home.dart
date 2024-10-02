@@ -1,7 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:hotel_booking/constants/ImportFiles.dart';
-import 'package:hotel_booking/screens/bookings/VillaBookingPage.dart';
-import 'package:hotel_booking/screens/rooms/VillaGalleryPage.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -135,19 +133,19 @@ class _HomeScreenState extends State<HomeScreen> {
 
   AppBar buildAppBar(BuildContext context, Size screenSize) {
     return AppBar(
-      toolbarHeight: screenSize.height * 0.1,
-      backgroundColor: const Color(0xFF00695C),
+      toolbarHeight: screenSize.height * 0.08,
+      backgroundColor: const Color.fromARGB(255, 0, 64, 255),
       automaticallyImplyLeading: false,
       title: Row(
         children: [
           Icon(Icons.hotel,
-              color: Colors.white, size: screenSize.height * 0.04),
-          const SizedBox(width: 10),
+              color: Colors.white, size: screenSize.height * 0.035),
+          const SizedBox(width: 1),
           Text(
             "Simple Stays",
             style: GoogleFonts.poppins(
               fontWeight: FontWeight.w800,
-              fontSize: 24,
+              fontSize: 26,
               color: Colors.white,
             ),
           ),
@@ -161,14 +159,14 @@ class _HomeScreenState extends State<HomeScreen> {
               logout(context);
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFFFF6F00),
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 24),
+              backgroundColor: const Color.fromARGB(255, 255, 0, 25),
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
               shape: const StadiumBorder(),
             ),
             child: Text(
-              'Logout',
+              'Log out',
               style: GoogleFonts.poppins(
-                fontSize: 18,
+                fontSize: 22,
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
               ),
@@ -187,7 +185,7 @@ class _HomeScreenState extends State<HomeScreen> {
           items: headerImages
               .map((imagePath) => Container(
                     width: screenSize.width,
-                    height: screenSize.height * 0.3,
+                    height: screenSize.height * 0.2,
                     decoration: BoxDecoration(
                       image: DecorationImage(
                         image: AssetImage(imagePath),
@@ -197,7 +195,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ))
               .toList(),
           options: CarouselOptions(
-            height: screenSize.height * 0.3,
+            height: screenSize.height * 0.4,
             autoPlay: true,
             viewportFraction: 1.0,
             onPageChanged: (index, reason) {
@@ -218,11 +216,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   width: 12.0,
                   height: 12.0,
                   margin: const EdgeInsets.symmetric(
-                      vertical: 8.0, horizontal: 4.0),
+                      vertical: 6.5, horizontal: 4.0),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color:
-                        _currentIndex == entry.key ? Colors.white : Colors.grey,
+                    color: _currentIndex == entry.key
+                        ? const Color.fromARGB(255, 0, 0, 0)
+                        : Colors.grey,
                   ),
                 ),
               );
@@ -247,6 +246,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget buildRecommendedForYou(Size screenSize) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     return SizedBox(
       height: screenSize.height * 0.26, // Reduced height
       child: ListView.builder(
@@ -260,12 +261,12 @@ class _HomeScreenState extends State<HomeScreen> {
               width: screenSize.width * 0.4, // Reduced width
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
-                color: Colors.grey.shade200,
+                color: Color.fromARGB(255, 235, 235, 237),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
-                    blurRadius: 10,
-                    spreadRadius: 3,
+                    color: Colors.grey.withOpacity(0.3),
+                    blurRadius: 15,
+                    spreadRadius: 2.5,
                   )
                 ],
               ),
@@ -292,6 +293,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           style: GoogleFonts.poppins(
                             fontWeight: FontWeight.w600,
                             fontSize: 14,
+                            color: isDarkMode
+                                ? Colors.black
+                                : Colors.white, // Change color based on mode
                           ),
                         ),
                         const SizedBox(height: 8),
@@ -299,7 +303,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           onPressed: () {
                             navigateToBookingPage(roomTypes[index]);
                           },
-                          child: (Text('Book Now')),
+                          child: Text('Book Now'),
                         ),
                       ],
                     ),
