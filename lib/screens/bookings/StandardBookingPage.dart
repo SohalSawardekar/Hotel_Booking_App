@@ -1,19 +1,59 @@
 import 'package:flutter/material.dart';
-import 'package:hotel_booking/screens/payment.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
+import '../../constants/ImportFiles.dart'; // Ensure this import is correct for BookingPage
 
-import '../../constants/ImportFiles.dart'; // For formatting dates
-
-class StandardBookingPage extends StatelessWidget {
+class StandardBookingPage extends StatefulWidget {
   const StandardBookingPage({super.key});
 
   @override
+  _StandardBookingPageState createState() => _StandardBookingPageState();
+}
+
+class _StandardBookingPageState extends State<StandardBookingPage> {
+  int pricePerNight = 0; // Will be fetched from Firestore
+  bool isLoading = true; // Loading state for fetching price
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchRoomPrice(); // Fetch room price when the page initializes
+  }
+
+  Future<void> _fetchRoomPrice() async {
+    try {
+      QuerySnapshot roomSnapshot = await FirebaseFirestore.instance
+          .collection('Rooms') // Adjust the collection name as needed
+          .where('room_type',
+              isEqualTo: 'Standard') // Assuming room_type is used
+          .get();
+
+      if (roomSnapshot.docs.isNotEmpty) {
+        var roomData = roomSnapshot.docs.first.data() as Map<String, dynamic>;
+        setState(() {
+          pricePerNight = roomData['price'] ?? 0; // Fetch price or default to 0
+          isLoading = false; // Stop loading after fetching the price
+        });
+      } else {
+        setState(() {
+          pricePerNight = 0; // No room found
+          isLoading = false; // Stop loading
+        });
+      }
+    } catch (e) {
+      print('Error fetching room price: $e');
+      setState(() {
+        isLoading = false; // Stop loading even in case of an error
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    const double pricePerNight = 3000.0; // Example price
-    const double gst = 0.18; // Example GST rate
+    // Calculate GST and total amount
+    const double gst = 0.18; // GST rate
     final double totalAmount = pricePerNight * (1 + gst);
 
-    // Formatting the check-in and check-out dates for better display
     final checkInDate = DateTime.now();
     final checkOutDate = DateTime.now().add(const Duration(days: 1));
     final String formattedCheckIn =
@@ -23,179 +63,196 @@ class StandardBookingPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Standard Room Booking'),
+        title: Text('Standard Room Booking',
+            style: GoogleFonts.poppins(
+                fontWeight: FontWeight.w600,
+                color: Color.fromARGB(255, 255, 255, 255))),
         backgroundColor: Colors.teal,
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Room Title and Image
-              Container(
-                width: double.infinity,
-                height: 200,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  image: const DecorationImage(
-                    image: AssetImage(
-                        'assets/images/standardroom.jpg'), // Replace with your image
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-
-              // Room Information Section
-              const Text(
-                'Standard Room',
-                style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 10),
-              Text(
-                'Price per Night: ₹${pricePerNight.toStringAsFixed(2)}',
-                style: const TextStyle(fontSize: 18, color: Colors.grey),
-              ),
-              const SizedBox(height: 10),
-
-              // Facilities and Amenities Section with Icons
-              const Text(
-                'Facilities and Amenities:',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 10),
-              const Row(
-                children: [
-                  Icon(Icons.wifi, color: Colors.teal, size: 24),
-                  SizedBox(width: 10),
-                  Text('Free WiFi', style: TextStyle(fontSize: 18)),
-                ],
-              ),
-              const SizedBox(height: 10),
-              const Row(
-                children: [
-                  Icon(Icons.ac_unit, color: Colors.teal, size: 24),
-                  SizedBox(width: 10),
-                  Text('Air Conditioning', style: TextStyle(fontSize: 18)),
-                ],
-              ),
-              const SizedBox(height: 10),
-              const Row(
-                children: [
-                  Icon(Icons.room_service, color: Colors.teal, size: 24),
-                  SizedBox(width: 10),
-                  Text('24/7 Room Service', style: TextStyle(fontSize: 18)),
-                ],
-              ),
-              const SizedBox(height: 10),
-              const Row(
-                children: [
-                  Icon(Icons.local_cafe, color: Colors.teal, size: 24),
-                  SizedBox(width: 10),
-                  Text('Complimentary Breakfast',
-                      style: TextStyle(fontSize: 18)),
-                ],
-              ),
-              const SizedBox(height: 20),
-
-              // Total Amount Section
-              Container(
-                padding: const EdgeInsets.all(15),
-                decoration: BoxDecoration(
-                  color: Colors.teal.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'Total Amount (with GST):',
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      '₹${totalAmount.toStringAsFixed(2)}',
-                      style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.teal),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 20),
-
-              // Check-in and Check-out Dates
-              Container(
-                padding: const EdgeInsets.all(15),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: Colors.teal, width: 1),
-                ),
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // Standard Room Image Section
+                    Container(
+                      width: double.infinity,
+                      height: 200,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        image: const DecorationImage(
+                          image: AssetImage(
+                              'assets/images/standardroom.jpg'), // Add your standard room image here
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+
+                    // Room Title and Price
                     const Text(
-                      'Booking Details',
+                      'Standard Room',
+                      style:
+                          TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      'Price per Night: ₹${pricePerNight.toStringAsFixed(2)}',
+                      style: const TextStyle(fontSize: 18, color: Colors.grey),
+                    ),
+                    const SizedBox(height: 20),
+
+                    // Facilities and Amenities with Icons
+                    const Text(
+                      'Facilities and Amenities:',
                       style:
                           TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 10),
-                    Text(
-                      'Check-in Date: $formattedCheckIn',
-                      style: const TextStyle(fontSize: 18, color: Colors.grey),
+                    const Column(
+                      children: [
+                        Row(
+                          children: [
+                            Icon(Icons.wifi, color: Colors.teal, size: 24),
+                            SizedBox(width: 10),
+                            Text('Free WiFi', style: TextStyle(fontSize: 18)),
+                          ],
+                        ),
+                        SizedBox(height: 10),
+                        Row(
+                          children: [
+                            Icon(Icons.ac_unit, color: Colors.teal, size: 24),
+                            SizedBox(width: 10),
+                            Text('Air Conditioning',
+                                style: TextStyle(fontSize: 18)),
+                          ],
+                        ),
+                        SizedBox(height: 10),
+                        Row(
+                          children: [
+                            Icon(Icons.local_bar, color: Colors.teal, size: 24),
+                            SizedBox(width: 10),
+                            Text('Mini Bar', style: TextStyle(fontSize: 18)),
+                          ],
+                        ),
+                        SizedBox(height: 10),
+                        Row(
+                          children: [
+                            Icon(Icons.lock, color: Colors.teal, size: 24),
+                            SizedBox(width: 10),
+                            Text('In-Room Safe',
+                                style: TextStyle(fontSize: 18)),
+                          ],
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 10),
-                    Text(
-                      'Check-out Date: $formattedCheckOut',
-                      style: const TextStyle(fontSize: 18, color: Colors.grey),
+                    const SizedBox(height: 20),
+
+                    // Total Amount Section
+                    Container(
+                      padding: const EdgeInsets.all(15),
+                      decoration: BoxDecoration(
+                        color: Colors.teal.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            'Total Amount (with GST):',
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            '₹${totalAmount.toStringAsFixed(2)}',
+                            style: const TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.teal),
+                          ),
+                        ],
+                      ),
                     ),
-                    const SizedBox(height: 10),
-                    const Text(
-                      'Guests: 1 Adult, 0 Children',
-                      style: TextStyle(fontSize: 18, color: Colors.grey),
+                    const SizedBox(height: 20),
+
+                    // Booking Details Section
+                    Container(
+                      padding: const EdgeInsets.all(15),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: Colors.teal, width: 1),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Booking Details',
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            'Check-in Date: $formattedCheckIn',
+                            style: const TextStyle(
+                                fontSize: 18, color: Colors.grey),
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            'Check-out Date: $formattedCheckOut',
+                            style: const TextStyle(
+                                fontSize: 18, color: Colors.grey),
+                          ),
+                          const SizedBox(height: 10),
+                          const Text(
+                            'Guests: 1 Adult, 0 Children',
+                            style: TextStyle(fontSize: 18, color: Colors.grey),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 30),
+
+                    // Proceed to Payment Button
+                    SizedBox(
+                      width: double.infinity,
+                      height: 50,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.teal,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        onPressed: () {
+                          var roomType = 'standard';
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => BookingPage(
+                                checkInDate: checkInDate,
+                                checkOutDate: checkOutDate,
+                                roomType: roomType,
+                                totalAmount: totalAmount,
+                              ),
+                            ),
+                          );
+                        },
+                        child: const Text(
+                          'Proceed',
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Color.fromARGB(255, 255, 255, 255)),
+                        ),
+                      ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: 30),
-
-              // Proceed to Payment Button
-              SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.teal,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  onPressed: () {
-                    var roomType = 'standard';
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => BookingPage(
-                          checkInDate: checkInDate,
-                          checkOutDate: checkOutDate,
-                          roomType: roomType,
-                          totalAmount: totalAmount,
-                        ),
-                      ),
-                    );
-                  },
-                  child: const Text(
-                    'Proceed to Payment',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+            ),
     );
   }
 }

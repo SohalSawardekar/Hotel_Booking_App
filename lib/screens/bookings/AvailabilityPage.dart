@@ -27,6 +27,7 @@ class _AvailabilityPageState extends State<AvailabilityPage> {
   bool _isCheckingAvailability = false;
   bool _isAvailable = false;
   String _availabilityMessage = '';
+  String _availableRoomId = ''; // Variable to store the room ID
 
   @override
   void initState() {
@@ -35,15 +36,45 @@ class _AvailabilityPageState extends State<AvailabilityPage> {
   }
 
   Future<void> _checkRoomAvailability() async {
-    // Mocking availability check for design purposes
     setState(() {
       _isCheckingAvailability = true;
     });
-    await Future.delayed(const Duration(seconds: 2));
+
+    try {
+      // Query Firestore for the room status based on the room type
+      QuerySnapshot roomSnapshot = await FirebaseFirestore.instance
+          .collection('Rooms')
+          .where('room_type', isEqualTo: widget.roomType)
+          .where('status',
+              isEqualTo: 'yes') // Check only rooms with status 'yes'
+          .limit(1) // Fetch only one room
+          .get();
+
+      if (roomSnapshot.docs.isNotEmpty) {
+        var roomData = roomSnapshot.docs.first.data() as Map<String, dynamic>;
+        String roomId = roomSnapshot.docs.first.id; // Get the room ID
+
+        // Store the available room ID
+        setState(() {
+          _availableRoomId = roomId;
+          _isAvailable = true;
+          _availabilityMessage = 'The room is available.';
+        });
+      } else {
+        setState(() {
+          _isAvailable = false;
+          _availabilityMessage = 'No available rooms found.';
+        });
+      }
+    } catch (error) {
+      setState(() {
+        _isAvailable = false;
+        _availabilityMessage = 'Error checking availability: $error';
+      });
+    }
+
     setState(() {
       _isCheckingAvailability = false;
-      _isAvailable = true;
-      _availabilityMessage = 'The room is available.';
     });
   }
 
@@ -64,7 +95,6 @@ class _AvailabilityPageState extends State<AvailabilityPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Room details card with modern, luxury design
               Card(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
@@ -202,6 +232,7 @@ class _AvailabilityPageState extends State<AvailabilityPage> {
                       adults: widget.adults,
                       children: widget.children,
                       totalAmount: widget.totalAmount,
+                      roomId: _availableRoomId,
                     ),
                   ),
                 );

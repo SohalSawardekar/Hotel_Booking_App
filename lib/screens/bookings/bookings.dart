@@ -1,22 +1,18 @@
-import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:hotel_booking/screens/bookings/AvailabilityPage.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
-import 'package:hotel_booking/constants/theme.dart';
+import '../../constants/ImportFiles.dart';
 
 class BookingPage extends StatefulWidget {
   final DateTime? checkInDate;
   final DateTime? checkOutDate;
   final String roomType;
-  final double totalAmount;
+  final double? totalAmount;
 
   const BookingPage({
     super.key,
     required this.checkInDate,
     required this.checkOutDate,
     required this.roomType,
-    required this.totalAmount,
+    this.totalAmount,
   });
 
   @override
@@ -28,8 +24,10 @@ class _BookingPageState extends State<BookingPage> {
   DateTime? checkOutDate;
   int adults = 1;
   int children = 0;
-  double roomRate = 5000;
+  double roomRate = 120; // Default room rate
+  int price = 0;
   String selectedRoomType = "Standard";
+  bool isLoading = false;
 
   final List<String> roomTypes = [
     "Standard",
@@ -39,29 +37,98 @@ class _BookingPageState extends State<BookingPage> {
     "Villa",
   ];
 
+  Future<void> _fetchRoomPrice() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      QuerySnapshot roomSnapshot = await FirebaseFirestore.instance
+          .collection('Rooms')
+          .where('room_type', isEqualTo: selectedRoomType)
+          .get();
+
+      if (roomSnapshot.docs.isNotEmpty) {
+        var roomData = roomSnapshot.docs.first.data() as Map<String, dynamic>;
+        setState(() {
+          price = roomData['price'] ?? 0;
+          roomRate = price.toDouble();
+          isLoading = false;
+        });
+      } else {
+        setState(() {
+          price = 0;
+          roomRate = price.toDouble();
+          isLoading = false;
+        });
+      }
+    } catch (e) {
+      print('Error fetching room price: $e');
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  double _calculateTotalPrice() {
+    if (checkInDate != null && checkOutDate != null) {
+      int numberOfNights = checkOutDate!.difference(checkInDate!).inDays;
+      return numberOfNights * roomRate;
+    }
+    return 0.0;
+  }
+
   @override
   void initState() {
     super.initState();
     checkInDate = widget.checkInDate ?? DateTime.now();
     checkOutDate =
         widget.checkOutDate ?? DateTime.now().add(const Duration(days: 1));
+
+    if (widget.totalAmount != null) {
+      _fetchRoomPrice();
+    } else {
+      roomRate = widget.totalAmount!;
+    }
   }
 
   void _selectDate(bool isCheckIn) async {
-    DateTime initialDate = DateTime.now();
+    DateTime initialDate;
+
+    if (isCheckIn) {
+      initialDate = checkInDate ?? DateTime.now();
+    } else {
+      initialDate = checkOutDate ??
+          (checkInDate != null
+              ? checkInDate!.add(const Duration(days: 1))
+              : DateTime.now().add(const Duration(days: 1)));
+    }
+
+    DateTime firstDate = isCheckIn
+        ? initialDate
+        : (checkInDate != null
+            ? checkInDate!.add(const Duration(days: 1))
+            : DateTime.now().add(const Duration(days: 1)));
+
     DateTime? picked = await showDatePicker(
       context: context,
       initialDate: initialDate,
-      firstDate: initialDate,
+      firstDate: firstDate,
       lastDate: DateTime.now().add(const Duration(days: 365)),
     );
-    setState(() {
-      if (isCheckIn) {
-        checkInDate = picked;
-      } else {
-        checkOutDate = picked;
-      }
-    });
+
+    if (picked != null) {
+      setState(() {
+        if (isCheckIn) {
+          checkInDate = picked;
+          if (checkOutDate != null && picked.isAfter(checkOutDate!)) {
+            checkOutDate = picked.add(const Duration(days: 1));
+          }
+        } else {
+          checkOutDate = picked;
+        }
+      });
+    }
   }
 
   String formatDate(DateTime? date) {
@@ -87,6 +154,10 @@ class _BookingPageState extends State<BookingPage> {
     Color textColor = isDarkMode ? Colors.white : Colors.black;
     Color backgroundColor = isDarkMode ? Colors.grey[900]! : Colors.white;
 
+    int numberOfNights = checkInDate != null && checkOutDate != null
+        ? checkOutDate!.difference(checkInDate!).inDays
+        : 0;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -104,12 +175,14 @@ class _BookingPageState extends State<BookingPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
+              Text(
                 'Plan Your Perfect Stay',
                 style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
-                  color: Colors.deepPurple,
+                  color: isDarkMode
+                      ? const Color.fromARGB(255, 255, 255, 255)
+                      : Colors.deepPurple,
                 ),
               ),
               const SizedBox(height: 30),
@@ -145,6 +218,37 @@ class _BookingPageState extends State<BookingPage> {
                   () => setState(() => children++),
                   () => setState(() => children > 0 ? children-- : null)),
               const SizedBox(height: 40),
+              isLoading
+                  ? const SizedBox.shrink()
+                  : Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Room Rate: ₹${roomRate.toStringAsFixed(2)}',
+                          style: TextStyle(
+                              fontSize: 15,
+                              color: isDarkMode ? Colors.white : Colors.black,
+                              fontWeight: FontWeight.normal),
+                        ),
+                        Text(
+                          'Time: $numberOfNights days',
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: isDarkMode ? Colors.white : Colors.black,
+                          ),
+                        ),
+                        const SizedBox(height: 40),
+                        Text(
+                          'Total Price: ₹${_calculateTotalPrice().toStringAsFixed(2)}',
+                          style: GoogleFonts.poppins(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w700,
+                            color: isDarkMode ? Colors.white : Colors.black,
+                          ),
+                        ),
+                      ],
+                    ),
+              const SizedBox(height: 30),
               Center(
                 child: ElevatedButton(
                   onPressed: () {
@@ -158,7 +262,7 @@ class _BookingPageState extends State<BookingPage> {
                             checkOutDate: checkOutDate!,
                             adults: adults,
                             children: children,
-                            totalAmount: roomRate,
+                            totalAmount: _calculateTotalPrice(),
                           ),
                         ),
                       );
@@ -200,33 +304,23 @@ class _BookingPageState extends State<BookingPage> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+        padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: isDarkMode ? Colors.grey[800] : Colors.white,
-          border: Border.all(color: Colors.grey.shade300),
+          color: isDarkMode ? Colors.grey[800] : Colors.grey[200],
           borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 6,
-              offset: const Offset(0, 2),
-            ),
-          ],
+          border: Border.all(color: Colors.deepPurple),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              label,
-              style: const TextStyle(
+              '$label: $dateText',
+              style: TextStyle(
                 fontSize: 18,
-                fontWeight: FontWeight.w500,
+                color: isDarkMode ? Colors.white : Colors.black,
               ),
             ),
-            Text(
-              dateText,
-              style: const TextStyle(fontSize: 18),
-            ),
+            const Icon(Icons.calendar_today, color: Colors.deepPurple),
           ],
         ),
       ),
@@ -235,74 +329,56 @@ class _BookingPageState extends State<BookingPage> {
 
   Widget _buildRoomTypeDropdown(Color textColor, Color backgroundColor) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
         color: backgroundColor,
-        border: Border.all(color: Colors.grey.shade300),
         borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 6,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        border: Border.all(color: Colors.deepPurple),
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          const Text(
-            'Select Room Type',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w500,
+      child: DropdownButton<String>(
+        value: selectedRoomType,
+        onChanged: (String? newValue) {
+          setState(() {
+            selectedRoomType = newValue!;
+            _fetchRoomPrice();
+          });
+        },
+        underline: const SizedBox.shrink(),
+        isExpanded: true,
+        items: roomTypes.map<DropdownMenuItem<String>>((String roomType) {
+          return DropdownMenuItem<String>(
+            value: roomType,
+            child: Text(
+              roomType,
+              style: TextStyle(color: textColor),
             ),
-          ),
-          DropdownButton<String>(
-            value: selectedRoomType,
-            dropdownColor: backgroundColor,
-            onChanged: (String? newValue) {
-              setState(() {
-                selectedRoomType = newValue!;
-              });
-            },
-            items: roomTypes.map<DropdownMenuItem<String>>((String value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(value, style: TextStyle(color: textColor)),
-              );
-            }).toList(),
-          ),
-        ],
+          );
+        }).toList(),
       ),
     );
   }
 
-  Widget _buildAdultChildrenSelector(Color textColor, String label, int value,
-      VoidCallback onAdd, VoidCallback onRemove) {
+  Widget _buildAdultChildrenSelector(
+      Color textColor, String label, int count, VoidCallback increment,
+      [VoidCallback? decrement]) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
-          label,
-          style: const TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w500,
-          ),
+          '$label: $count',
+          style: TextStyle(fontSize: 18, color: textColor),
         ),
         Row(
           children: [
             IconButton(
-              onPressed: onRemove,
-              icon: const Icon(Icons.remove_circle_outline),
-            ),
-            Text(
-              value.toString(),
-              style: TextStyle(fontSize: 18, color: textColor),
+              icon: const Icon(Icons.remove),
+              onPressed: decrement,
+              color: textColor,
             ),
             IconButton(
-              onPressed: onAdd,
-              icon: const Icon(Icons.add_circle_outline),
+              icon: const Icon(Icons.add),
+              onPressed: increment,
+              color: textColor,
             ),
           ],
         ),

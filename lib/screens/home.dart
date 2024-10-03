@@ -94,7 +94,7 @@ class _HomeScreenState extends State<HomeScreen> {
           case 'Luxury':
             return const LuxuryRoomGalleryPage();
           case 'Suite':
-            return const SuiteBookingPage();
+            return const SuiteRoomGalleryPage();
           case 'Villa':
             return const VillaRoomGalleryPage();
           default:
@@ -134,7 +134,7 @@ class _HomeScreenState extends State<HomeScreen> {
   AppBar buildAppBar(BuildContext context, Size screenSize) {
     return AppBar(
       toolbarHeight: screenSize.height * 0.08,
-      backgroundColor: const Color.fromARGB(255, 0, 64, 255),
+      backgroundColor: Colors.teal,
       automaticallyImplyLeading: false,
       title: Row(
         children: [
@@ -159,7 +159,7 @@ class _HomeScreenState extends State<HomeScreen> {
               logout(context);
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color.fromARGB(255, 255, 0, 25),
+              backgroundColor: Color.fromARGB(255, 216, 145, 78),
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
               shape: const StadiumBorder(),
             ),
@@ -261,10 +261,10 @@ class _HomeScreenState extends State<HomeScreen> {
               width: screenSize.width * 0.4, // Reduced width
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
-                color: Color.fromARGB(255, 235, 235, 237),
+                color: Color.fromARGB(255, 200, 200, 201),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.grey.withOpacity(0.3),
+                    color: Colors.grey.withOpacity(0.25),
                     blurRadius: 15,
                     spreadRadius: 2.5,
                   )

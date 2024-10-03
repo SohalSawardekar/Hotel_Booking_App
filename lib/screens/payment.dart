@@ -2,14 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:upi_india/upi_india.dart';
 
 class PaymentPage extends StatefulWidget {
-  const PaymentPage(
-      {super.key,
-      required String roomType,
-      required DateTime checkInDate,
-      required DateTime checkOutDate,
-      required int adults,
-      required int children,
-      required double totalAmount});
+  final String roomType;
+  final DateTime checkInDate;
+  final DateTime checkOutDate;
+  final int adults;
+  final int children;
+  final double totalAmount;
+
+  const PaymentPage({
+    super.key,
+    required this.roomType,
+    required this.checkInDate,
+    required this.checkOutDate,
+    required this.adults,
+    required this.children,
+    required this.totalAmount,
+    required roomId,
+  });
 
   @override
   _PaymentPageState createState() => _PaymentPageState();
@@ -48,8 +57,8 @@ class _PaymentPageState extends State<PaymentPage> {
       receiverUpiId: "sohalsawardekar11@okicici",
       receiverName: 'Sohal Sawardekar',
       transactionRefId: 'TestTransaction',
-      transactionNote: 'Example UPI Payment',
-      amount: 1.00,
+      transactionNote: 'Hotel Booking Payment',
+      amount: widget.totalAmount,
     );
   }
 
@@ -69,6 +78,8 @@ class _PaymentPageState extends State<PaymentPage> {
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
           child: Wrap(
+            spacing: 20,
+            runSpacing: 20,
             children: apps!.map<Widget>((UpiApp app) {
               return GestureDetector(
                 onTap: () {
@@ -76,10 +87,13 @@ class _PaymentPageState extends State<PaymentPage> {
                   setState(() {});
                 },
                 child: Container(
-                  height: 100,
-                  width: 100,
+                  height: 120,
+                  width: 120,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                   child: Column(
-                    mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Image.memory(
@@ -87,7 +101,11 @@ class _PaymentPageState extends State<PaymentPage> {
                         height: 60,
                         width: 60,
                       ),
-                      Text(app.name),
+                      SizedBox(height: 10),
+                      Text(
+                        app.name,
+                        style: value,
+                      ),
                     ],
                   ),
                 ),
@@ -107,8 +125,6 @@ class _PaymentPageState extends State<PaymentPage> {
         return 'You cancelled the transaction';
       case UpiIndiaNullResponseException _:
         return 'Requested app didn\'t return any response';
-      case const (UpiIndiaInvalidParametersException):
-        return 'Requested app cannot handle the transaction';
       default:
         return 'An Unknown error has occurred';
     }
@@ -152,6 +168,7 @@ class _PaymentPageState extends State<PaymentPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('UPI Payment'),
+        backgroundColor: Colors.deepPurpleAccent,
       ),
       body: Column(
         children: <Widget>[
@@ -196,12 +213,12 @@ class _PaymentPageState extends State<PaymentPage> {
                   );
                 } else {
                   return const Center(
-                    child: Text(''),
+                    child: Text('Awaiting payment...'),
                   );
                 }
               },
             ),
-          )
+          ),
         ],
       ),
     );
