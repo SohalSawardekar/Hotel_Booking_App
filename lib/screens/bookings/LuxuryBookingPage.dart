@@ -51,6 +51,7 @@ class _LuxuryBookingPageState extends State<LuxuryBookingPage> {
 
   @override
   Widget build(BuildContext context) {
+    bool isDarkMode = Provider.of<ThemeNotifier>(context).isDarkMode;
     final String formattedCheckIn =
         DateFormat('dd MMM yyyy').format(checkInDate);
     final String formattedCheckOut =
@@ -153,25 +154,36 @@ class _LuxuryBookingPageState extends State<LuxuryBookingPage> {
 
                     // Total Amount Section
                     Container(
-                      padding: const EdgeInsets.all(15),
+                      padding: EdgeInsets.all(15),
                       decoration: BoxDecoration(
-                        color: Colors.black87.withOpacity(0.1),
+                        color: isDarkMode
+                            ? Color.fromARGB(230, 199, 199, 199)
+                                .withOpacity(0.1)
+                            : Colors.black87.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text(
+                          Text(
                             'Total Amount (with GST):',
                             style: TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.bold),
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: isDarkMode
+                                  ? Color.fromARGB(255, 230, 228, 228)
+                                  : Colors.black,
+                            ),
                           ),
                           Text(
                             '₹${totalAmount.toStringAsFixed(2)}',
-                            style: const TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black87),
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: isDarkMode
+                                  ? Color.fromARGB(255, 230, 228, 228)
+                                  : Colors.black,
+                            ),
                           ),
                         ],
                       ),

@@ -86,7 +86,12 @@ class _AvailabilityPageState extends State<AvailabilityPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Check Availability'),
+        title: Text(
+          'Check Availability',
+          style: GoogleFonts.poppins(
+              fontWeight: FontWeight.w600,
+              color: const Color.fromARGB(255, 255, 255, 255)),
+        ),
         backgroundColor: isDarkMode ? Colors.black87 : Colors.indigoAccent,
       ),
       body: SingleChildScrollView(
@@ -232,7 +237,7 @@ class _AvailabilityPageState extends State<AvailabilityPage> {
                       adults: widget.adults,
                       children: widget.children,
                       totalAmount: widget.totalAmount,
-                      roomId: _availableRoomId,
+                      // roomId: _availableRoomId,
                     ),
                   ),
                 );

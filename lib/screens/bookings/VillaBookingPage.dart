@@ -99,8 +99,7 @@ class _VillaBookingPageState extends State<VillaBookingPage> {
                     const SizedBox(height: 10),
                     Text(
                       'Price per Night: ₹${pricePerNight.toStringAsFixed(2)}',
-                      style:
-                          const TextStyle(fontSize: 20, color: Colors.black54),
+                      style: const TextStyle(fontSize: 20, color: Colors.grey),
                     ),
                     const SizedBox(height: 20),
 
@@ -236,7 +235,7 @@ class _VillaBookingPageState extends State<VillaBookingPage> {
                           ),
                         ),
                         onPressed: () {
-                          var roomType = 'villa';
+                          var roomType = 'Villa';
                           Navigator.push(
                             context,
                             MaterialPageRoute(

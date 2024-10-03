@@ -131,7 +131,6 @@ class _ProfileInfoPageState extends State<ProfileInfoPage> {
               _buildTextField(
                   'Phone Number', _phoneController, textFieldFontSize),
               _buildTextField('Address', _addressController, textFieldFontSize),
-              _buildTextField('Age', _ageController, textFieldFontSize),
               _buildGenderDropdown(textFieldFontSize),
               _buildDateField(textFieldFontSize),
               SizedBox(height: screenHeight * 0.05),

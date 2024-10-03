@@ -233,7 +233,7 @@ class _PremiumBookingPageState extends State<PremiumBookingPage> {
                           ),
                         ),
                         onPressed: () {
-                          var roomType = 'premium';
+                          var roomType = 'Premium';
                           Navigator.push(
                             context,
                             MaterialPageRoute(

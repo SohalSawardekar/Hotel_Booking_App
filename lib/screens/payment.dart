@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:hotel_booking/constants/ImportFiles.dart';
 import 'package:upi_india/upi_india.dart';
 
 class PaymentPage extends StatefulWidget {
@@ -17,7 +17,6 @@ class PaymentPage extends StatefulWidget {
     required this.adults,
     required this.children,
     required this.totalAmount,
-    required roomId,
   });
 
   @override
@@ -28,16 +27,6 @@ class _PaymentPageState extends State<PaymentPage> {
   Future<UpiResponse>? _transaction;
   UpiIndia _upiIndia = UpiIndia();
   List<UpiApp>? apps;
-
-  TextStyle header = const TextStyle(
-    fontSize: 18,
-    fontWeight: FontWeight.bold,
-  );
-
-  TextStyle value = const TextStyle(
-    fontWeight: FontWeight.w400,
-    fontSize: 14,
-  );
 
   @override
   void initState() {
@@ -62,61 +51,6 @@ class _PaymentPageState extends State<PaymentPage> {
     );
   }
 
-  Widget displayUpiApps() {
-    if (apps == null) {
-      return const Center(child: CircularProgressIndicator());
-    } else if (apps!.isEmpty) {
-      return Center(
-        child: Text(
-          "No apps found to handle transaction.",
-          style: header,
-        ),
-      );
-    } else {
-      return Align(
-        alignment: Alignment.topCenter,
-        child: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          child: Wrap(
-            spacing: 20,
-            runSpacing: 20,
-            children: apps!.map<Widget>((UpiApp app) {
-              return GestureDetector(
-                onTap: () {
-                  _transaction = initiateTransaction(app);
-                  setState(() {});
-                },
-                child: Container(
-                  height: 120,
-                  width: 120,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Image.memory(
-                        app.icon,
-                        height: 60,
-                        width: 60,
-                      ),
-                      SizedBox(height: 10),
-                      Text(
-                        app.name,
-                        style: value,
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            }).toList(),
-          ),
-        ),
-      );
-    }
-  }
-
   String _upiErrorHandler(error) {
     switch (error) {
       case UpiIndiaAppNotInstalledException _:
@@ -126,81 +60,207 @@ class _PaymentPageState extends State<PaymentPage> {
       case UpiIndiaNullResponseException _:
         return 'Requested app didn\'t return any response';
       default:
-        return 'An Unknown error has occurred';
+        return 'An unknown error has occurred';
     }
   }
 
   void _checkTxnStatus(String status) {
     switch (status) {
       case UpiPaymentStatus.SUCCESS:
-        print('Transaction Successful');
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Transaction Successful')),
+        );
         break;
       case UpiPaymentStatus.SUBMITTED:
-        print('Transaction Submitted');
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Transaction Submitted')),
+        );
         break;
       case UpiPaymentStatus.FAILURE:
-        print('Transaction Failed');
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Transaction Failed')),
+        );
         break;
       default:
-        print('Received an Unknown transaction status');
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Unknown transaction status')),
+        );
+    }
+  }
+
+  Widget displayUpiApps() {
+    if (apps == null) {
+      return const Center(child: CircularProgressIndicator());
+    } else if (apps!.isEmpty) {
+      return const Center(
+        child: Text(
+          "No apps found to handle the transaction.",
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+      );
+    } else {
+      return GridView.builder(
+        shrinkWrap: true,
+        physics: const BouncingScrollPhysics(),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3,
+          childAspectRatio: 0.8,
+        ),
+        itemCount: apps!.length,
+        itemBuilder: (context, index) {
+          UpiApp app = apps![index];
+          return GestureDetector(
+            onTap: () {
+              _transaction = initiateTransaction(app);
+              setState(() {});
+            },
+            child: Card(
+              elevation: 5,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.memory(
+                    app.icon,
+                    height: 30,
+                    width: 50,
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    app.name,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      );
     }
   }
 
   Widget displayTransactionData(String title, String body) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text("$title: ", style: header),
-          Flexible(
-              child: Text(
-            body,
-            style: value,
-          )),
-        ],
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
+      title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+      trailing: Text(
+        body,
+        style: const TextStyle(fontSize: 14),
+        overflow: TextOverflow.ellipsis,
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('UPI Payment'),
+        title: Text(
+          'UPI Payment',
+          style: GoogleFonts.poppins(
+              fontWeight: FontWeight.w600,
+              color: const Color.fromARGB(255, 255, 255, 255)),
+        ),
         backgroundColor: Colors.deepPurpleAccent,
       ),
-      body: Column(
-        children: <Widget>[
-          Expanded(
-            child: displayUpiApps(),
-          ),
-          Expanded(
-            child: FutureBuilder(
-              future: _transaction,
-              builder:
-                  (BuildContext context, AsyncSnapshot<UpiResponse> snapshot) {
-                if (snapshot.connectionState == ConnectionState.done) {
-                  if (snapshot.hasError) {
-                    return Center(
-                      child: Text(
-                        _upiErrorHandler(snapshot.error.runtimeType),
-                        style: header,
-                      ),
-                    );
-                  }
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: <Widget>[
+            Container(
+              decoration: BoxDecoration(
+                color: isDarkMode
+                    ? Color.fromARGB(255, 38, 38, 38)
+                    : Colors.grey.shade200,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                children: [
+                  displayTransactionData('Room Type', widget.roomType),
+                  displayTransactionData(
+                    'Check-in Date',
+                    "${widget.checkInDate.day}/${widget.checkInDate.month}/${widget.checkInDate.year}",
+                  ),
+                  displayTransactionData(
+                    'Check-out Date',
+                    "${widget.checkOutDate.day}/${widget.checkOutDate.month}/${widget.checkOutDate.year}",
+                  ),
+                  displayTransactionData('Adults', widget.adults.toString()),
+                  displayTransactionData(
+                      'Children', widget.children.toString()),
+                  displayTransactionData(
+                    'Total Amount',
+                    '₹${widget.totalAmount.toStringAsFixed(2)}',
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 50),
 
-                  UpiResponse upiResponse = snapshot.data!;
-                  String txnId = upiResponse.transactionId ?? 'N/A';
-                  String resCode = upiResponse.responseCode ?? 'N/A';
-                  String txnRef = upiResponse.transactionRefId ?? 'N/A';
-                  String status = upiResponse.status ?? 'N/A';
-                  String approvalRef = upiResponse.approvalRefNo ?? 'N/A';
-                  _checkTxnStatus(status);
+            // UPI apps display section
+            Expanded(child: displayUpiApps()),
 
-                  return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
+            // Transaction status section
+            Expanded(
+              child: FutureBuilder<UpiResponse>(
+                future: _transaction,
+                builder: (BuildContext context,
+                    AsyncSnapshot<UpiResponse> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    if (snapshot.hasError) {
+                      return Center(
+                          child: Column(
+                        children: [
+                          const SizedBox(
+                            height: 30,
+                          ),
+                          Text(
+                            _upiErrorHandler(snapshot.error.runtimeType),
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.red,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 30,
+                          ),
+                          ElevatedButton(
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => PaymentPage(
+                                            roomType: widget.roomType,
+                                            checkInDate: widget.checkInDate,
+                                            checkOutDate: widget.checkOutDate,
+                                            adults: widget.adults,
+                                            children: widget.children,
+                                            totalAmount: widget.totalAmount)));
+                              },
+                              child: const Text("Try again"))
+                        ],
+                      ));
+                    }
+
+                    UpiResponse upiResponse = snapshot.data!;
+                    String txnId = upiResponse.transactionId ?? 'N/A';
+                    String resCode = upiResponse.responseCode ?? 'N/A';
+                    String txnRef = upiResponse.transactionRefId ?? 'N/A';
+                    String status = upiResponse.status ?? 'N/A';
+                    String approvalRef = upiResponse.approvalRefNo ?? 'N/A';
+                    _checkTxnStatus(status);
+
+                    return Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         displayTransactionData('Transaction Id', txnId),
@@ -209,17 +269,20 @@ class _PaymentPageState extends State<PaymentPage> {
                         displayTransactionData('Status', status.toUpperCase()),
                         displayTransactionData('Approval No', approvalRef),
                       ],
-                    ),
-                  );
-                } else {
-                  return const Center(
-                    child: Text('Awaiting payment...'),
-                  );
-                }
-              },
+                    );
+                  } else {
+                    return const Center(
+                      child: Text(
+                        'Select Payment Method',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                    );
+                  }
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import '../../constants/ImportFiles.dart'; // Ensure this import is correct for BookingPage
 
@@ -227,7 +225,7 @@ class _StandardBookingPageState extends State<StandardBookingPage> {
                           ),
                         ),
                         onPressed: () {
-                          var roomType = 'standard';
+                          var roomType = 'Standard';
                           Navigator.push(
                             context,
                             MaterialPageRoute(

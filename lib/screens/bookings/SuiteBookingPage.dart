@@ -48,6 +48,7 @@ class _SuiteBookingPageState extends State<SuiteBookingPage> {
   @override
   Widget build(BuildContext context) {
     // Calculate GST and total amount
+    bool isDarkMode = Provider.of<ThemeNotifier>(context).isDarkMode;
     const double gst = 0.18; // GST rate
     final double totalAmount = pricePerNight * (1 + gst);
 
@@ -63,7 +64,7 @@ class _SuiteBookingPageState extends State<SuiteBookingPage> {
         title: Text('Suite Room Booking',
             style: GoogleFonts.poppins(
                 fontWeight: FontWeight.w600,
-                color: Color.fromARGB(255, 255, 255, 255))),
+                color: const Color.fromARGB(255, 255, 255, 255))),
         backgroundColor: Colors.deepPurpleAccent,
       ),
       body: isLoading
@@ -97,8 +98,7 @@ class _SuiteBookingPageState extends State<SuiteBookingPage> {
                     const SizedBox(height: 10),
                     Text(
                       'Price per Night: ₹${pricePerNight.toStringAsFixed(2)}',
-                      style:
-                          const TextStyle(fontSize: 20, color: Colors.black54),
+                      style: const TextStyle(fontSize: 20, color: Colors.grey),
                     ),
                     const SizedBox(height: 20),
 
@@ -230,7 +230,7 @@ class _SuiteBookingPageState extends State<SuiteBookingPage> {
                           ),
                         ),
                         onPressed: () {
-                          var roomType = 'suite';
+                          var roomType = 'Suite';
                           Navigator.push(
                             context,
                             MaterialPageRoute(

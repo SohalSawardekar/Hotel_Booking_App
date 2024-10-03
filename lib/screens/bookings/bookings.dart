@@ -24,7 +24,7 @@ class _BookingPageState extends State<BookingPage> {
   DateTime? checkOutDate;
   int adults = 1;
   int children = 0;
-  double roomRate = 120; // Default room rate
+  double roomRate = 1500.00; // Default room rate
   int price = 0;
   String selectedRoomType = "Standard";
   bool isLoading = false;
@@ -81,10 +81,18 @@ class _BookingPageState extends State<BookingPage> {
   @override
   void initState() {
     super.initState();
+
+    // Check if checkInDate and checkOutDate are passed; if not, set defaults
     checkInDate = widget.checkInDate ?? DateTime.now();
     checkOutDate =
         widget.checkOutDate ?? DateTime.now().add(const Duration(days: 1));
 
+    // Check if roomType is passed; if not, set to "Standard"
+    selectedRoomType = widget.roomType.isNotEmpty
+        ? widget.roomType.toString()
+        : selectedRoomType;
+
+    // If totalAmount is passed, use it; otherwise fetch room price
     if (widget.totalAmount != null) {
       _fetchRoomPrice();
     } else {
@@ -93,42 +101,20 @@ class _BookingPageState extends State<BookingPage> {
   }
 
   void _selectDate(bool isCheckIn) async {
-    DateTime initialDate;
-
-    if (isCheckIn) {
-      initialDate = checkInDate ?? DateTime.now();
-    } else {
-      initialDate = checkOutDate ??
-          (checkInDate != null
-              ? checkInDate!.add(const Duration(days: 1))
-              : DateTime.now().add(const Duration(days: 1)));
-    }
-
-    DateTime firstDate = isCheckIn
-        ? initialDate
-        : (checkInDate != null
-            ? checkInDate!.add(const Duration(days: 1))
-            : DateTime.now().add(const Duration(days: 1)));
-
+    DateTime initialDate = DateTime.now();
     DateTime? picked = await showDatePicker(
       context: context,
       initialDate: initialDate,
-      firstDate: firstDate,
+      firstDate: initialDate,
       lastDate: DateTime.now().add(const Duration(days: 365)),
     );
-
-    if (picked != null) {
-      setState(() {
-        if (isCheckIn) {
-          checkInDate = picked;
-          if (checkOutDate != null && picked.isAfter(checkOutDate!)) {
-            checkOutDate = picked.add(const Duration(days: 1));
-          }
-        } else {
-          checkOutDate = picked;
-        }
-      });
-    }
+    setState(() {
+      if (isCheckIn) {
+        checkInDate = picked;
+      } else {
+        checkOutDate = picked;
+      }
+    });
   }
 
   String formatDate(DateTime? date) {
@@ -190,7 +176,28 @@ class _BookingPageState extends State<BookingPage> {
                 context,
                 'Check-in Date',
                 formatDate(checkInDate),
-                () => _selectDate(true),
+                () async {
+                  DateTime initialDate = checkInDate ??
+                      DateTime.now(); // Use selected check-in or today's date
+                  DateTime? picked = await showDatePicker(
+                    context: context,
+                    initialDate:
+                        initialDate, // Start the picker at the selected check-in date
+                    firstDate: DateTime.now(),
+                    lastDate: DateTime.now().add(const Duration(days: 365)),
+                  );
+                  if (picked != null) {
+                    setState(() {
+                      checkInDate = picked;
+                      // Adjust check-out if needed
+                      if (checkOutDate != null &&
+                          checkOutDate!.isBefore(checkInDate!)) {
+                        checkOutDate =
+                            checkInDate!.add(const Duration(days: 1));
+                      }
+                    });
+                  }
+                },
                 isDarkMode,
               ),
               const SizedBox(height: 20),
@@ -198,7 +205,23 @@ class _BookingPageState extends State<BookingPage> {
                 context,
                 'Check-out Date',
                 formatDate(checkOutDate),
-                () => _selectDate(false),
+                () async {
+                  DateTime initialDate = checkInDate ??
+                      DateTime.now(); // Ensure it's after check-in
+                  DateTime? picked = await showDatePicker(
+                    context: context,
+                    initialDate: initialDate.add(const Duration(
+                        days: 1)), // Ensure at least 1 day after check-in
+                    firstDate: initialDate.add(const Duration(
+                        days: 1)), // The minimum date is 1 day after check-in
+                    lastDate: DateTime.now().add(const Duration(days: 365)),
+                  );
+                  if (picked != null) {
+                    setState(() {
+                      checkOutDate = picked;
+                    });
+                  }
+                },
                 isDarkMode,
               ),
               const SizedBox(height: 20),
@@ -304,23 +327,33 @@ class _BookingPageState extends State<BookingPage> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
         decoration: BoxDecoration(
-          color: isDarkMode ? Colors.grey[800] : Colors.grey[200],
+          color: isDarkMode ? Colors.grey[800] : Colors.white,
+          border: Border.all(color: Colors.grey.shade300),
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.deepPurple),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 6,
+              offset: const Offset(0, 2),
+            ),
+          ],
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              '$label: $dateText',
-              style: TextStyle(
+              label,
+              style: const TextStyle(
                 fontSize: 18,
-                color: isDarkMode ? Colors.white : Colors.black,
+                fontWeight: FontWeight.w500,
               ),
             ),
-            const Icon(Icons.calendar_today, color: Colors.deepPurple),
+            Text(
+              dateText,
+              style: const TextStyle(fontSize: 18),
+            ),
           ],
         ),
       ),
@@ -329,56 +362,74 @@ class _BookingPageState extends State<BookingPage> {
 
   Widget _buildRoomTypeDropdown(Color textColor, Color backgroundColor) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
       decoration: BoxDecoration(
         color: backgroundColor,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.deepPurple),
       ),
-      child: DropdownButton<String>(
-        value: selectedRoomType,
-        onChanged: (String? newValue) {
-          setState(() {
-            selectedRoomType = newValue!;
-            _fetchRoomPrice();
-          });
-        },
-        underline: const SizedBox.shrink(),
-        isExpanded: true,
-        items: roomTypes.map<DropdownMenuItem<String>>((String roomType) {
-          return DropdownMenuItem<String>(
-            value: roomType,
+      child: Row(
+        mainAxisAlignment:
+            MainAxisAlignment.spaceBetween, // Align label and dropdown
+        children: [
+          Expanded(
+            // Text on the left
             child: Text(
-              roomType,
-              style: TextStyle(color: textColor),
+              "Room Type",
+              style: GoogleFonts.poppins(
+                  color: textColor, fontWeight: FontWeight.w600),
             ),
-          );
-        }).toList(),
+          ),
+          DropdownButton<String>(
+            value: selectedRoomType,
+            onChanged: (String? newValue) {
+              setState(() {
+                selectedRoomType = newValue!;
+                _fetchRoomPrice();
+              });
+            },
+            underline: const SizedBox.shrink(),
+            items: roomTypes.map<DropdownMenuItem<String>>((String roomType) {
+              return DropdownMenuItem<String>(
+                value: roomType,
+                child: Text(
+                  roomType,
+                  style: GoogleFonts.poppins(
+                      color: textColor, fontWeight: FontWeight.w600),
+                ),
+              );
+            }).toList(),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildAdultChildrenSelector(
-      Color textColor, String label, int count, VoidCallback increment,
-      [VoidCallback? decrement]) {
+  Widget _buildAdultChildrenSelector(Color textColor, String label, int value,
+      VoidCallback onAdd, VoidCallback onRemove) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
-          '$label: $count',
-          style: TextStyle(fontSize: 18, color: textColor),
+          label,
+          style: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w500,
+          ),
         ),
         Row(
           children: [
             IconButton(
-              icon: const Icon(Icons.remove),
-              onPressed: decrement,
-              color: textColor,
+              onPressed: onRemove,
+              icon: const Icon(Icons.remove_circle_outline),
+            ),
+            Text(
+              value.toString(),
+              style: TextStyle(fontSize: 18, color: textColor),
             ),
             IconButton(
-              icon: const Icon(Icons.add),
-              onPressed: increment,
-              color: textColor,
+              onPressed: onAdd,
+              icon: const Icon(Icons.add_circle_outline),
             ),
           ],
         ),

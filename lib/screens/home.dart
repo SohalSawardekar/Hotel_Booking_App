@@ -159,7 +159,7 @@ class _HomeScreenState extends State<HomeScreen> {
               logout(context);
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Color.fromARGB(255, 216, 145, 78),
+              backgroundColor: const Color.fromARGB(255, 216, 145, 78),
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
               shape: const StadiumBorder(),
             ),
@@ -220,8 +220,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: _currentIndex == entry.key
-                        ? const Color.fromARGB(255, 0, 0, 0)
-                        : Colors.grey,
+                        ? const Color.fromARGB(255, 255, 255, 255)
+                        : const Color.fromARGB(240, 179, 179, 179),
                   ),
                 ),
               );
@@ -261,7 +261,7 @@ class _HomeScreenState extends State<HomeScreen> {
               width: screenSize.width * 0.4, // Reduced width
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
-                color: Color.fromARGB(255, 200, 200, 201),
+                color: const Color.fromARGB(255, 200, 200, 201),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.grey.withOpacity(0.25),
@@ -303,7 +303,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           onPressed: () {
                             navigateToBookingPage(roomTypes[index]);
                           },
-                          child: Text('Book Now'),
+                          child: const Text('Book Now'),
                         ),
                       ],
                     ),
@@ -376,7 +376,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           fontSize: 18,
                         ),
                       ),
-                      SizedBox(height: 5),
+                      const SizedBox(height: 5),
                       Text(
                         'View Gallery',
                         style: GoogleFonts.poppins(
