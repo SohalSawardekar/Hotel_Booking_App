@@ -117,7 +117,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             buildHeaderImage(screenSize),
             const SizedBox(height: 20),
-            sectionTitle('Recommended for You', horizontalPadding),
+            sectionTitle('Book a Room', horizontalPadding),
             const SizedBox(height: 20),
             buildRecommendedForYou(screenSize),
             const SizedBox(height: 20),

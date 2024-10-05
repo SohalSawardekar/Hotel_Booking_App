@@ -205,11 +205,7 @@ class _PaymentPageState extends State<PaymentPage> {
               ),
             ),
             const SizedBox(height: 50),
-
-            // UPI apps display section
             Expanded(child: displayUpiApps()),
-
-            // Transaction status section
             Expanded(
               child: FutureBuilder<UpiResponse>(
                 future: _transaction,
@@ -247,7 +243,21 @@ class _PaymentPageState extends State<PaymentPage> {
                                             children: widget.children,
                                             totalAmount: widget.totalAmount)));
                               },
-                              child: const Text("Try again"))
+                              child: const Text("Try again")),
+                          ElevatedButton(
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => PaymentPage(
+                                            roomType: widget.roomType,
+                                            checkInDate: widget.checkInDate,
+                                            checkOutDate: widget.checkOutDate,
+                                            adults: widget.adults,
+                                            children: widget.children,
+                                            totalAmount: widget.totalAmount)));
+                              },
+                              child: const Text("ByPass Payment"))
                         ],
                       ));
                     }
