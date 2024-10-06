@@ -1,22 +1,31 @@
-import '../constants/ImportFiles.dart';
+import 'package:intl/intl.dart';
+import '../../constants/ImportFiles.dart';
 
-class BookingConfirmationPage extends StatelessWidget {
+class BookingConfirmationPage extends StatefulWidget {
   final String paymentId;
   final String roomId;
-  final String roomType;
-  final String checkInDate;
-  final String checkOutDate;
-  final double totalAmount;
+  final DateTime checkInDate;
+  final DateTime checkOutDate;
 
-  BookingConfirmationPage({
+  const BookingConfirmationPage({
     super.key,
     required this.paymentId,
     required this.roomId,
-    required this.roomType,
     required this.checkInDate,
     required this.checkOutDate,
-    required this.totalAmount,
   });
+
+  @override
+  _BookingConfirmationPageState createState() =>
+      _BookingConfirmationPageState();
+}
+
+class _BookingConfirmationPageState extends State<BookingConfirmationPage> {
+  @override
+  void initState() {
+    super.initState();
+    addBookingToFirestore();
+  }
 
   Future<void> addBookingToFirestore() async {
     try {
@@ -26,34 +35,51 @@ class BookingConfirmationPage extends StatelessWidget {
       if (user != null) {
         String userId = user.uid;
 
-        // Reference to the 'bookings' collection
+        // Reference to the 'Rooms' collection
+        CollectionReference rooms =
+            FirebaseFirestore.instance.collection('Rooms');
+
+        // Update the selected room's status to 'no' using the roomId
+        await rooms.doc(widget.roomId).update({
+          'status': 'no',
+          'user-id': userId,
+          'check-in': widget.checkInDate,
+          'check-out': widget.checkOutDate,
+        });
+
+        // Reference to the 'Bookings' collection
         CollectionReference bookings =
-            FirebaseFirestore.instance.collection('bookings');
+            FirebaseFirestore.instance.collection('Bookings');
 
         // Data to add
         await bookings.add({
           'userId': userId, // Adding the current user's ID
-          'roomId': roomId,
-          'roomType': roomType,
-          'checkInDate': checkInDate,
-          'checkOutDate': checkOutDate,
-          'totalAmount': totalAmount,
+          'roomId': widget.roomId,
+          'paymentId': widget.paymentId,
+          'checkInDate': widget.checkInDate,
+          'checkOutDate': widget.checkOutDate,
           'status': 'confirmed', // Example field for booking status
-          'createdAt':
+          'createdOn':
               FieldValue.serverTimestamp(), // Timestamp of booking creation
         });
 
-        print('Booking added successfully to Firestore with user ID.');
+        print('Booking added and room status updated successfully.');
       } else {
         print('No user is currently logged in.');
       }
     } catch (e) {
-      print('Failed to add booking: $e');
+      print('Failed to add booking and update room status: $e');
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    // Format the check-in and check-out dates
+    String formattedCheckInDate =
+        DateFormat('dd/MM/yyyy').format(widget.checkInDate);
+    String formattedCheckOutDate =
+        DateFormat('dd/MM/yyyy').format(widget.checkOutDate);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Booking Confirmation'),
@@ -74,20 +100,16 @@ class BookingConfirmationPage extends StatelessWidget {
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
-            DetailRow(title: 'Booking ID:', detail: roomId),
-            DetailRow(title: 'Room Type:', detail: roomType),
-            DetailRow(title: 'Check-In Date:', detail: checkInDate),
-            DetailRow(title: 'Check-Out Date:', detail: checkOutDate),
-            DetailRow(title: 'Total Amount:', detail: '₹$totalAmount'),
+            DetailRow(title: 'Room ID:', detail: widget.roomId),
+            DetailRow(title: 'Payment ID:', detail: widget.paymentId),
+            DetailRow(title: 'Check-In Date:', detail: formattedCheckInDate),
+            DetailRow(title: 'Check-Out Date:', detail: formattedCheckOutDate),
             const SizedBox(height: 32),
             Center(
               child: ElevatedButton(
-                onPressed: () async {
-                  // Update Firestore with booking details
-                  await addBookingToFirestore();
-
-                  // Navigate to Home or any other page
-                  Navigator.popUntil(context, ModalRoute.withName('/home'));
+                onPressed: () {
+                  // Navigate to Home Screen
+                  Navigator.pushReplacementNamed(context, '/home');
                 },
                 child: const Text('Go to Home'),
               ),

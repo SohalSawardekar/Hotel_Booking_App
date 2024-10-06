@@ -66,7 +66,7 @@ class MyApp extends StatelessWidget {
             '/home': (context) => const HomeScreen(),
             '/login': (context) => const LoginPage(),
             '/contactUs': (context) => const ContactUs(),
-            '/profileEdit': (context) => ProfileInfoPage(),
+            '/profileEdit': (context) => const ProfileInfoPage(),
           },
           onUnknownRoute: (settings) {
             return MaterialPageRoute(

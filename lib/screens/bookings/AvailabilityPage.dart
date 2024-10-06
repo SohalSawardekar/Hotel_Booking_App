@@ -237,7 +237,7 @@ class _AvailabilityPageState extends State<AvailabilityPage> {
                       adults: widget.adults,
                       children: widget.children,
                       totalAmount: widget.totalAmount,
-                      // roomId: _availableRoomId,
+                      roomId: _availableRoomId,
                     ),
                   ),
                 );

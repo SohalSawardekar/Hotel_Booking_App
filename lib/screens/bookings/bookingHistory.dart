@@ -33,7 +33,7 @@ class _BookinghistoryState extends State<Bookinghistory> {
 
       final querySnapshot = await _firestore
           .collection('Bookings')
-          .where('user-id', isEqualTo: uid)
+          .where('userId', isEqualTo: uid)
           .get();
 
       if (querySnapshot.docs.isNotEmpty) {
@@ -59,7 +59,7 @@ class _BookinghistoryState extends State<Bookinghistory> {
               await _firestore.collection('Bookings').doc(id).get();
           if (bookingDoc.exists) {
             var bookingData = bookingDoc.data() as Map<String, dynamic>;
-            String roomId = bookingData['room-id'];
+            String roomId = bookingData['roomId'];
             var roomDoc =
                 await _firestore.collection('Rooms').doc(roomId).get();
             bookingDetails.add(roomDoc.data() as Map<String, dynamic>);
@@ -79,12 +79,18 @@ class _BookinghistoryState extends State<Bookinghistory> {
 
   @override
   Widget build(BuildContext context) {
+    bool isDarkMode = Provider.of<ThemeNotifier>(context).isDarkMode;
     return Scaffold(
       appBar: AppBar(title: const Text("Booking History")),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : bookingDetails.isEmpty
-              ? const Center(child: Text("No booking history found."))
+              ? Center(
+                  child: Text(
+                  "No booking history found.",
+                  style: GoogleFonts.poppins(
+                      color: isDarkMode ? Colors.white : Colors.black),
+                ))
               : ListView.builder(
                   itemCount: bookingDetails.length,
                   itemBuilder: (context, index) {
@@ -118,16 +124,44 @@ class _BookinghistoryState extends State<Bookinghistory> {
                                 width: 1,
                               ),
                             ),
-                            title: Text('Room Type: ${booking['room_type']}'),
+                            title: Text(
+                              'Room Type: ${booking['room_type']}',
+                              style: GoogleFonts.poppins(
+                                  color: isDarkMode
+                                      ? Colors.green[900]
+                                      : Colors.green[600],
+                                  fontWeight: FontWeight.w600),
+                            ),
                             subtitle: Column(
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text('Price: ${booking['price']}'),
-                                Text('Location: ${booking['location']}'),
+                                Text(
+                                  'Price: ${booking['price']}',
+                                  style: GoogleFonts.poppins(
+                                      color: isDarkMode
+                                          ? Colors.green[900]
+                                          : Colors.green[600],
+                                      fontWeight: FontWeight.w600),
+                                ),
+                                Text(
+                                  'Location: ${booking['location']}',
+                                  style: GoogleFonts.poppins(
+                                      color: isDarkMode
+                                          ? Colors.green[900]
+                                          : Colors.green[600],
+                                      fontWeight: FontWeight.w600),
+                                ),
                               ],
                             ),
-                            trailing: Text('Room: ${booking['room_no']}'),
+                            trailing: Text(
+                              'Room: ${booking['room_no']}',
+                              style: GoogleFonts.poppins(
+                                  color: isDarkMode
+                                      ? Colors.green[900]
+                                      : Colors.green[600],
+                                  fontWeight: FontWeight.w600),
+                            ),
                           ),
                         ),
                       ),

@@ -1,8 +1,11 @@
+import 'package:flutter/material.dart';
 import 'package:hotel_booking/constants/ImportFiles.dart';
+import 'package:hotel_booking/screens/bookings/bookingConfirmation.dart';
 import 'package:upi_india/upi_india.dart';
 
 class PaymentPage extends StatefulWidget {
   final String roomType;
+  final String roomId;
   final DateTime checkInDate;
   final DateTime checkOutDate;
   final int adults;
@@ -12,6 +15,7 @@ class PaymentPage extends StatefulWidget {
   const PaymentPage({
     super.key,
     required this.roomType,
+    required this.roomId,
     required this.checkInDate,
     required this.checkOutDate,
     required this.adults,
@@ -158,6 +162,7 @@ class _PaymentPageState extends State<PaymentPage> {
   }
 
   @override
+  @override
   Widget build(BuildContext context) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
@@ -166,100 +171,110 @@ class _PaymentPageState extends State<PaymentPage> {
         title: Text(
           'UPI Payment',
           style: GoogleFonts.poppins(
-              fontWeight: FontWeight.w600,
-              color: const Color.fromARGB(255, 255, 255, 255)),
+            fontWeight: FontWeight.w600,
+            color: const Color.fromARGB(255, 255, 255, 255),
+          ),
         ),
         backgroundColor: Colors.deepPurpleAccent,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: <Widget>[
-            Container(
-              decoration: BoxDecoration(
-                color: isDarkMode
-                    ? Color.fromARGB(255, 38, 38, 38)
-                    : Colors.grey.shade200,
-                borderRadius: BorderRadius.circular(10),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: <Widget>[
+              Container(
+                decoration: BoxDecoration(
+                  color: isDarkMode
+                      ? const Color.fromARGB(255, 38, 38, 38)
+                      : Colors.grey.shade200,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  children: [
+                    displayTransactionData('Room Type', widget.roomType),
+                    displayTransactionData(
+                      'Check-in Date',
+                      "${widget.checkInDate.day}/${widget.checkInDate.month}/${widget.checkInDate.year}",
+                    ),
+                    displayTransactionData(
+                      'Check-out Date',
+                      "${widget.checkOutDate.day}/${widget.checkOutDate.month}/${widget.checkOutDate.year}",
+                    ),
+                    displayTransactionData('Adults', widget.adults.toString()),
+                    displayTransactionData(
+                        'Children', widget.children.toString()),
+                    displayTransactionData(
+                      'Total Amount',
+                      '₹${widget.totalAmount.toStringAsFixed(2)}',
+                    ),
+                  ],
+                ),
               ),
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                children: [
-                  displayTransactionData('Room Type', widget.roomType),
-                  displayTransactionData(
-                    'Check-in Date',
-                    "${widget.checkInDate.day}/${widget.checkInDate.month}/${widget.checkInDate.year}",
-                  ),
-                  displayTransactionData(
-                    'Check-out Date',
-                    "${widget.checkOutDate.day}/${widget.checkOutDate.month}/${widget.checkOutDate.year}",
-                  ),
-                  displayTransactionData('Adults', widget.adults.toString()),
-                  displayTransactionData(
-                      'Children', widget.children.toString()),
-                  displayTransactionData(
-                    'Total Amount',
-                    '₹${widget.totalAmount.toStringAsFixed(2)}',
-                  ),
-                ],
+              const SizedBox(height: 50),
+              // Remove Expanded and use Flexible or wrap it in SizedBox with a fixed height
+              SizedBox(
+                height: 200, // Fix the height or adjust as needed
+                child: displayUpiApps(),
               ),
-            ),
-            const SizedBox(height: 50),
-            Expanded(child: displayUpiApps()),
-            Expanded(
-              child: FutureBuilder<UpiResponse>(
+              FutureBuilder<UpiResponse>(
                 future: _transaction,
                 builder: (BuildContext context,
                     AsyncSnapshot<UpiResponse> snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
                     if (snapshot.hasError) {
                       return Center(
-                          child: Column(
-                        children: [
-                          const SizedBox(
-                            height: 30,
-                          ),
-                          Text(
-                            _upiErrorHandler(snapshot.error.runtimeType),
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.red,
+                        child: Column(
+                          children: [
+                            const SizedBox(height: 30),
+                            Text(
+                              _upiErrorHandler(snapshot.error.runtimeType),
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.red,
+                              ),
                             ),
-                          ),
-                          const SizedBox(
-                            height: 30,
-                          ),
-                          ElevatedButton(
+                            const SizedBox(height: 30),
+                            ElevatedButton(
                               onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => PaymentPage(
-                                            roomType: widget.roomType,
-                                            checkInDate: widget.checkInDate,
-                                            checkOutDate: widget.checkOutDate,
-                                            adults: widget.adults,
-                                            children: widget.children,
-                                            totalAmount: widget.totalAmount)));
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => PaymentPage(
+                                      roomType: widget.roomType,
+                                      checkInDate: widget.checkInDate,
+                                      checkOutDate: widget.checkOutDate,
+                                      adults: widget.adults,
+                                      children: widget.children,
+                                      totalAmount: widget.totalAmount,
+                                      roomId: widget.roomId,
+                                    ),
+                                  ),
+                                );
                               },
-                              child: const Text("Try again")),
-                          ElevatedButton(
+                              child: const Text("Try again"),
+                            ),
+                            ElevatedButton(
                               onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => PaymentPage(
-                                            roomType: widget.roomType,
-                                            checkInDate: widget.checkInDate,
-                                            checkOutDate: widget.checkOutDate,
-                                            adults: widget.adults,
-                                            children: widget.children,
-                                            totalAmount: widget.totalAmount)));
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        BookingConfirmationPage(
+                                      paymentId: 'aiashfhasboas',
+                                      roomId: widget.roomId,
+                                      checkInDate: widget.checkInDate,
+                                      checkOutDate: widget.checkOutDate,
+                                    ),
+                                  ),
+                                );
                               },
-                              child: const Text("ByPass Payment"))
-                        ],
-                      ));
+                              child: const Text("Bypass Payment"),
+                            ),
+                          ],
+                        ),
+                      );
                     }
 
                     UpiResponse upiResponse = snapshot.data!;
@@ -290,8 +305,8 @@ class _PaymentPageState extends State<PaymentPage> {
                   }
                 },
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

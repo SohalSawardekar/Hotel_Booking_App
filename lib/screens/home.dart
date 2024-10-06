@@ -134,7 +134,7 @@ class _HomeScreenState extends State<HomeScreen> {
   AppBar buildAppBar(BuildContext context, Size screenSize) {
     return AppBar(
       toolbarHeight: screenSize.height * 0.08,
-      backgroundColor: Colors.teal,
+      backgroundColor: const Color.fromARGB(255, 0, 64, 255),
       automaticallyImplyLeading: false,
       title: Row(
         children: [
@@ -159,14 +159,14 @@ class _HomeScreenState extends State<HomeScreen> {
               logout(context);
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color.fromARGB(255, 216, 145, 78),
+              backgroundColor: Color.fromARGB(255, 255, 85, 0),
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
               shape: const StadiumBorder(),
             ),
             child: Text(
               'Log out',
               style: GoogleFonts.poppins(
-                fontSize: 22,
+                fontSize: 18,
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
               ),
@@ -221,7 +221,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     shape: BoxShape.circle,
                     color: _currentIndex == entry.key
                         ? const Color.fromARGB(255, 255, 255, 255)
-                        : const Color.fromARGB(240, 179, 179, 179),
+                        : Colors.grey,
                   ),
                 ),
               );
@@ -238,7 +238,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Text(
         title,
         style: GoogleFonts.poppins(
-          fontWeight: FontWeight.w600,
+          fontWeight: FontWeight.w700,
           fontSize: 22,
         ),
       ),
@@ -261,10 +261,10 @@ class _HomeScreenState extends State<HomeScreen> {
               width: screenSize.width * 0.4, // Reduced width
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
-                color: const Color.fromARGB(255, 200, 200, 201),
+                color: Color.fromARGB(255, 235, 235, 237),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.grey.withOpacity(0.25),
+                    color: Colors.grey.withOpacity(0.3),
                     blurRadius: 15,
                     spreadRadius: 2.5,
                   )
@@ -295,7 +295,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             fontSize: 14,
                             color: isDarkMode
                                 ? Colors.black
-                                : Colors.white, // Change color based on mode
+                                : const Color.fromARGB(
+                                    255, 0, 0, 0), // Change color based on mode
                           ),
                         ),
                         const SizedBox(height: 8),
@@ -303,7 +304,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           onPressed: () {
                             navigateToBookingPage(roomTypes[index]);
                           },
-                          child: const Text('Book Now'),
+                          child: Text('Book Now'),
                         ),
                       ],
                     ),
@@ -376,7 +377,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           fontSize: 18,
                         ),
                       ),
-                      const SizedBox(height: 5),
+                      SizedBox(height: 5),
                       Text(
                         'View Gallery',
                         style: GoogleFonts.poppins(

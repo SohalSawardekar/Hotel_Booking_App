@@ -27,6 +27,7 @@ class _BookingPageState extends State<BookingPage> {
   double roomRate = 1500.00; // Default room rate
   int price = 0;
   String selectedRoomType = "Standard";
+  String selectedlocation = "goa";
   bool isLoading = false;
 
   final List<String> roomTypes = [
@@ -35,6 +36,16 @@ class _BookingPageState extends State<BookingPage> {
     "Luxury",
     "Suite",
     "Villa",
+  ];
+
+  final List<String> location = [
+    "agra",
+    "goa",
+    "jaipur",
+    "kashmir",
+    "kerela",
+    "ladakh",
+    "manali",
   ];
 
   Future<void> _fetchRoomPrice() async {
@@ -46,6 +57,7 @@ class _BookingPageState extends State<BookingPage> {
       QuerySnapshot roomSnapshot = await FirebaseFirestore.instance
           .collection('Rooms')
           .where('room_type', isEqualTo: selectedRoomType)
+          .where('location', isEqualTo: selectedlocation)
           .get();
 
       if (roomSnapshot.docs.isNotEmpty) {
@@ -73,7 +85,7 @@ class _BookingPageState extends State<BookingPage> {
   double _calculateTotalPrice() {
     if (checkInDate != null && checkOutDate != null) {
       int numberOfNights = checkOutDate!.difference(checkInDate!).inDays;
-      return numberOfNights * roomRate;
+      return numberOfNights * roomRate + (adults - 1) * 500 + children * 300;
     }
     return 0.0;
   }
@@ -226,6 +238,8 @@ class _BookingPageState extends State<BookingPage> {
               ),
               const SizedBox(height: 20),
               _buildRoomTypeDropdown(textColor, backgroundColor),
+              const SizedBox(height: 20),
+              _buildlocationDropdown(textColor, backgroundColor),
               const SizedBox(height: 20),
               _buildAdultChildrenSelector(
                   textColor,
@@ -394,6 +408,51 @@ class _BookingPageState extends State<BookingPage> {
                 value: roomType,
                 child: Text(
                   roomType,
+                  style: GoogleFonts.poppins(
+                      color: textColor, fontWeight: FontWeight.w600),
+                ),
+              );
+            }).toList(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildlocationDropdown(Color textColor, Color backgroundColor) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.deepPurple),
+      ),
+      child: Row(
+        mainAxisAlignment:
+            MainAxisAlignment.spaceBetween, // Align label and dropdown
+        children: [
+          Expanded(
+            // Text on the left
+            child: Text(
+              "Destination",
+              style: GoogleFonts.poppins(
+                  color: textColor, fontWeight: FontWeight.w600),
+            ),
+          ),
+          DropdownButton<String>(
+            value: selectedlocation,
+            onChanged: (String? newValue) {
+              setState(() {
+                selectedlocation = newValue!;
+                _fetchRoomPrice();
+              });
+            },
+            underline: const SizedBox.shrink(),
+            items: location.map<DropdownMenuItem<String>>((String location) {
+              return DropdownMenuItem<String>(
+                value: location,
+                child: Text(
+                  location,
                   style: GoogleFonts.poppins(
                       color: textColor, fontWeight: FontWeight.w600),
                 ),
