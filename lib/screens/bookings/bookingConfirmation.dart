@@ -1,3 +1,4 @@
+import 'package:hotel_booking/screens/feedback.dart';
 import 'package:intl/intl.dart';
 import '../../constants/ImportFiles.dart';
 
@@ -137,7 +138,10 @@ class _BookingConfirmationPageState extends State<BookingConfirmationPage> {
               Center(
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.pushReplacementNamed(context, '/home');
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const FeedbackPage()));
                   },
                   child: const Text('Go to Home'),
                 ),

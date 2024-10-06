@@ -262,7 +262,7 @@ class _PaymentPageState extends State<PaymentPage> {
                                   MaterialPageRoute(
                                     builder: (context) =>
                                         BookingConfirmationPage(
-                                      paymentId: 'aiashfhasboas',
+                                      paymentId: 'EU02fP7Roh4He1qn8Wc6',
                                       roomId: widget.roomId,
                                       checkInDate: widget.checkInDate,
                                       checkOutDate: widget.checkOutDate,

@@ -1,26 +1,9 @@
-// TODO Implement this library.
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import '../constants/ImportFiles.dart';
 
 class FeedbackPage extends StatefulWidget {
-  final String paymentMethod;
-  final String roomType;
-  final double? totalAmount; // Making totalAmount nullable
-  final DateTime? checkInDate; // Nullable check-in date
-  final DateTime? checkOutDate; // Nullable check-out date
-  final int? adults; // Nullable adults count
-  final int? children; // Nullable children count
-
-  const FeedbackPage({
-    Key? key,
-    required this.paymentMethod,
-    required this.roomType,
-    this.totalAmount,
-    this.checkInDate,
-    this.checkOutDate,
-    this.adults,
-    this.children,
-  }) : super(key: key);
+  const FeedbackPage({super.key});
 
   @override
   _FeedbackPageState createState() => _FeedbackPageState();
@@ -28,13 +11,15 @@ class FeedbackPage extends StatefulWidget {
 
 class _FeedbackPageState extends State<FeedbackPage> {
   final _formKey = GlobalKey<FormState>();
-  double _rating = 0;
+  double _overallRating = 0;
   String _comments = '';
-  String _cleanliness = '';
-  String _staff = '';
-  String _valueForMoney = '';
+  int? _cleanliness;
+  int? _staff;
+  int? _valueForMoney;
 
   bool _isSubmitting = false;
+
+  final List<int> _pointOptions = [1, 2, 3, 4, 5];
 
   void _submitFeedback() {
     if (_formKey.currentState?.validate() ?? false) {
@@ -73,7 +58,12 @@ class _FeedbackPageState extends State<FeedbackPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Feedback'),
+        title: Text(
+          'Feedback',
+          style: GoogleFonts.poppins(
+              fontWeight: FontWeight.w600,
+              color: const Color.fromARGB(255, 255, 255, 255)),
+        ),
         backgroundColor: Colors.deepPurple,
       ),
       body: SingleChildScrollView(
@@ -90,41 +80,43 @@ class _FeedbackPageState extends State<FeedbackPage> {
               ),
             ),
             const SizedBox(height: 20),
-            _buildRoomDetails(),
-            const SizedBox(height: 20),
             Form(
               key: _formKey,
               child: Column(
                 children: [
                   _buildRatingSection(),
                   const SizedBox(height: 20),
-                  _buildTextField(
-                    'How would you rate the cleanliness?',
+                  _buildDropdownField(
+                    'How would you rate our online booking?',
                     (value) {
-                      _cleanliness = value ?? '';
-                      return value != null && value.isNotEmpty
+                      setState(() {
+                        _cleanliness = value as int?;
+                      });
+                      return _cleanliness != null
                           ? null
-                          : 'Please provide a rating.';
+                          : 'Please select a rating.';
                     },
                   ),
                   const SizedBox(height: 20),
-                  _buildTextField(
-                    'How would you rate the staff?',
+                  _buildDropdownField(
+                    'How would you rate our online service?',
                     (value) {
-                      _staff = value ?? '';
-                      return value != null && value.isNotEmpty
-                          ? null
-                          : 'Please provide a rating.';
+                      setState(() {
+                        _staff = value as int?;
+                      });
+                      return _staff != null ? null : 'Please select a rating.';
                     },
                   ),
                   const SizedBox(height: 20),
-                  _buildTextField(
+                  _buildDropdownField(
                     'How would you rate the value for money?',
                     (value) {
-                      _valueForMoney = value ?? '';
-                      return value != null && value.isNotEmpty
+                      setState(() {
+                        _valueForMoney = value as int?;
+                      });
+                      return _valueForMoney != null
                           ? null
-                          : 'Please provide a rating.';
+                          : 'Please select a rating.';
                     },
                   ),
                   const SizedBox(height: 20),
@@ -140,53 +132,16 @@ class _FeedbackPageState extends State<FeedbackPage> {
     );
   }
 
-  Widget _buildRoomDetails() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Room Type: ${widget.roomType}',
-          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-        ),
-        if (widget.totalAmount != null)
-          Text(
-            'Total Amount: ₹${widget.totalAmount!.toStringAsFixed(2)}',
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-          ),
-        if (widget.checkInDate != null)
-          Text(
-            'Check-in: ${widget.checkInDate}',
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-          ),
-        if (widget.checkOutDate != null)
-          Text(
-            'Check-out: ${widget.checkOutDate}',
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-          ),
-        if (widget.adults != null)
-          Text(
-            'Adults: ${widget.adults}',
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-          ),
-        if (widget.children != null)
-          Text(
-            'Children: ${widget.children}',
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-          ),
-      ],
-    );
-  }
-
   Widget _buildRatingSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-          'Rate Your Experience:',
+          'Overall Experience (1-5):',
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
         ),
         RatingBar.builder(
-          initialRating: _rating,
+          initialRating: _overallRating,
           minRating: 1,
           allowHalfRating: true,
           itemCount: 5,
@@ -197,9 +152,46 @@ class _FeedbackPageState extends State<FeedbackPage> {
           ),
           onRatingUpdate: (rating) {
             setState(() {
-              _rating = rating;
+              _overallRating = rating;
             });
           },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDropdownField(
+      String label, FormFieldValidator<dynamic>? validator) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Expanded(
+          child: Text(
+            label,
+            style: const TextStyle(fontSize: 16),
+          ),
+        ),
+        SizedBox(
+          width: 100, // Control the width of the dropdown
+          child: DropdownButtonFormField<int>(
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+            ),
+            items: _pointOptions
+                .map(
+                  (value) => DropdownMenuItem<int>(
+                    value: value,
+                    child: Text(value.toString()),
+                  ),
+                )
+                .toList(),
+            onChanged: (value) {
+              setState(() {
+                value = value;
+              });
+            },
+            validator: validator,
+          ),
         ),
       ],
     );
@@ -208,7 +200,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
   Widget _buildCommentsSection() {
     return TextFormField(
       decoration: const InputDecoration(
-        labelText: 'Additional Comments',
+        labelText: 'Additional Comments (Optional)',
         border: OutlineInputBorder(),
       ),
       maxLines: 4,
@@ -217,21 +209,6 @@ class _FeedbackPageState extends State<FeedbackPage> {
           _comments = value;
         });
       },
-      validator: (value) {
-        return value != null && value.isNotEmpty
-            ? null
-            : 'Please provide your comments.';
-      },
-    );
-  }
-
-  Widget _buildTextField(String label, FormFieldValidator<String>? validator) {
-    return TextFormField(
-      decoration: InputDecoration(
-        labelText: label,
-        border: const OutlineInputBorder(),
-      ),
-      validator: validator,
     );
   }
 
@@ -250,7 +227,10 @@ class _FeedbackPageState extends State<FeedbackPage> {
             ? const CircularProgressIndicator(color: Colors.white)
             : const Text(
                 'Submit Feedback',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white),
               ),
       ),
     );
