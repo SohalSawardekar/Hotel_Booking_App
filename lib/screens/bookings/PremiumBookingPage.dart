@@ -1,9 +1,8 @@
-import 'dart:ffi';
+// ignore_for_file: avoid_print, library_private_types_in_public_api, unused_import
 
-import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:ffi';
 import 'package:intl/intl.dart';
-import '../../constants/ImportFiles.dart'; // Make sure to have the correct import for BookingPage
+import '../../constants/ImportFiles.dart';
 
 class PremiumBookingPage extends StatefulWidget {
   const PremiumBookingPage({super.key});
@@ -68,7 +67,7 @@ class _PremiumBookingPageState extends State<PremiumBookingPage> {
         title: Text('Premium Room Booking',
             style: GoogleFonts.poppins(
                 fontWeight: FontWeight.w600,
-                color: Color.fromARGB(255, 255, 255, 255))),
+                color: const Color.fromARGB(255, 255, 255, 255))),
         backgroundColor: Colors.deepPurple,
       ),
       body: isLoading

@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import '../constants/ImportFiles.dart';
 
@@ -12,6 +13,7 @@ class FeedbackPage extends StatefulWidget {
 class _FeedbackPageState extends State<FeedbackPage> {
   final _formKey = GlobalKey<FormState>();
   double _overallRating = 0;
+  // ignore: unused_field
   String _comments = '';
   int? _cleanliness;
   int? _staff;
