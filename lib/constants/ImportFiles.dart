@@ -38,7 +38,6 @@ export 'package:hotel_booking/screens/bookings/bookingHistory.dart';
 export 'package:hotel_booking/screens/bookings/VillaBookingPage.dart';
 export 'package:hotel_booking/screens/rooms/VillaGalleryPage.dart';
 export 'package:razorpay_flutter/razorpay_flutter.dart';
-
 export 'package:hotel_booking/constants/data.dart';
 export 'package:hotel_booking/constants/theme.dart';
 export 'package:hotel_booking/constants/firebase_options.dart';

@@ -1,3 +1,5 @@
+// ignore_for_file: unused_element
+
 import 'package:intl/intl.dart';
 import '../../constants/ImportFiles.dart';
 
@@ -29,6 +31,7 @@ class _BookingPageState extends State<BookingPage> {
   String selectedRoomType = "Standard";
   String selectedlocation = "goa";
   bool isLoading = false;
+  bool extrabed = false;
 
   final List<String> roomTypes = [
     "Standard",
@@ -85,7 +88,11 @@ class _BookingPageState extends State<BookingPage> {
   double _calculateTotalPrice() {
     if (checkInDate != null && checkOutDate != null) {
       int numberOfNights = checkOutDate!.difference(checkInDate!).inDays;
-      return numberOfNights * roomRate + (adults - 1) * 500 + children * 300;
+      double price = extrabed ? 1000.0 : 0.0;
+      return numberOfNights * roomRate +
+          (adults - 1) * 500 +
+          children * 300 +
+          price;
     }
     return 0.0;
   }
@@ -254,6 +261,24 @@ class _BookingPageState extends State<BookingPage> {
                   children,
                   () => setState(() => children++),
                   () => setState(() => children > 0 ? children-- : null)),
+              const SizedBox(height: 20),
+              // Extra Bed Checkbox
+              CheckboxListTile(
+                title: Text(
+                  'Extra Bed',
+                  style: TextStyle(
+                    fontSize: 15,
+                    color: isDarkMode ? Colors.white : Colors.black,
+                  ),
+                ),
+                value: extrabed,
+                onChanged: (bool? value) {
+                  setState(() {
+                    extrabed = value!;
+                  });
+                },
+                activeColor: Colors.deepPurple,
+              ),
               const SizedBox(height: 40),
               isLoading
                   ? const SizedBox.shrink()
