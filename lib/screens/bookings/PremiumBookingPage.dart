@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print, library_private_types_in_public_api, unused_import
+// ignore_for_file: avoid_print, library_private_types_in_public_api, unused_import, unused_local_variable
 
 import 'dart:ffi';
 import 'package:intl/intl.dart';
@@ -52,7 +52,7 @@ class _PremiumBookingPageState extends State<PremiumBookingPage> {
   @override
   Widget build(BuildContext context) {
     // Calculate GST and total amount
-    const double gst = 0.18; // GST rate
+    const double gst = 0; // GST rate
     final double totalAmount = pricePerNight * (1 + gst);
 
     final checkInDate = DateTime.now();
@@ -167,7 +167,7 @@ class _PremiumBookingPageState extends State<PremiumBookingPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           const Text(
-                            'Total Amount (with GST):',
+                            'Total Amount:',
                             style: TextStyle(
                                 fontSize: 20, fontWeight: FontWeight.bold),
                           ),
@@ -190,29 +190,29 @@ class _PremiumBookingPageState extends State<PremiumBookingPage> {
                         borderRadius: BorderRadius.circular(10),
                         border: Border.all(color: Colors.deepPurple, width: 1),
                       ),
-                      child: Column(
+                      child: const Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
+                          Text(
                             'Booking Details',
                             style: TextStyle(
                                 fontSize: 20, fontWeight: FontWeight.bold),
                           ),
-                          const SizedBox(height: 10),
+                          SizedBox(height: 10),
                           Text(
-                            'Check-in Date: $formattedCheckIn',
-                            style: const TextStyle(
+                            'Check-in Date: xx-xx-xxxx',
+                            style: TextStyle(
                                 fontSize: 18, color: Colors.grey),
                           ),
-                          const SizedBox(height: 10),
+                          SizedBox(height: 10),
                           Text(
-                            'Check-out Date: $formattedCheckOut',
-                            style: const TextStyle(
+                            'Check-out Date: xx-xx-xxxx',
+                            style: TextStyle(
                                 fontSize: 18, color: Colors.grey),
                           ),
-                          const SizedBox(height: 10),
-                          const Text(
-                            'Guests: 1 Adult, 0 Children',
+                          SizedBox(height: 10),
+                          Text(
+                            'Guests: x Adult, x Children',
                             style: TextStyle(fontSize: 18, color: Colors.grey),
                           ),
                         ],

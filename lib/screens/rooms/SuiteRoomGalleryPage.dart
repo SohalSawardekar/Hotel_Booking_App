@@ -35,7 +35,7 @@ class _SuiteRoomGalleryPageState extends State<SuiteRoomGalleryPage> {
       'Kitchenette',
       'Room Service'
     ];
-    const String extraBedCharges = '₹1200 per night';
+    const String extraBedCharges = '₹1000 per night';
 
     return Scaffold(
       appBar: AppBar(

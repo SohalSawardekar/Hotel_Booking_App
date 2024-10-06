@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable
+
 import 'package:intl/intl.dart';
 import '../../constants/ImportFiles.dart'; // Adjust import path as needed
 
@@ -13,7 +15,7 @@ class _LuxuryBookingPageState extends State<LuxuryBookingPage> {
   DateTime checkOutDate = DateTime.now().add(const Duration(days: 1));
   String roomType = 'Luxury';
   int pricePerNight = 10; // Will be fetched from Firestore
-  double gst = 0.18; // Assuming GST is 18%
+  double gst = 0; // Assuming GST is 18%
   bool isLoading = true;
 
   @override
@@ -154,10 +156,10 @@ class _LuxuryBookingPageState extends State<LuxuryBookingPage> {
 
                     // Total Amount Section
                     Container(
-                      padding: EdgeInsets.all(15),
+                      padding: const EdgeInsets.all(15),
                       decoration: BoxDecoration(
                         color: isDarkMode
-                            ? Color.fromARGB(230, 199, 199, 199)
+                            ? const Color.fromARGB(230, 199, 199, 199)
                                 .withOpacity(0.1)
                             : Colors.black87.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(10),
@@ -166,12 +168,12 @@ class _LuxuryBookingPageState extends State<LuxuryBookingPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'Total Amount (with GST):',
+                            'Total Amount:',
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
                               color: isDarkMode
-                                  ? Color.fromARGB(255, 230, 228, 228)
+                                  ? const Color.fromARGB(255, 230, 228, 228)
                                   : Colors.black,
                             ),
                           ),
@@ -181,7 +183,7 @@ class _LuxuryBookingPageState extends State<LuxuryBookingPage> {
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
                               color: isDarkMode
-                                  ? Color.fromARGB(255, 230, 228, 228)
+                                  ? const Color.fromARGB(255, 230, 228, 228)
                                   : Colors.black,
                             ),
                           ),
@@ -197,29 +199,28 @@ class _LuxuryBookingPageState extends State<LuxuryBookingPage> {
                         borderRadius: BorderRadius.circular(10),
                         border: Border.all(color: Colors.black87, width: 1),
                       ),
-                      child: Column(
+                      child: const Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
+                          Text(
                             'Booking Details',
                             style: TextStyle(
                                 fontSize: 20, fontWeight: FontWeight.bold),
                           ),
-                          const SizedBox(height: 10),
+                          SizedBox(height: 10),
                           Text(
-                            'Check-in Date: $formattedCheckIn',
-                            style: const TextStyle(
+                            'Check-in Date: xx-xx-xxxx',
+                            style: TextStyle(fontSize: 18, color: Colors.grey),
+                          ),
+                          SizedBox(height: 10),
+                          Text(
+                            'Check-out Date: xx-xx-xxxx',
+                            style: TextStyle(
                                 fontSize: 18, color: Colors.grey),
                           ),
-                          const SizedBox(height: 10),
+                          SizedBox(height: 10),
                           Text(
-                            'Check-out Date: $formattedCheckOut',
-                            style: const TextStyle(
-                                fontSize: 18, color: Colors.grey),
-                          ),
-                          const SizedBox(height: 10),
-                          const Text(
-                            'Guests: 1 Adult, 0 Children',
+                            'Guests: x Adult, x Children',
                             style: TextStyle(fontSize: 18, color: Colors.grey),
                           ),
                         ],

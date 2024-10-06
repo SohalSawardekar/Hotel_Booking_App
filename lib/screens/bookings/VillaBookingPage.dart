@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable
+
 import 'package:intl/intl.dart';
 
 import '../../constants/ImportFiles.dart';
@@ -49,7 +51,7 @@ class _VillaBookingPageState extends State<VillaBookingPage> {
   @override
   Widget build(BuildContext context) {
     // Calculate GST and total amount
-    const double gst = 0.18; // GST rate
+    const double gst = 0; // GST rate
     final double totalAmount = pricePerNight * (1 + gst);
 
     final checkInDate = DateTime.now();
@@ -64,7 +66,7 @@ class _VillaBookingPageState extends State<VillaBookingPage> {
         title: Text('Villa Booking',
             style: GoogleFonts.poppins(
                 fontWeight: FontWeight.w600,
-                color: Color.fromARGB(255, 255, 255, 255))),
+                color: const Color.fromARGB(255, 255, 255, 255))),
         backgroundColor: Colors.teal, // Color for a more premium villa look
       ),
       body: isLoading
@@ -170,7 +172,7 @@ class _VillaBookingPageState extends State<VillaBookingPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           const Text(
-                            'Total Amount (with GST):',
+                            'Total Amount:',
                             style: TextStyle(
                                 fontSize: 20, fontWeight: FontWeight.bold),
                           ),
@@ -193,29 +195,27 @@ class _VillaBookingPageState extends State<VillaBookingPage> {
                         borderRadius: BorderRadius.circular(10),
                         border: Border.all(color: Colors.teal, width: 1),
                       ),
-                      child: Column(
+                      child: const Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
+                          Text(
                             'Booking Details',
                             style: TextStyle(
                                 fontSize: 20, fontWeight: FontWeight.bold),
                           ),
-                          const SizedBox(height: 10),
+                          SizedBox(height: 10),
                           Text(
-                            'Check-in Date: $formattedCheckIn',
-                            style: const TextStyle(
-                                fontSize: 18, color: Colors.grey),
+                            'Check-in Date: xx-xx-xxxx',
+                            style: TextStyle(fontSize: 18, color: Colors.grey),
                           ),
-                          const SizedBox(height: 10),
+                          SizedBox(height: 10),
                           Text(
-                            'Check-out Date: $formattedCheckOut',
-                            style: const TextStyle(
-                                fontSize: 18, color: Colors.grey),
+                            'Check-out Date: xx-xx-xxxx',
+                            style: TextStyle(fontSize: 18, color: Colors.grey),
                           ),
-                          const SizedBox(height: 10),
-                          const Text(
-                            'Guests: 2 Adults, 1 Child',
+                          SizedBox(height: 10),
+                          Text(
+                            'Guests: x Adults, x Child',
                             style: TextStyle(fontSize: 18, color: Colors.grey),
                           ),
                         ],

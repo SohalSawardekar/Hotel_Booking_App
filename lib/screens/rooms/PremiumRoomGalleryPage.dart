@@ -36,7 +36,7 @@ class _PremiumRoomGalleryPageState extends State<PremiumRoomGalleryPage> {
       'Bathtub',
       // Add more amenities if needed
     ];
-    const String extraBedCharges = '₹800 per night';
+    const String extraBedCharges = '₹1000 per night';
 
     return Scaffold(
       appBar: AppBar(

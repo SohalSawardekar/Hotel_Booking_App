@@ -51,7 +51,7 @@ class _SuiteBookingPageState extends State<SuiteBookingPage> {
   Widget build(BuildContext context) {
     // Calculate GST and total amount
     bool isDarkMode = Provider.of<ThemeNotifier>(context).isDarkMode;
-    const double gst = 0.18; // GST rate
+    const double gst = 0; // GST rate
     final double totalAmount = pricePerNight * (1 + gst);
 
     final checkInDate = DateTime.now();
@@ -166,7 +166,7 @@ class _SuiteBookingPageState extends State<SuiteBookingPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           const Text(
-                            'Total Amount (with GST):',
+                            'Total Amount:',
                             style: TextStyle(
                                 fontSize: 20, fontWeight: FontWeight.bold),
                           ),
@@ -190,29 +190,29 @@ class _SuiteBookingPageState extends State<SuiteBookingPage> {
                         border: Border.all(
                             color: Colors.deepPurpleAccent, width: 1),
                       ),
-                      child: Column(
+                      child: const Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
+                          Text(
                             'Booking Details',
                             style: TextStyle(
                                 fontSize: 20, fontWeight: FontWeight.bold),
                           ),
-                          const SizedBox(height: 10),
+                          SizedBox(height: 10),
                           Text(
-                            'Check-in Date: $formattedCheckIn',
-                            style: const TextStyle(
+                            'Check-in Date: xx-xx-xxxx',
+                            style: TextStyle(
                                 fontSize: 18, color: Colors.grey),
                           ),
-                          const SizedBox(height: 10),
+                          SizedBox(height: 10),
                           Text(
-                            'Check-out Date: $formattedCheckOut',
-                            style: const TextStyle(
+                            'Check-out Date: xx-xx-xxxx',
+                            style: TextStyle(
                                 fontSize: 18, color: Colors.grey),
                           ),
-                          const SizedBox(height: 10),
-                          const Text(
-                            'Guests: 1 Adult, 0 Children',
+                          SizedBox(height: 10),
+                          Text(
+                            'Guests: x Adult, x Children',
                             style: TextStyle(fontSize: 18, color: Colors.grey),
                           ),
                         ],

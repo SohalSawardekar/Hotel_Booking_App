@@ -36,7 +36,7 @@ class _StandardRoomGalleryPageState extends State<StandardRoomGalleryPage> {
       'Air Conditioning',
       'Mini Bar'
     ];
-    const String extraBedCharges = '₹500 per night';
+    const String extraBedCharges = '₹1000 per night';
 
     return Scaffold(
       appBar: AppBar(
