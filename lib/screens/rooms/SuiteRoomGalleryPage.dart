@@ -41,7 +41,7 @@ class _SuiteRoomGalleryPageState extends State<SuiteRoomGalleryPage> {
       appBar: AppBar(
         title: Text('Suite Room Gallery',
             style: GoogleFonts.poppins(
-              color: isDarkMode ? Colors.black : Colors.white,
+              color: Colors.white,
               fontWeight: FontWeight.w600,
             )),
         backgroundColor: isDarkMode ? Colors.black87 : Colors.deepPurpleAccent,

@@ -43,7 +43,7 @@ class _VillaRoomGalleryPageState extends State<VillaRoomGalleryPage> {
       appBar: AppBar(
         title: Text('Villa Room Gallery',
             style: GoogleFonts.poppins(
-              color: isDarkMode ? Colors.black : Colors.white,
+              color: Colors.white,
               fontWeight: FontWeight.w600,
             )),
         backgroundColor: isDarkMode ? Colors.black87 : Colors.teal,

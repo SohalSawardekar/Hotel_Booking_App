@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously
+
 import 'package:hotel_booking/constants/ImportFiles.dart';
 
 class LoginPage extends StatefulWidget {
@@ -101,13 +103,22 @@ class _LoginPageState extends State<LoginPage> {
                 width: screenWidth * 0.8,
                 height: screenHeight * 0.06,
                 child: ElevatedButton(
-                  onPressed: () {
-                    AuthService.loginWithEmailAndPassword(
+                  onPressed: () async {
+                    // Login Functionality
+                    await AuthService.loginWithEmailAndPassword(
                       context,
                       emailController.text.trim(),
                       passwordController.text.trim(),
                     );
+
+                    // Show Welcome Popup after successful login
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const WelcomePopUp()),
+                    );
                   },
+
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
@@ -175,3 +186,4 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 }
+
