@@ -41,6 +41,11 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       _selectedIndex = index;
     });
+    if (index == 4) {
+      // If "Location" icon is tapped
+      openMap();
+      return; // Exit early as we don't want to navigate to another page for this
+    }
 
     final pages = [
       const HomeScreen(),
@@ -60,6 +65,16 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+// Method to open Google Maps with location set to Panjim, Goa
+  Future<void> openMap() async {
+    const url = 'https://www.google.com/maps/search/?api=1&query=Goa';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+  
   void navigateToBookingPage(String roomType) {
     Navigator.push(
       context,
@@ -437,6 +452,11 @@ class _HomeScreenState extends State<HomeScreen> {
           icon: Icon(Icons.contact_mail, size: 28), // Increase icon size
           label: 'Contact',
         ),
+        BottomNavigationBarItem(
+          // Added Location Icon
+          icon: Icon(Icons.location_on, size: 28), // "Location" icon
+          label: 'Location',
+        )
       ],
     );
   }
