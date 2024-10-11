@@ -1,6 +1,4 @@
-// ignore_for_file: library_private_types_in_public_api, unused_local_variable
-
-import 'package:flutter/material.dart';
+// ignore_for_file: library_private_types_in_public_api, unused_local_variable, unused_import
 import 'package:hotel_booking/constants/ImportFiles.dart';
 import 'package:hotel_booking/screens/feedback.dart';
 import 'package:intl/intl.dart';
@@ -237,7 +235,7 @@ class _AvailabilityPageState extends State<AvailabilityPage> {
                   builder: (context) {
                     // Navigate to the actual PaymentPage and pass the required data
                     return PaymentPage(
-                      roomType: widget.roomType,
+                      roomId: _availableRoomId,
                       checkInDate: widget.checkInDate,
                       checkOutDate: widget.checkOutDate,
                       adults: widget.adults,
