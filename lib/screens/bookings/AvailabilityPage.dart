@@ -1,6 +1,8 @@
 // ignore_for_file: library_private_types_in_public_api, unused_local_variable
 
+import 'package:flutter/material.dart';
 import 'package:hotel_booking/constants/ImportFiles.dart';
+import 'package:hotel_booking/screens/feedback.dart';
 import 'package:intl/intl.dart';
 
 class AvailabilityPage extends StatefulWidget {
@@ -228,43 +230,47 @@ class _AvailabilityPageState extends State<AvailabilityPage> {
         const SizedBox(height: 30),
         if (_isAvailable)
           ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => PaymentPage(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    // Navigate to the actual PaymentPage and pass the required data
+                    return PaymentPage(
                       roomType: widget.roomType,
                       checkInDate: widget.checkInDate,
                       checkOutDate: widget.checkOutDate,
                       adults: widget.adults,
                       children: widget.children,
                       totalAmount: widget.totalAmount,
-                      roomId: _availableRoomId,
-                    ),
-                  ),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor:
-                    isDarkMode ? Colors.yellow : Colors.indigoAccent,
-                padding: EdgeInsets.symmetric(
-                  horizontal: MediaQuery.of(context).size.width * 0.10,
-                  vertical: 15,
+                      availableRoomId:
+                          _availableRoomId, // Pass the room ID as well
+                    );
+                  },
                 ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: isDarkMode ? Colors.yellow : Colors.indigoAccent,
+              padding: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.width * 0.10,
+                vertical: 15,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30),
+              ),
+            ),
+            child: Center(
+              child: Text(
+                'Confirm and Proceed',
+                style: GoogleFonts.poppins(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 17,
+                  color: isDarkMode ? Colors.black : Colors.white,
                 ),
               ),
-              child: Center(
-                child: Text(
-                  'Confirm and Proceed',
-                  style: GoogleFonts.poppins(
-                    fontWeight: FontWeight.w700,
-                    fontSize: 17,
-                    color: isDarkMode ? Colors.black : Colors.white,
-                  ),
-                ),
-              )),
+            ),
+          ),
       ],
     );
   }

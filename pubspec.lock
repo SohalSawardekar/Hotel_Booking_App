@@ -114,7 +114,7 @@ packages:
     source: hosted
     version: "1.0.8"
   eventify:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: eventify
       sha256: b829429f08586cc2001c628e7499e3e3c2493a1d895fd73b00ecb23351aa5a66
