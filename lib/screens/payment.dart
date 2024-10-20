@@ -7,7 +7,6 @@ import 'package:hotel_booking/screens/bookings/bookingConfirmation.dart';
 import 'package:hotel_booking/screens/feedback.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 
-// Typedefs for Success and Failure callbacks (UPI Turbo)
 typedef void OnSuccess<T>(T result);
 typedef void OnFailure<T>(T error);
 
@@ -66,7 +65,7 @@ class _PaymentPageState extends State<PaymentPage> {
   void _openCheckout() {
     var options = {
       'key': 'rzp_test_Pjb30t4hoYGOFf',
-      'amount': widget.totalAmount * 100, // Amount in paise
+      'amount': widget.totalAmount * 100, 
       'name': 'Hotel Booking',
       'description': 'Payment for Room Booking',
       'external': {

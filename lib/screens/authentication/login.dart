@@ -124,13 +124,6 @@ class _LoginPageState extends State<LoginPage> {
                           emailController.text.trim(),
                           passwordController.text.trim(),
                         );
-
-                        // Show Welcome Popup after successful login
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const WelcomePopUp()),
-                        );
                       } else {
                         // If the form is not valid, show an error message
                         ScaffoldMessenger.of(context).showSnackBar(

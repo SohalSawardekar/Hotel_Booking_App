@@ -16,8 +16,11 @@ class AuthService {
 
       // Successfully signed in
       // Navigate to the home page or other protected page
-      Navigator.pushReplacementNamed(
-          context, '/home'); // Update this with your route
+      // Show Welcome Popup after successful login
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const WelcomePopUp()),
+      );
     } on FirebaseAuthException catch (e) {
       // Handle errors from Firebase authentication
       String errorMessage;

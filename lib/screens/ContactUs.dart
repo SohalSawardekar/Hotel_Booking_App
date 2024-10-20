@@ -1,5 +1,7 @@
 import 'package:hotel_booking/constants/ImportFiles.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class ContactUs extends StatefulWidget {
   const ContactUs({super.key});
@@ -44,6 +46,16 @@ class _ContactUsState extends State<ContactUs> {
     }
   }
 
+  // Method to validate form fields
+  bool _validateFields() {
+    if (_nameController.text.isEmpty ||
+        _emailController.text.isEmpty ||
+        _messageController.text.isEmpty) {
+      return false;
+    }
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     final bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
@@ -62,9 +74,9 @@ class _ContactUsState extends State<ContactUs> {
                     const Spacer(flex: 5),
                     BackButton(
                       style: ButtonStyle(
-                        backgroundColor: WidgetStateProperty.all<Color>(
+                        backgroundColor: MaterialStateProperty.all<Color>(
                             isDarkMode ? Colors.grey[800]! : Colors.grey[200]!),
-                        padding: WidgetStateProperty.all<EdgeInsets>(
+                        padding: MaterialStateProperty.all<EdgeInsets>(
                             const EdgeInsets.all(2)),
                       ),
                       onPressed: () {
@@ -73,7 +85,7 @@ class _ContactUsState extends State<ContactUs> {
                     ),
                     const Spacer(flex: 15),
                     InkWell(
-                      onTap: () => _launchEmail(emailAddress),
+                      onTap: () => _launchEmail("email@example.com"),
                       child: Icon(
                         Icons.email,
                         size: 20,
@@ -82,7 +94,7 @@ class _ContactUsState extends State<ContactUs> {
                     ),
                     const Spacer(flex: 40),
                     InkWell(
-                      onTap: () => _launchDialer(telephoneNumber),
+                      onTap: () => _launchDialer("123456789"),
                       child: Row(
                         children: [
                           Icon(
@@ -92,7 +104,7 @@ class _ContactUsState extends State<ContactUs> {
                           ),
                           const SizedBox(width: 8),
                           Text(
-                            telephoneNumber,
+                            "123456789",
                             style: TextStyle(
                               color: isDarkMode ? Colors.white : Colors.black,
                             ),
@@ -246,17 +258,54 @@ class _ContactUsState extends State<ContactUs> {
                       child: Center(
                         child: ElevatedButton(
                           style: ButtonStyle(
-                            backgroundColor: WidgetStateProperty.all<Color>(
+                            backgroundColor: MaterialStateProperty.all<Color>(
                                 const Color.fromRGBO(43, 43, 43, 1)),
-                            padding: WidgetStateProperty.all<EdgeInsets>(
+                            padding: MaterialStateProperty.all<EdgeInsets>(
                                 const EdgeInsets.symmetric(
                                     vertical: 15.0, horizontal: 50.0)),
-                            textStyle: WidgetStateProperty.all<TextStyle>(
+                            textStyle: MaterialStateProperty.all<TextStyle>(
                               GoogleFonts.poppins(fontWeight: FontWeight.bold),
                             ),
                           ),
-                          onPressed: () async {
-                            // Handle submit button press
+                          onPressed: () {
+                            // Validate fields
+                            if (!_validateFields()) {
+                              showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  title: const Text('Error'),
+                                  content: const Text(
+                                      'Please fill out all the fields.'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: const Text('OK'),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            } else {
+                              // Proceed with submission if validation passes
+                              showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  title: const Text('Thank You!'),
+                                  content: const Text(
+                                      'Thank you for your feedback. We appreciate your input!'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pushReplacementNamed(
+                                            context, '/home');
+                                      },
+                                      child: const Text('OK'),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }
                           },
                           child: Text("Send",
                               style: GoogleFonts.poppins(
